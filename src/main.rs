@@ -32,6 +32,7 @@ enum Commands {
     },
 }
 
+#[allow(clippy::enum_variant_names)]
 #[derive(Subcommand)]
 enum DocsAction {
     /// Validate documentation topology

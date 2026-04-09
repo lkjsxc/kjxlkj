@@ -43,8 +43,11 @@ pub async fn create(
         &body,
         &blob,
         form.is_favorite.unwrap_or(false),
-        form.is_private
-            .unwrap_or(db::get_settings(&pool).await?.default_new_resource_is_private),
+        form.is_private.unwrap_or(
+            db::get_settings(&pool)
+                .await?
+                .default_new_resource_is_private,
+        ),
     )
     .await?;
     Ok(HttpResponse::Created().json(ResourcePayload::from_record(record)))
@@ -111,7 +114,13 @@ fn object_key(id: &str, filename: &str) -> String {
 fn safe_name(filename: &str) -> String {
     filename
         .chars()
-        .map(|ch| if ch.is_ascii_alphanumeric() || ".-_".contains(ch) { ch } else { '-' })
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || ".-_".contains(ch) {
+                ch
+            } else {
+                '-'
+            }
+        })
         .collect::<String>()
         .trim_matches('-')
         .to_string()

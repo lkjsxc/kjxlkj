@@ -4,10 +4,12 @@ mod analytics;
 mod auth;
 mod discovery;
 mod favorites;
+mod list_kind;
 mod list_scope;
 mod listing;
 mod listing_cursor;
 mod listing_direction;
+mod listing_params;
 mod listing_queries;
 mod listing_sort;
 mod listing_sort_sql;
@@ -20,6 +22,7 @@ mod record_support;
 mod records;
 mod resource_ids;
 mod revisions;
+mod revisions_cursor;
 mod settings;
 
 pub use analytics::{get_note_view_stats, list_popular_records, record_note_view};
@@ -28,6 +31,7 @@ pub use auth::{
 };
 pub use discovery::list_public_sitemap_records;
 pub use favorites::{list_all_favorite_records, reorder_favorites};
+pub use list_kind::ListKind;
 pub use list_scope::ListScope;
 pub use listing::{
     list_favorite_records, list_recent_records, list_records, ListDirection, ListRequest, ListSort,

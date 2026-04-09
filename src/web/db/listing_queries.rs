@@ -1,6 +1,7 @@
 use super::listing::{ListDirection, ListPage, ListSort};
 use super::listing_cursor::{page_from_rows, row_to_listed_record, Cursor, PageCursorContext};
-use super::{DbPool, ListScope, ListedRecord, PopularWindow};
+use super::listing_params::{BrowseParams, SearchParams};
+use super::{DbPool, ListKind, ListScope, ListedRecord, PopularWindow};
 use crate::error::AppError;
 
 pub(super) struct ListingQuery<'a> {
@@ -8,14 +9,23 @@ pub(super) struct ListingQuery<'a> {
     pub(super) limit: i64,
     pub(super) query: Option<&'a str>,
     pub(super) direction: &'a ListDirection,
+    pub(super) kind: &'a ListKind,
     pub(super) scope: &'a ListScope,
     pub(super) sort: &'a ListSort,
     pub(super) popular_window: PopularWindow,
     pub(super) cursor: Option<&'a Cursor>,
 }
 
-pub(super) async fn browse_records(pool: &DbPool, request: &ListingQuery<'_>) -> Result<ListPage, AppError> {
-    let favorite_filter = if request.scope.favorites_only() { "AND r.is_favorite = TRUE" } else { "" };
+pub(super) async fn browse_records(
+    pool: &DbPool,
+    request: &ListingQuery<'_>,
+) -> Result<ListPage, AppError> {
+    let favorite_filter = if request.scope.favorites_only() {
+        "AND r.is_favorite = TRUE"
+    } else {
+        ""
+    };
+    let kind_filter = request.kind.sql_filter("r");
     let params = BrowseParams::new(request);
     let sql = format!(
         "WITH popular AS (SELECT resource_id, SUM(view_count)::BIGINT AS popular_views \
@@ -26,20 +36,32 @@ pub(super) async fn browse_records(pool: &DbPool, request: &ListingQuery<'_>) ->
          r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, COALESCE(p.popular_views, 0)::BIGINT AS popular_views, \
          LOWER(r.title) AS title_key, 0::DOUBLE PRECISION AS rank, 0::DOUBLE PRECISION AS fuzzy \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
-         WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) {favorite_filter}) \
+         WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) {favorite_filter} {kind_filter}) \
          SELECT * FROM listed WHERE {} AND {} ORDER BY {} LIMIT $11",
         request.popular_window.days(),
         request.sort.binding_clause(2),
         request.sort.cursor_filter(request.direction, 2),
         request.sort.order_clause(request.direction)
     );
-    let rows = client(pool).await?.query(&sql, &params.refs()).await.map_err(db_err)?;
+    let rows = client(pool)
+        .await?
+        .query(&sql, &params.refs())
+        .await
+        .map_err(db_err)?;
     Ok(page_from_rows(rows, request.limit, &context(request)))
 }
 
-pub(super) async fn search_records(pool: &DbPool, request: &ListingQuery<'_>) -> Result<ListPage, AppError> {
+pub(super) async fn search_records(
+    pool: &DbPool,
+    request: &ListingQuery<'_>,
+) -> Result<ListPage, AppError> {
     let query = request.query.unwrap_or_default();
-    let favorite_filter = if request.scope.favorites_only() { "AND r.is_favorite = TRUE" } else { "" };
+    let favorite_filter = if request.scope.favorites_only() {
+        "AND r.is_favorite = TRUE"
+    } else {
+        ""
+    };
+    let kind_filter = request.kind.sql_filter("r");
     let params = SearchParams::new(request, query);
     let sql = format!(
         "WITH q AS (SELECT websearch_to_tsquery('simple', $2) AS tsq, $2::TEXT AS raw), \
@@ -54,7 +76,7 @@ pub(super) async fn search_records(pool: &DbPool, request: &ListingQuery<'_>) ->
          GREATEST(similarity(COALESCE(r.alias, ''), (SELECT raw FROM q)), similarity(r.title, (SELECT raw FROM q)), \
          similarity(r.body, (SELECT raw FROM q)), similarity(COALESCE(r.original_filename, ''), (SELECT raw FROM q)))::DOUBLE PRECISION AS fuzzy \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
-         WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) {favorite_filter} \
+         WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) {favorite_filter} {kind_filter} \
          AND (r.search_document @@ (SELECT tsq FROM q) OR r.alias ILIKE '%' || (SELECT raw FROM q) || '%' \
          OR r.title ILIKE '%' || (SELECT raw FROM q) || '%' OR r.body ILIKE '%' || (SELECT raw FROM q) || '%' \
          OR COALESCE(r.original_filename, '') ILIKE '%' || (SELECT raw FROM q) || '%' \
@@ -66,7 +88,11 @@ pub(super) async fn search_records(pool: &DbPool, request: &ListingQuery<'_>) ->
         request.sort.cursor_filter(request.direction, 3),
         request.sort.order_clause(request.direction)
     );
-    let rows = client(pool).await?.query(&sql, &params.refs()).await.map_err(db_err)?;
+    let rows = client(pool)
+        .await?
+        .query(&sql, &params.refs())
+        .await
+        .map_err(db_err)?;
     Ok(page_from_rows(rows, request.limit, &context(request)))
 }
 
@@ -77,7 +103,10 @@ pub(super) async fn top_records(
     favorites_only: bool,
 ) -> Result<Vec<ListedRecord>, AppError> {
     let (filter, order) = if favorites_only {
-        ("AND is_favorite = TRUE", "favorite_position ASC NULLS LAST, id ASC")
+        (
+            "AND is_favorite = TRUE",
+            "favorite_position ASC NULLS LAST, id ASC",
+        )
     } else {
         ("", "updated_at DESC, id ASC")
     };
@@ -87,12 +116,18 @@ pub(super) async fn top_records(
          is_private, view_count_total, last_viewed_at, created_at, updated_at, summary AS preview, NULL::BIGINT AS popular_views \
          FROM resources WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE) {filter} ORDER BY {order} LIMIT $2"
     );
-    client(pool).await?.query(&sql, &[&include_private, &limit]).await.map(|rows| rows.into_iter().map(row_to_listed_record).collect()).map_err(db_err)
+    client(pool)
+        .await?
+        .query(&sql, &[&include_private, &limit])
+        .await
+        .map(|rows| rows.into_iter().map(row_to_listed_record).collect())
+        .map_err(db_err)
 }
 
 fn context<'a>(request: &'a ListingQuery<'a>) -> PageCursorContext<'a> {
     PageCursorContext {
         query: request.query,
+        kind: request.kind,
         scope: request.scope,
         direction: request.direction,
         sort: request.sort,
@@ -106,84 +141,7 @@ fn db_err(error: tokio_postgres::Error) -> AppError {
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
-    pool.get().await.map_err(|e| AppError::DatabaseError(e.to_string()))
-}
-
-struct BrowseParams<'a> {
-    include_private: bool,
-    updated_at: Option<chrono::DateTime<chrono::Utc>>,
-    created_at: Option<chrono::DateTime<chrono::Utc>>,
-    title_key: Option<&'a str>,
-    rank: Option<f64>,
-    fuzzy: Option<f64>,
-    id: Option<&'a str>,
-    favorite_position: Option<i64>,
-    popular_views: Option<i64>,
-    view_count_total: Option<i64>,
-    limit: i64,
-}
-
-impl<'a> BrowseParams<'a> {
-    fn new(request: &'a ListingQuery<'a>) -> Self {
-        Self {
-            include_private: request.include_private,
-            updated_at: request.cursor.and_then(|item| item.updated_at),
-            created_at: request.cursor.and_then(|item| item.created_at),
-            title_key: request.cursor.and_then(|item| item.title_key.as_deref()),
-            rank: request.cursor.and_then(|item| item.rank),
-            fuzzy: request.cursor.and_then(|item| item.fuzzy),
-            id: request.cursor.map(|item| item.id.as_str()),
-            favorite_position: request.cursor.and_then(|item| item.favorite_position),
-            popular_views: request.cursor.and_then(|item| item.popular_views),
-            view_count_total: request.cursor.and_then(|item| item.view_count_total),
-            limit: request.limit + 1,
-        }
-    }
-
-    fn refs(&'a self) -> [&'a (dyn tokio_postgres::types::ToSql + Sync); 11] {
-        [
-            &self.include_private,
-            &self.updated_at,
-            &self.created_at,
-            &self.title_key,
-            &self.rank,
-            &self.fuzzy,
-            &self.id,
-            &self.favorite_position,
-            &self.popular_views,
-            &self.view_count_total,
-            &self.limit,
-        ]
-    }
-}
-
-struct SearchParams<'a> {
-    query: &'a str,
-    browse: BrowseParams<'a>,
-}
-
-impl<'a> SearchParams<'a> {
-    fn new(request: &'a ListingQuery<'a>, query: &'a str) -> Self {
-        Self {
-            query,
-            browse: BrowseParams::new(request),
-        }
-    }
-
-    fn refs(&'a self) -> [&'a (dyn tokio_postgres::types::ToSql + Sync); 12] {
-        [
-            &self.browse.include_private,
-            &self.query,
-            &self.browse.updated_at,
-            &self.browse.created_at,
-            &self.browse.title_key,
-            &self.browse.rank,
-            &self.browse.fuzzy,
-            &self.browse.id,
-            &self.browse.favorite_position,
-            &self.browse.popular_views,
-            &self.browse.view_count_total,
-            &self.browse.limit,
-        ]
-    }
+    pool.get()
+        .await
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }

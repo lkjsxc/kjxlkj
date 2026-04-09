@@ -33,6 +33,7 @@ fn sample_record() -> Record {
 fn sample_chrome() -> NoteChrome {
     NoteChrome {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
+        kind: RecordKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
         summary: "Body".to_string(),

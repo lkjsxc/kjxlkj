@@ -14,48 +14,38 @@ pub async fn current_file(
 ) -> Result<HttpResponse, AppError> {
     let is_admin = session::check_session(&req, &pool).await?;
     let reference = path.into_inner();
-    let record = if looks_like_id(&reference) {
-        db::get_record(&pool, &reference).await?
+    let file = if looks_like_id(&reference) {
+        resolve_id_backed_file(&pool, &reference, is_admin).await?
     } else {
-        db::get_record_by_alias(&pool, &reference).await?
+        db::get_record_by_alias(&pool, &reference)
+            .await?
+            .and_then(|record| file_from_record(record, is_admin))
     };
-    let Some(record) = record else {
+    let Some(file) = file else {
         return Err(AppError::NotFound("resource file not found".to_string()));
     };
-    if record.kind != RecordKind::Media || (record.is_private && !is_admin) {
-        return Err(AppError::NotFound("resource file not found".to_string()));
-    }
     stream_file(
         &storage,
-        record.file_key.as_deref(),
-        record.content_type.as_deref(),
-        req.headers().get("Range").and_then(|value| value.to_str().ok()),
+        file.file_key.as_deref(),
+        file.content_type.as_deref(),
+        req.headers()
+            .get("Range")
+            .and_then(|value| value.to_str().ok()),
     )
     .await
 }
 
-#[get("/{snapshot_id}/file")]
-pub async fn snapshot_file(
-    pool: web::Data<DbPool>,
-    storage: web::Data<Storage>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    let is_admin = session::check_session(&req, &pool).await?;
-    let snapshot_id = path.into_inner();
-    let Some(resource) = db::get_snapshot_resource(&pool, &snapshot_id).await? else {
-        return Err(AppError::NotFound("snapshot file not found".to_string()));
-    };
-    if resource.snapshot.kind != RecordKind::Media || (resource.snapshot.is_private && !is_admin) {
-        return Err(AppError::NotFound("snapshot file not found".to_string()));
+async fn resolve_id_backed_file(
+    pool: &DbPool,
+    reference: &str,
+    is_admin: bool,
+) -> Result<Option<ResourceFileRef>, AppError> {
+    if let Some(record) = db::get_record(pool, reference).await? {
+        return Ok(file_from_record(record, is_admin));
     }
-    stream_file(
-        &storage,
-        resource.snapshot.file_key.as_deref(),
-        resource.snapshot.content_type.as_deref(),
-        req.headers().get("Range").and_then(|value| value.to_str().ok()),
-    )
-    .await
+    Ok(db::get_snapshot_resource(pool, reference)
+        .await?
+        .and_then(|resource| file_from_snapshot(resource, is_admin)))
 }
 
 async fn stream_file(
@@ -83,4 +73,29 @@ async fn stream_file(
     Ok(builder
         .content_type(content_type.unwrap_or("application/octet-stream"))
         .body(object.body))
+}
+
+struct ResourceFileRef {
+    file_key: Option<String>,
+    content_type: Option<String>,
+}
+
+fn file_from_record(record: db::Record, is_admin: bool) -> Option<ResourceFileRef> {
+    if record.kind != RecordKind::Media || (record.is_private && !is_admin) {
+        return None;
+    }
+    Some(ResourceFileRef {
+        file_key: record.file_key,
+        content_type: record.content_type,
+    })
+}
+
+fn file_from_snapshot(resource: db::SnapshotResource, is_admin: bool) -> Option<ResourceFileRef> {
+    if resource.snapshot.kind != RecordKind::Media || (resource.snapshot.is_private && !is_admin) {
+        return None;
+    }
+    Some(ResourceFileRef {
+        file_key: resource.snapshot.file_key,
+        content_type: resource.snapshot.content_type,
+    })
 }

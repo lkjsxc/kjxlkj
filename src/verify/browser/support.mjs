@@ -1,6 +1,13 @@
-import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {
+    createHistoryNote,
+    createMedia,
+    createNote,
+    imageUpload,
+    updateResource,
+    videoUpload,
+} from './fixture-api.mjs';
 import { resetDatabase, seedViewAnalytics } from './seed-state.mjs';
 
 export const appUrl = process.env.APP_URL ?? 'http://app:8080';
@@ -23,12 +30,38 @@ export async function prepareState(browser) {
     await setupAdmin(page);
     await login(page);
 
+    const image = await createMedia(page, imageUpload, {
+        alias: 'orbital-chart',
+        isPrivate: false,
+        favorite: false,
+    });
+    await updateResource(
+        page,
+        image.id,
+        '# Orbital Chart\n\nPublic image fixture for media pages and markdown embeds.',
+        { alias: 'orbital-chart', isPrivate: false, favorite: false }
+    );
+    const video = await createMedia(page, videoUpload, {
+        alias: 'launch-clip',
+        isPrivate: false,
+        favorite: false,
+    });
+    await updateResource(
+        page,
+        video.id,
+        '# Launch Clip\n\nPublic video fixture for media pages and markdown embeds.',
+        { alias: 'launch-clip', isPrivate: false, favorite: false }
+    );
+
     const oldest = await createNote(page, '# Atlas Entry\n\nOldest public note.', {
         isPrivate: false,
         alias: 'atlas-entry',
         favorite: false,
     });
-    const middle = await createHistoryNote(page);
+    const middle = await createHistoryNote(page, {
+        image: { fileHref: '/orbital-chart/file' },
+        video: { fileHref: '/launch-clip/file' },
+    });
     const newest = await createNote(page, '# Beacon Log\n\nNewest public note.', {
         isPrivate: false,
         alias: 'beacon-log',
@@ -38,6 +71,8 @@ export async function prepareState(browser) {
     seedViewAnalytics(databaseUrl, { oldest, middle, newest });
     await context.close();
     return {
+        image: mediaFixture(image, 'Orbital Chart', '.media-surface img'),
+        video: mediaFixture(video, 'Launch Clip', '.media-surface video'),
         oldest: { id: oldest.id, ref: oldest.alias ?? oldest.id, title: 'Atlas Entry' },
         middle: {
             id: middle.id,
@@ -67,35 +102,6 @@ export async function capture(page, name) {
     await page.screenshot({ path: path.join(artifactDir, name), fullPage: true });
 }
 
-async function createHistoryNote(page) {
-    const note = await createNote(page, '# Orbit Ledger\n\nPrivate draft.', {
-        isPrivate: true,
-        alias: 'orbit-ledger',
-        favorite: true,
-    });
-    await updateNote(page, note.id, '# Orbit Ledger\n\nSecond private draft.', {
-        isPrivate: true,
-        alias: 'orbit-ledger',
-        favorite: true,
-    });
-    await updateNote(page, note.id, '# Orbit Ledger\n\nShared release.', {
-        isPrivate: false,
-        alias: 'orbit-ledger',
-        favorite: true,
-    });
-    await updateNote(
-        page,
-        note.id,
-        '# Orbit Ledger\n\nCurrent shared revision stretches across the list card with enough words to stress the timestamp column.\n\nFollow-up detail keeps the summary ellipsis active.',
-        {
-            isPrivate: false,
-            alias: 'orbit-ledger',
-            favorite: true,
-        }
-    );
-    return { ...note, snapshots: await listSnapshots(page, note.id) };
-}
-
 async function waitForHealth() {
     for (let attempt = 0; attempt < 30; attempt += 1) {
         try {
@@ -117,60 +123,14 @@ async function setupAdmin(page) {
     ]);
 }
 
-async function createNote(page, body, options) {
-    return page.evaluate(
-        async ({ noteBody, notePrivate, noteAlias, noteFavorite }) => {
-            const response = await fetch('/records', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    body: noteBody,
-                    alias: noteAlias,
-                    is_favorite: noteFavorite,
-                    is_private: notePrivate,
-                }),
-            });
-            return response.json();
-        },
-        {
-            noteBody: body,
-            notePrivate: options.isPrivate,
-            noteAlias: options.alias ?? null,
-            noteFavorite: !!options.favorite,
-        }
-    );
-}
-
-async function updateNote(page, id, body, options) {
-    const status = await page.evaluate(
-        async ({ noteId, noteBody, notePrivate, noteAlias, noteFavorite }) => {
-            const response = await fetch(`/records/${noteId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    body: noteBody,
-                    alias: noteAlias,
-                    is_favorite: noteFavorite,
-                    is_private: notePrivate,
-                }),
-            });
-            return response.status;
-        },
-        {
-            noteId: id,
-            noteBody: body,
-            notePrivate: options.isPrivate,
-            noteAlias: options.alias ?? null,
-            noteFavorite: !!options.favorite,
-        }
-    );
-    assert.equal(status, 200, `note update should succeed for ${id}`);
-}
-
-async function listSnapshots(page, id) {
-    return page.evaluate(async (noteId) => {
-        const response = await fetch(`/records/${noteId}/history?limit=10`);
-        const payload = await response.json();
-        return payload.snapshots;
-    }, id);
+function mediaFixture(payload, title, selector) {
+    const ref = payload.alias ?? payload.id;
+    return {
+        id: payload.id,
+        ref,
+        title,
+        fileHref: payload.file_href ?? `/${ref}/file`,
+        contentType: payload.content_type,
+        selector,
+    };
 }

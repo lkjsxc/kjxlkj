@@ -12,6 +12,8 @@ fn sample_item() -> IndexItem {
         summary: "Shared release.".to_string(),
         created_at: "2026-03-26 08:34 UTC".to_string(),
         updated_at: "2026-03-26 08:35 UTC".to_string(),
+        kind_badge: "Note",
+        image_href: None,
         is_favorite: true,
         visibility: Some("Public"),
         metrics: vec![IndexMetric {

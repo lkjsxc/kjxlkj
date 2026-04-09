@@ -1,10 +1,10 @@
 use super::listing_direction::ListDirection;
 use super::models::{MediaFamily, Record, RecordKind, RecordSnapshot};
 use super::record_support::row_to_record;
+use super::revisions_cursor::{decode_snapshot_cursor, encode_snapshot_cursor};
 use super::DbPool;
 use crate::error::AppError;
-use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 const MAX_LIMIT: i64 = 100;
 
@@ -21,11 +21,6 @@ pub struct SnapshotResource {
     pub snapshot: RecordSnapshot,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-struct SnapshotCursor {
-    snapshot_number: i32,
-}
-
 pub async fn list_record_snapshots(
     pool: &DbPool,
     record_id: &str,
@@ -35,8 +30,9 @@ pub async fn list_record_snapshots(
     cursor: Option<&str>,
 ) -> Result<SnapshotPage, AppError> {
     let limit = limit.clamp(1, MAX_LIMIT);
-    let cursor = decode_cursor(cursor)?;
-    let mut snapshots = query_page(pool, record_id, include_private, limit, direction, cursor).await?;
+    let cursor = decode_snapshot_cursor(cursor)?;
+    let mut snapshots =
+        query_page(pool, record_id, include_private, limit, direction, cursor).await?;
     if snapshots.len() as i64 > limit {
         snapshots.pop();
     }
@@ -44,13 +40,30 @@ pub async fn list_record_snapshots(
         snapshots.reverse();
     }
     Ok(SnapshotPage {
-        previous_cursor: edge_cursor(pool, record_id, include_private, snapshots.first().map(|item| item.snapshot_number), true).await?,
-        next_cursor: edge_cursor(pool, record_id, include_private, snapshots.last().map(|item| item.snapshot_number), false).await?,
+        previous_cursor: edge_cursor(
+            pool,
+            record_id,
+            include_private,
+            snapshots.first().map(|item| item.snapshot_number),
+            true,
+        )
+        .await?,
+        next_cursor: edge_cursor(
+            pool,
+            record_id,
+            include_private,
+            snapshots.last().map(|item| item.snapshot_number),
+            false,
+        )
+        .await?,
         snapshots,
     })
 }
 
-pub async fn get_snapshot_resource(pool: &DbPool, snapshot_id: &str) -> Result<Option<SnapshotResource>, AppError> {
+pub async fn get_snapshot_resource(
+    pool: &DbPool,
+    snapshot_id: &str,
+) -> Result<Option<SnapshotResource>, AppError> {
     client(pool).await?.query_opt(
         "SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, r.content_type, \
          r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, r.duration_ms, r.is_favorite, r.favorite_position, \
@@ -65,7 +78,14 @@ pub async fn get_snapshot_resource(pool: &DbPool, snapshot_id: &str) -> Result<O
     ).await.map(|row| row.map(row_to_snapshot_resource)).map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-async fn query_page(pool: &DbPool, record_id: &str, include_private: bool, limit: i64, direction: &ListDirection, cursor: Option<i32>) -> Result<Vec<RecordSnapshot>, AppError> {
+async fn query_page(
+    pool: &DbPool,
+    record_id: &str,
+    include_private: bool,
+    limit: i64,
+    direction: &ListDirection,
+    cursor: Option<i32>,
+) -> Result<Vec<RecordSnapshot>, AppError> {
     let (predicate, order) = match direction {
         ListDirection::Next => ("snapshot_number < $3", "snapshot_number DESC"),
         ListDirection::Prev => ("snapshot_number > $3", "snapshot_number ASC"),
@@ -75,16 +95,38 @@ async fn query_page(pool: &DbPool, record_id: &str, include_private: bool, limit
          sha256_hex, original_filename, width, height, duration_ms, is_private, created_at \
          FROM resource_snapshots WHERE resource_id = $1 AND ($2 OR is_private = FALSE) AND ($3::INT IS NULL OR {predicate}) ORDER BY {order} LIMIT $4"
     );
-    client(pool).await?.query(&sql, &[&record_id, &include_private, &cursor, &(limit + 1)]).await.map(|rows| rows.into_iter().map(row_to_snapshot).collect()).map_err(|e| AppError::DatabaseError(e.to_string()))
+    client(pool)
+        .await?
+        .query(&sql, &[&record_id, &include_private, &cursor, &(limit + 1)])
+        .await
+        .map(|rows| rows.into_iter().map(row_to_snapshot).collect())
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
-async fn edge_cursor(pool: &DbPool, record_id: &str, include_private: bool, snapshot_number: Option<i32>, previous: bool) -> Result<Option<String>, AppError> {
-    let Some(snapshot_number) = snapshot_number else { return Ok(None) };
-    let predicate = if previous { "snapshot_number > $3" } else { "snapshot_number < $3" };
+async fn edge_cursor(
+    pool: &DbPool,
+    record_id: &str,
+    include_private: bool,
+    snapshot_number: Option<i32>,
+    previous: bool,
+) -> Result<Option<String>, AppError> {
+    let Some(snapshot_number) = snapshot_number else {
+        return Ok(None);
+    };
+    let predicate = if previous {
+        "snapshot_number > $3"
+    } else {
+        "snapshot_number < $3"
+    };
     let sql = format!(
         "SELECT 1 FROM resource_snapshots WHERE resource_id = $1 AND ($2 OR is_private = FALSE) AND {predicate} LIMIT 1"
     );
-    client(pool).await?.query_opt(&sql, &[&record_id, &include_private, &snapshot_number]).await.map(|row| row.map(|_| encode_cursor(snapshot_number))).map_err(|e| AppError::DatabaseError(e.to_string()))
+    client(pool)
+        .await?
+        .query_opt(&sql, &[&record_id, &include_private, &snapshot_number])
+        .await
+        .map(|row| row.map(|_| encode_snapshot_cursor(snapshot_number)))
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }
 
 fn row_to_snapshot(row: tokio_postgres::Row) -> RecordSnapshot {
@@ -136,18 +178,8 @@ fn row_to_snapshot_resource(row: tokio_postgres::Row) -> SnapshotResource {
     }
 }
 
-fn decode_cursor(cursor: Option<&str>) -> Result<Option<i32>, AppError> {
-    let Some(cursor) = cursor else { return Ok(None) };
-    let raw = URL_SAFE_NO_PAD.decode(cursor).map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
-    let text = String::from_utf8(raw).map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
-    let cursor: SnapshotCursor = serde_json::from_str(&text).map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
-    Ok(Some(cursor.snapshot_number))
-}
-
-fn encode_cursor(snapshot_number: i32) -> String {
-    URL_SAFE_NO_PAD.encode(serde_json::to_string(&SnapshotCursor { snapshot_number }).unwrap())
-}
-
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
-    pool.get().await.map_err(|e| AppError::DatabaseError(e.to_string()))
+    pool.get()
+        .await
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }

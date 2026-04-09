@@ -46,7 +46,6 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(settings::settings_submit)
             .service(preview::render_markdown_preview)
             .service(search::search_page)
-            .service(resource_file::snapshot_file)
             .service(resource_file::current_file)
             .service(history::history_page)
             .service(media::create)

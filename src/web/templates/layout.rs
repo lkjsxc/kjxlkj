@@ -54,7 +54,7 @@ pub fn not_found_page(meta: &PageMeta) -> String {
     let content = r#"<div class="auth-container">
 <div class="auth-card">
 <h1>404</h1>
-<p class="subtitle">Note not found</p>
+<p class="subtitle">Resource not found</p>
 <a href="/" class="btn btn-primary">Go Home</a>
 </div>
 </div>"#;

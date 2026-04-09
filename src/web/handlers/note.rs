@@ -10,8 +10,8 @@ use crate::web::view;
 use actix_web::{get, web, HttpRequest, HttpResponse};
 
 enum RootResource {
-    Current(db::Record),
-    Snapshot(db::SnapshotResource),
+    Current(Box<db::Record>),
+    Snapshot(Box<db::SnapshotResource>),
 }
 
 #[get("/{reference}")]
@@ -33,10 +33,10 @@ pub async fn note_page(
     };
     match resource {
         RootResource::Current(record) => {
-            render_current_note(&pool, &reference, &record, is_admin, &site).await
+            render_current_note(&pool, &reference, record.as_ref(), is_admin, &site).await
         }
         RootResource::Snapshot(resource) => {
-            render_snapshot(&pool, &resource, is_admin, &site).await
+            render_snapshot(&pool, resource.as_ref(), is_admin, &site).await
         }
     }
 }
@@ -48,13 +48,15 @@ async fn resolve_root_resource(
     if !looks_like_id(reference) {
         return Ok(db::get_record_by_alias(pool, reference)
             .await?
+            .map(Box::new)
             .map(RootResource::Current));
     }
     if let Some(record) = db::get_record(pool, reference).await? {
-        return Ok(Some(RootResource::Current(record)));
+        return Ok(Some(RootResource::Current(Box::new(record))));
     }
     Ok(db::get_snapshot_resource(pool, reference)
         .await?
+        .map(Box::new)
         .map(RootResource::Snapshot))
 }
 

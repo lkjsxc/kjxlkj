@@ -1,7 +1,5 @@
 use super::models::{MediaFamily, Record, RecordKind};
-use super::record_support::{
-    map_write_error, next_position, row_to_record, RETURNING_RECORD,
-};
+use super::record_support::{map_write_error, next_position, row_to_record, RETURNING_RECORD};
 use super::resource_ids::next_resource_id;
 use super::DbPool;
 use crate::core::{derive_summary, derive_title};

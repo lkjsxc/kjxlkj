@@ -2,7 +2,9 @@
 
 use crate::core::derive_title;
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListedRecord, PopularWindow, Record, RecordSnapshot};
+use crate::web::db::{
+    self, DbPool, ListedRecord, MediaFamily, PopularWindow, Record, RecordSnapshot,
+};
 use crate::web::templates::{
     render_time, HistoryLink, IndexItem, IndexMetric, NavLink, NoteAnalytics, NoteChrome,
 };
@@ -50,6 +52,7 @@ pub async fn note_chrome(
 ) -> Result<NoteChrome, AppError> {
     Ok(NoteChrome {
         id: record.id.clone(),
+        kind: record.kind,
         alias: record.alias.clone(),
         title: title_for(record),
         summary: record.summary.clone(),
@@ -87,6 +90,11 @@ fn build_index_item(
     show_visibility: bool,
     metrics: Vec<IndexMetric>,
 ) -> IndexItem {
+    let kind_badge = match record.record.media_family {
+        Some(MediaFamily::Image) => "Image",
+        Some(MediaFamily::Video) => "Video",
+        None => "Note",
+    };
     IndexItem {
         id: record.record.id.clone(),
         href: note_href(&record.record),
@@ -94,6 +102,9 @@ fn build_index_item(
         summary: record.preview.clone(),
         created_at: render_time(&record.record.created_at),
         updated_at: render_time(&record.record.updated_at),
+        kind_badge,
+        image_href: matches!(record.record.media_family, Some(MediaFamily::Image))
+            .then(|| file_href(&record.record)),
         is_favorite: record.record.is_favorite,
         visibility: show_visibility.then_some(visibility_label(record.record.is_private)),
         metrics,

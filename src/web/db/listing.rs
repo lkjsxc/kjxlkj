@@ -2,7 +2,7 @@
 
 use super::listing_cursor::decode_cursor;
 use super::listing_queries::{browse_records, search_records, top_records, ListingQuery};
-use super::{DbPool, ListScope, ListedRecord, PopularWindow};
+use super::{DbPool, ListKind, ListScope, ListedRecord, PopularWindow};
 use crate::error::AppError;
 
 pub use super::listing_direction::ListDirection;
@@ -17,6 +17,7 @@ pub struct ListRequest {
     pub limit: i64,
     pub query: Option<String>,
     pub direction: ListDirection,
+    pub kind: ListKind,
     pub scope: ListScope,
     pub sort: ListSort,
     pub popular_window: PopularWindow,
@@ -47,6 +48,7 @@ pub async fn list_records(pool: &DbPool, request: &ListRequest) -> Result<ListPa
         request.cursor.as_deref(),
         query,
         &request.sort,
+        &request.kind,
         &request.scope,
         request.popular_window,
     )?;
@@ -88,6 +90,7 @@ impl Default for ListRequest {
             limit: DEFAULT_LIMIT,
             query: None,
             direction: ListDirection::Next,
+            kind: ListKind::All,
             scope: ListScope::All,
             sort: ListSort::UpdatedDesc,
             popular_window: PopularWindow::Days30,
@@ -108,6 +111,7 @@ fn query_request<'a>(
         limit,
         query: (!query.is_empty()).then_some(query),
         direction,
+        kind: &request.kind,
         scope: &request.scope,
         sort: &request.sort,
         popular_window: request.popular_window,

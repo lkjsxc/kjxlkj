@@ -12,6 +12,8 @@ fn sample_item() -> IndexItem {
         summary: "Shared release.".to_string(),
         created_at: "2026-03-26 08:34 UTC".to_string(),
         updated_at: "2026-03-26 08:35 UTC".to_string(),
+        kind_badge: "Note",
+        image_href: None,
         is_favorite: true,
         visibility: Some("Public"),
         metrics: Vec::new(),
@@ -32,6 +34,7 @@ fn search_page_browses_without_query() {
         notes: &[sample_item()],
         previous_cursor: None,
         next_cursor: Some("cursor"),
+        kind: "all",
         query: None,
         limit: 20,
         scope: "all",
@@ -40,7 +43,7 @@ fn search_page_browses_without_query() {
         is_admin: false,
         site: &sample_site(),
     });
-    assert!(html.contains(">Notes<"));
+    assert!(html.contains(">Resources<"));
     assert!(!html.contains(">Query<"));
     assert!(html.contains("name=\"sort\""));
     assert!(html.contains("aria-label=\"Sort\""));
@@ -59,6 +62,7 @@ fn search_page_keeps_query_and_sort_in_form() {
         notes: &[sample_item()],
         previous_cursor: Some("prev"),
         next_cursor: Some("cursor"),
+        kind: "all",
         query: Some("orbit"),
         limit: 20,
         scope: "all",

@@ -3,13 +3,15 @@
 use super::layout::{base, html_escape, shell_page};
 use super::model::{NoteAnalytics, NoteChrome};
 use super::note_shell::note_rail;
+use super::resource_media::{admin_media_panel, current_media_block};
 use crate::core::render_markdown;
-use crate::web::db::Record;
+use crate::web::db::{Record, RecordKind};
 use crate::web::site::SiteContext;
 
 const EDITOR_CORE_JS: &str = include_str!("editor.js");
 const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
 const EDITOR_UI_JS: &str = include_str!("editor_ui.js");
+const MEDIA_FILE_JS: &str = include_str!("media_file.js");
 const NOTE_ACTIONS_JS: &str = include_str!("note_actions.js");
 
 pub fn note_page(
@@ -31,10 +33,23 @@ pub fn note_page(
         chrome.updated_at,
         analytics_block(analytics),
         if is_admin {
-            editor_surface(record, chrome)
+            format!(
+                "{}{}",
+                if record.kind == RecordKind::Media {
+                    admin_media_panel(record)
+                } else {
+                    String::new()
+                },
+                editor_surface(record, chrome),
+            )
         } else {
             format!(
-                r#"<section class="surface note-surface prose">{}</section>"#,
+                r#"{}<section class="surface note-surface prose">{}</section>"#,
+                if record.kind == RecordKind::Media {
+                    current_media_block(record)
+                } else {
+                    String::new()
+                },
                 render_markdown(&record.body)
             )
         }
@@ -74,7 +89,9 @@ var isPrivate = {};
 {}
 {}
 {}
+{}
 initEditor();
+{}
 </script>"#,
         serde_json::to_string(&record.id).unwrap(),
         serde_json::to_string(&record.alias).unwrap(),
@@ -85,7 +102,17 @@ initEditor();
         NOTE_ACTIONS_JS,
         EDITOR_UI_JS,
         EDITOR_CORE_JS,
-        EDITOR_SYNC_JS
+        EDITOR_SYNC_JS,
+        if record.kind == RecordKind::Media {
+            MEDIA_FILE_JS
+        } else {
+            ""
+        },
+        if record.kind == RecordKind::Media {
+            "initMediaFileForm();"
+        } else {
+            ""
+        },
     )
 }
 

@@ -76,7 +76,7 @@ fn home_sections(
             note_grid_section(
                 "Recently updated",
                 recent,
-                "No notes yet.",
+                "No resources yet.",
                 "note-section",
                 None,
                 Some(recent_browse_card()),
@@ -89,7 +89,7 @@ fn home_sections(
             note_grid_section(
                 "Favorites",
                 favorites,
-                "No favorites yet.",
+                "No favorite resources yet.",
                 "note-section",
                 None,
                 Some(favorite_browse_card()),
@@ -115,7 +115,11 @@ fn intro_block(markdown: &str) -> String {
 }
 
 fn rail_primary_action(is_admin: bool) -> &'static str {
-    if is_admin { unreachable!() } else { "" }
+    if is_admin {
+        unreachable!()
+    } else {
+        ""
+    }
 }
 
 fn rail_actions(is_admin: bool) -> &'static str {

@@ -33,7 +33,7 @@ pub fn admin_page(
         note_grid_section(
             "Recently updated",
             recent,
-            "No notes yet.",
+            "No resources yet.",
             "note-section",
             None,
             Some(recent_browse_card()),
@@ -70,7 +70,7 @@ fn stats_grid(stats: &NoteStats) -> String {
         r#"<section class="stats-grid">
 {}{}{}{}{}{}{}{}{}{}
 </section>"#,
-        stat_card("Notes", stats.total),
+        stat_card("Resources", stats.total),
         stat_card("Public", stats.public_count),
         stat_card("Private", stats.private_count),
         stat_card("Favorites", stats.favorite_count),

@@ -112,5 +112,7 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
-    pool.get().await.map_err(|e| AppError::DatabaseError(e.to_string()))
+    pool.get()
+        .await
+        .map_err(|e| AppError::DatabaseError(e.to_string()))
 }

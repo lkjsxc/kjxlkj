@@ -11,7 +11,11 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
         &note.href,
         &format!(r#" data-note-id="{}""#, note.id),
         "",
-        &card_body(&note.title, &note.summary),
+        &format!(
+            "{}{}",
+            card_cover(note),
+            card_body(&note.title, &note.summary)
+        ),
         &card_meta(
             &card_badges(note),
             &format!(
@@ -112,7 +116,7 @@ fn page_button(
 }
 
 fn card_badges(note: &IndexItem) -> String {
-    let mut badges = Vec::new();
+    let mut badges = vec![status_pill(note.kind_badge, "")];
     if note.is_favorite {
         badges.push(status_pill("Favorite", "status-pill-favorite"));
     }
@@ -120,6 +124,15 @@ fn card_badges(note: &IndexItem) -> String {
         badges.push(status_pill(item, ""));
     }
     badges.join("")
+}
+
+fn card_cover(note: &IndexItem) -> String {
+    note.image_href.as_ref().map_or_else(String::new, |href| {
+        format!(
+            r#"<div class="card-cover"><img src="{}" alt="" style="width:100%;aspect-ratio:16 / 9;object-fit:cover;display:block;"></div>"#,
+            html_escape(href),
+        )
+    })
 }
 
 fn card_metrics(note: &IndexItem) -> String {

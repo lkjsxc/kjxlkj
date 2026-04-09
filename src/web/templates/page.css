@@ -96,12 +96,8 @@
     -webkit-line-clamp: unset;
 }
 
-.search-grid.has-query {
+.search-section .search-grid {
     grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) minmax(180px, 220px) auto;
-}
-
-.search-grid.no-query {
-    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) auto;
 }
 
 .search-state-card {
@@ -155,8 +151,7 @@
         font-size: clamp(1.72rem, 1.45rem + 2.4vw, 1.96rem);
     }
 
-    .search-grid.has-query,
-    .search-grid.no-query {
+    .search-section .search-grid {
         grid-template-columns: 1fr;
     }
 

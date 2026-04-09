@@ -6,6 +6,7 @@ use super::card_frame::{
 use super::index::admin_create_actions;
 use super::layout::{html_escape, primary_nav, project_link_button, rail_section};
 use super::model::{NavLink, NoteChrome};
+use super::resource_words::{delete_label, history_summary, live_label};
 
 pub fn note_rail(chrome: &NoteChrome, is_admin: bool, active_href: &str) -> String {
     let mut sections = vec![rail_section("navigate", &primary_nav("", is_admin))];
@@ -39,13 +40,14 @@ fn current_note(chrome: &NoteChrome, active_href: &str) -> String {
     format!(
         r#"<div class="rail-stack">
 <div class="rail-slot">
-<p class="rail-slot-label">Live note</p>
+<p class="rail-slot-label">{}</p>
 {}
 </div>
 <div class="rail-facts">
 <p><strong>Alias</strong><span data-live-alias>{}</span></p>
 </div>
 </div>"#,
+        live_label(chrome.kind),
         linked_card(
             &chrome.current_href,
             " data-current-note-link",
@@ -70,9 +72,13 @@ fn timeline(chrome: &NoteChrome) -> String {
         timeline_slot(
             chrome.previous.as_ref(),
             "Prev",
-            "No older accessible note."
+            "No older accessible resource."
         ),
-        timeline_slot(chrome.next.as_ref(), "Next", "No newer accessible note.")
+        timeline_slot(
+            chrome.next.as_ref(),
+            "Next",
+            "No newer accessible resource."
+        )
     )
 }
 
@@ -88,7 +94,7 @@ fn history(chrome: &NoteChrome, active_href: &str) -> String {
                 ""
             }
         ),
-        &card_body("History", "Browse the live note and saved snapshots."),
+        &card_body("History", history_summary(chrome.kind)),
         &card_meta("", ""),
     )
 }
@@ -131,10 +137,11 @@ fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
     if is_admin {
         format!(
             r#"<div class="rail-actions">
-<button type="button" class="btn btn-danger" onclick="deleteNote('{}')">Delete note</button>
+<button type="button" class="btn btn-danger" onclick="deleteNote('{}')">{}</button>
 <form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>
 </div>"#,
-            chrome.id
+            chrome.id,
+            delete_label(chrome.kind),
         )
     } else {
         r#"<div class="rail-actions"><a href="/login" class="btn">Admin sign in</a></div>"#
@@ -143,50 +150,8 @@ fn actions(chrome: &NoteChrome, is_admin: bool) -> String {
 }
 
 fn create_action() -> String {
-    format!(r#"<div class="rail-actions">{}</div>"#, admin_create_actions())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> NoteChrome {
-        NoteChrome {
-            id: "demo".to_string(),
-            alias: Some("orbit-ledger".to_string()),
-            title: "Orbit Ledger".to_string(),
-            summary: "Shared release note for the orbit ledger.".to_string(),
-            current_href: "/demo".to_string(),
-            created_at: "2026-03-26 08:34 UTC".to_string(),
-            updated_at: "2026-03-26 08:35 UTC".to_string(),
-            is_favorite: true,
-            visibility: "Public",
-            previous,
-            next,
-            history_href: "/demo/history".to_string(),
-        }
-    }
-
-    #[test]
-    fn note_rail_keeps_single_history_card() {
-        let html = note_rail(&chrome(None, None), true, "/demo");
-        let history = html.find("History").unwrap();
-        let github = html.find("Open GitHub").unwrap();
-        let delete = html.find("Delete note").unwrap();
-        let logout = html.find("Logout").unwrap();
-        assert!(html.contains("History"));
-        assert!(html.contains("Open GitHub"));
-        assert!(html.contains("<span>Created</span>"));
-        assert!(html.contains("<span>Updated</span>"));
-        assert!(history < github && github < delete && delete < logout);
-    }
-
-    #[test]
-    fn note_rail_renders_disabled_timeline_cards() {
-        let html = note_rail(&chrome(None, None), false, "/demo");
-        assert!(html.contains("No older accessible note."));
-        assert!(html.contains("No newer accessible note."));
-        assert!(!html.contains("CREATE"));
-        assert!(html.contains("timeline-grid"));
-    }
+    format!(
+        r#"<div class="rail-actions">{}</div>"#,
+        admin_create_actions()
+    )
 }

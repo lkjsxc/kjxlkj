@@ -15,7 +15,7 @@ export async function verifyUiCreatedDraft(page, expectedPrivate = false) {
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false', 'preview should start closed');
     await expectEditorFocus(page);
     const savePromise = page.waitForResponse((response) => {
-        return response.request().method() === 'PUT' && new URL(response.url()).pathname.startsWith('/records/');
+        return response.request().method() === 'PUT' && new URL(response.url()).pathname.startsWith('/resources/');
     });
     const aliasInput = page.locator('#alias-input');
     await aliasInput.click();
@@ -26,10 +26,10 @@ export async function verifyUiCreatedDraft(page, expectedPrivate = false) {
     await assertVisibleText(page, '/launchpad-note_v2.release');
 }
 
-export async function verifyEditorFormatting(browser, page, note) {
+export async function verifyEditorFormatting(browser, page, note, media) {
     const saveRequests = [];
     page.on('requestfinished', (request) => {
-        if (request.method() === 'PUT' && new URL(request.url()).pathname === `/records/${note.id}`) {
+        if (request.method() === 'PUT' && new URL(request.url()).pathname === `/resources/${note.id}`) {
             saveRequests.push(Date.now());
         }
     });
@@ -40,6 +40,7 @@ export async function verifyEditorFormatting(browser, page, note) {
     await appendMarkdown(page);
     await openPreview(page);
     await waitForPreviewStructures(page);
+    await waitForPreviewMedia(page, media);
     await assertEditorLayout(page, false);
     await assertAccentLink(page, '#editor-preview a');
     await page.waitForTimeout(1800);
@@ -51,17 +52,21 @@ export async function verifyEditorFormatting(browser, page, note) {
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false', 'preview should reset closed after reload');
     await openPreview(page);
     await waitForPreviewStructures(page);
+    await waitForPreviewMedia(page, media);
     const guest = await newContext(browser, { width: 1440, height: 1100 });
     const guestPage = await guest.newPage();
     await guestPage.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
     await guestPage.waitForFunction(
-        () =>
+        ({ imageSrc, videoSrc }) =>
             !!document.querySelector('.prose h2') &&
             document.querySelectorAll('.prose li').length >= 1 &&
             !!document.querySelector('.prose blockquote') &&
             !!document.querySelector('.prose pre') &&
             !!document.querySelector('.prose table') &&
-            !!document.querySelector('.prose a')
+            !!document.querySelector('.prose a') &&
+            !!document.querySelector(`.prose img[src="${imageSrc}"]`) &&
+            !!document.querySelector(`.prose video[src="${videoSrc}"]`),
+        { imageSrc: media.image.fileHref, videoSrc: media.video.fileHref }
     );
     await assertNoHorizontalOverflow(guestPage);
     await assertAccentLink(guestPage, '.prose a');
@@ -139,6 +144,15 @@ async function waitForPreviewStructures(page) {
             !!document.querySelector('#editor-preview blockquote') &&
             !!document.querySelector('#editor-preview pre') &&
             !!document.querySelector('#editor-preview table')
+    );
+}
+
+async function waitForPreviewMedia(page, media) {
+    await page.waitForFunction(
+        ({ imageSrc, videoSrc }) =>
+            !!document.querySelector(`#editor-preview img[src="${imageSrc}"]`) &&
+            !!document.querySelector(`#editor-preview video[src="${videoSrc}"]`),
+        { imageSrc: media.image.fileHref, videoSrc: media.video.fileHref }
     );
 }
 

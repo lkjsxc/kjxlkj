@@ -1,6 +1,6 @@
 use super::listing::{ListDirection, ListPage, ListSort};
 use super::models::{MediaFamily, RecordKind};
-use super::{ListScope, ListedRecord, PopularWindow, Record};
+use super::{ListKind, ListScope, ListedRecord, PopularWindow, Record};
 use crate::error::AppError;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use chrono::{DateTime, Utc};
@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 pub(super) struct Cursor {
     pub(super) query: Option<String>,
     pub(super) sort: String,
+    pub(super) kind: String,
     pub(super) scope: String,
     pub(super) popular_window: String,
     pub(super) id: String,
@@ -25,6 +26,7 @@ pub(super) struct Cursor {
 
 pub(super) struct PageCursorContext<'a> {
     pub(super) query: Option<&'a str>,
+    pub(super) kind: &'a ListKind,
     pub(super) scope: &'a ListScope,
     pub(super) direction: &'a ListDirection,
     pub(super) sort: &'a ListSort,
@@ -47,6 +49,7 @@ pub(super) fn page_from_rows(
             cursor: cursor_from_row(
                 &row,
                 context.query,
+                context.kind,
                 context.scope,
                 context.sort,
                 context.popular_window,
@@ -58,8 +61,20 @@ pub(super) fn page_from_rows(
         entries.reverse();
     }
     ListPage {
-        previous_cursor: edge_cursor(&entries, context.direction, has_more, context.has_cursor, true),
-        next_cursor: edge_cursor(&entries, context.direction, has_more, context.has_cursor, false),
+        previous_cursor: edge_cursor(
+            &entries,
+            context.direction,
+            has_more,
+            context.has_cursor,
+            true,
+        ),
+        next_cursor: edge_cursor(
+            &entries,
+            context.direction,
+            has_more,
+            context.has_cursor,
+            false,
+        ),
         records: entries.into_iter().map(|entry| entry.record).collect(),
     }
 }
@@ -99,10 +114,13 @@ pub(super) fn decode_cursor(
     cursor: Option<&str>,
     query: Option<&str>,
     sort: &ListSort,
+    kind: &ListKind,
     scope: &ListScope,
     popular_window: PopularWindow,
 ) -> Result<Option<Cursor>, AppError> {
-    let Some(cursor) = cursor else { return Ok(None) };
+    let Some(cursor) = cursor else {
+        return Ok(None);
+    };
     let raw = URL_SAFE_NO_PAD
         .decode(cursor)
         .map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
@@ -112,6 +130,7 @@ pub(super) fn decode_cursor(
         .map_err(|_| AppError::InvalidRequest("invalid cursor".to_string()))?;
     if cursor.query.as_deref() != query
         || cursor.sort != sort.as_str()
+        || cursor.kind != kind.as_str()
         || cursor.scope != scope.as_str()
         || cursor.popular_window != popular_window.as_str()
     {
@@ -123,6 +142,7 @@ pub(super) fn decode_cursor(
 fn cursor_from_row(
     row: &tokio_postgres::Row,
     query: Option<&str>,
+    kind: &ListKind,
     scope: &ListScope,
     sort: &ListSort,
     popular_window: PopularWindow,
@@ -130,6 +150,7 @@ fn cursor_from_row(
     Cursor {
         query: query.map(str::to_string),
         sort: sort.as_str().to_string(),
+        kind: kind.as_str().to_string(),
         scope: scope.as_str().to_string(),
         popular_window: popular_window.as_str().to_string(),
         id: row.get("id"),
@@ -144,14 +165,28 @@ fn cursor_from_row(
     }
 }
 
-fn edge_cursor(entries: &[PageEntry], direction: &ListDirection, has_more: bool, has_cursor: bool, previous: bool) -> Option<String> {
+fn edge_cursor(
+    entries: &[PageEntry],
+    direction: &ListDirection,
+    has_more: bool,
+    has_cursor: bool,
+    previous: bool,
+) -> Option<String> {
     let available = match (direction, previous) {
         (ListDirection::Next, true) => has_cursor,
         (ListDirection::Next, false) => has_more,
         (ListDirection::Prev, true) => has_more,
         (ListDirection::Prev, false) => has_cursor,
     };
-    let entry = if available { if previous { entries.first() } else { entries.last() } } else { None }?;
+    let entry = if available {
+        if previous {
+            entries.first()
+        } else {
+            entries.last()
+        }
+    } else {
+        None
+    }?;
     Some(URL_SAFE_NO_PAD.encode(serde_json::to_string(&entry.cursor).unwrap()))
 }
 

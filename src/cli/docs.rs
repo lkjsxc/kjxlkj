@@ -124,7 +124,7 @@ fn collect_link_errors(dir: &Path, errors: &mut Vec<String>) -> Result<(), std::
             collect_link_errors(&path, errors)?;
             continue;
         }
-        if !path.extension().is_some_and(|ext| ext == "md") {
+        if path.extension().and_then(|ext| ext.to_str()) != Some("md") {
             continue;
         }
         let content = fs::read_to_string(&path)?;

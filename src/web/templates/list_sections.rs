@@ -9,9 +9,9 @@ pub fn quick_search_section() -> String {
     section(
         "Quick search",
         r#"<form class="search-form" method="GET" action="/search">
-<label for="home-search-input" class="visually-hidden">Quick search</label>
+<label for="home-search-input" class="visually-hidden">Quick search resources</label>
 <div class="search-row">
-<input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, and bodies">
+<input id="home-search-input" type="search" name="q" placeholder="Search aliases, titles, bodies, and filenames">
 <button type="submit" class="btn btn-primary">Search</button>
 </div>
 </form>"#,
@@ -53,8 +53,8 @@ pub fn note_grid_body(notes: &[IndexItem], empty: &str, extra_card: Option<Strin
 pub fn browse_card() -> String {
     view_more_card(
         "/search",
-        "View more notes",
-        "Browse all visible notes with search, sorting, and page navigation.",
+        "View more resources",
+        "Browse all visible resources with search, sorting, and page navigation.",
         "Search",
     )
 }
@@ -66,7 +66,7 @@ pub fn recent_browse_card() -> String {
 pub fn favorite_browse_card() -> String {
     view_more_card(
         "/search?scope=favorites",
-        "View more notes",
+        "View more resources",
         "Browse favorites in favorite order with search and page navigation.",
         "Favorites",
     )
@@ -78,8 +78,8 @@ pub fn popular_browse_card(window: PopularWindow) -> String {
             "/search?sort=popular_desc&popular_window={}",
             window.as_str()
         ),
-        "View more notes",
-        "Browse more popularity-ranked notes in the current rolling window.",
+        "View more resources",
+        "Browse more popularity-ranked resources in the current rolling window.",
         window.as_str(),
     )
 }

@@ -74,16 +74,14 @@ pub async fn parse_media_form(mut payload: Multipart) -> Result<MediaFormInput, 
     })
 }
 
-async fn text_value(
-    field: &mut actix_multipart::Field,
-) -> Result<Option<String>, AppError> {
+async fn text_value(field: &mut actix_multipart::Field) -> Result<Option<String>, AppError> {
     let bytes = field
         .bytes(MAX_TEXT_BYTES)
         .await
         .map_err(|_| invalid("text field exceeds limit"))?
         .map_err(|e| invalid(&format!("could not read field: {e}")))?;
-    let value = String::from_utf8(bytes.to_vec())
-        .map_err(|_| invalid("text fields must be utf-8"))?;
+    let value =
+        String::from_utf8(bytes.to_vec()).map_err(|_| invalid("text fields must be utf-8"))?;
     let trimmed = value.trim();
     Ok((!trimmed.is_empty()).then(|| trimmed.to_string()))
 }

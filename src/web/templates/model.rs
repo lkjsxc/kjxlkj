@@ -1,5 +1,7 @@
 //! View models for HTML templates
 
+use crate::web::db::RecordKind;
+
 #[derive(Clone, Debug)]
 pub struct NavLink {
     pub href: String,
@@ -20,6 +22,7 @@ pub struct HistoryLink {
 #[derive(Clone, Debug)]
 pub struct NoteChrome {
     pub id: String,
+    pub kind: RecordKind,
     pub alias: Option<String>,
     pub title: String,
     pub summary: String,
@@ -56,6 +59,8 @@ pub struct IndexItem {
     pub summary: String,
     pub created_at: String,
     pub updated_at: String,
+    pub kind_badge: &'static str,
+    pub image_href: Option<String>,
     pub is_favorite: bool,
     pub visibility: Option<&'static str>,
     pub metrics: Vec<IndexMetric>,

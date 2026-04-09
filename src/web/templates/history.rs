@@ -7,8 +7,10 @@ use super::index::pager;
 use super::layout::{base, html_escape, shell_page};
 use super::model::{HistoryLink, NoteChrome};
 use super::note_shell::note_rail;
+use super::resource_media::snapshot_media_block;
+use super::resource_words::{live_label, open_live_label};
 use super::sections::page_header;
-use crate::web::db::{Record, RecordSnapshot};
+use crate::web::db::{Record, RecordKind, RecordSnapshot};
 use crate::web::site::SiteContext;
 
 pub struct HistoryPage<'a> {
@@ -25,10 +27,6 @@ pub fn history_page(
     is_admin: bool,
     site: &SiteContext,
 ) -> String {
-    let live_note_action = format!(
-        r#"<a href="{}" class="btn">Open live note</a>"#,
-        chrome.current_href
-    );
     let cards = if page.history.is_empty() {
         r#"<p class="surface-empty">No saved snapshots yet.</p>"#.to_string()
     } else {
@@ -40,7 +38,15 @@ pub fn history_page(
     };
     let content = format!(
         "{}<section class=\"stack note-list\">{}</section><section class=\"section-block history-list-section\"><div class=\"section-head\"><h2>Saved snapshots</h2></div><div class=\"note-list\">{}</div>{}</section>",
-        page_header(&format!("History: {}", chrome.title), Some(&live_note_action), "history-head"),
+        page_header(
+            &format!("History: {}", chrome.title),
+            Some(&format!(
+                r#"<a href="{}" class="btn">{}</a>"#,
+                chrome.current_href,
+                open_live_label(chrome.kind),
+            )),
+            "history-head",
+        ),
         live_row(record, chrome),
         cards,
         pager(
@@ -76,9 +82,10 @@ pub fn snapshot_page(
 <div class="page-actions">
 <span class="status-pill">{}</span>
 <a href="{}" class="btn">Back to history</a>
-<a href="{}" class="btn">Open live note</a>
+<a href="{}" class="btn">{}</a>
 </div>
 </header>
+{}
 <section class="surface note-surface prose">{}</section>"#,
         snapshot.snapshot_number,
         html_escape(&snapshot.title),
@@ -90,6 +97,12 @@ pub fn snapshot_page(
         },
         chrome.history_href,
         chrome.current_href,
+        open_live_label(chrome.kind),
+        if snapshot.kind == RecordKind::Media {
+            snapshot_media_block(snapshot)
+        } else {
+            String::new()
+        },
         crate::core::render_markdown(&snapshot.body)
     );
     shell(
@@ -150,7 +163,7 @@ fn live_row(record: &Record, chrome: &NoteChrome) -> String {
         &chrome.current_href,
         "",
         "",
-        &card_body("Live note", &record.summary),
+        &card_body(live_label(record.kind), &record.summary),
         &card_meta(
             &status_pill(chrome.visibility, ""),
             &created_updated_lines(&chrome.created_at, &chrome.updated_at),

@@ -27,8 +27,8 @@ pub struct ResourcePayload {
 
 impl ResourcePayload {
     pub fn from_record(record: Record) -> Self {
-        let file_href = (record.kind == crate::web::db::RecordKind::Media)
-            .then(|| view::file_href(&record));
+        let file_href =
+            (record.kind == crate::web::db::RecordKind::Media).then(|| view::file_href(&record));
         Self {
             id: record.id,
             kind: record.kind,

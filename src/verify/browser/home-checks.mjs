@@ -38,7 +38,7 @@ export async function assertAdminHomeConfiguration(page) {
         page.getByRole('heading', { name: 'Popular', exact: true }).evaluate((node) => node.getBoundingClientRect().top),
     ]);
     assert.ok(favoritesTop < popularTop, 'favorites should move ahead of Popular');
-    assert.equal(await page.getByRole('link', { name: /View more notes/i }).count(), 2);
+    assert.equal(await page.getByRole('link', { name: /View more resources/i }).count(), 2);
 }
 
 async function browseHref(page, heading) {

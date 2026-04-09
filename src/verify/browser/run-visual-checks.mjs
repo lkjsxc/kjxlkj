@@ -6,6 +6,7 @@ import { assertBrandName, assertDiscoveryDisabled, assertDiscoveryRoutes, assert
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertHomeBrowseLinks, assertPopularWindowSwitch, popularTitles } from './home-checks.mjs';
 import { assertIconAssets } from './icon-checks.mjs';
+import { assertMediaSearchFilter, assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
 import { captureCompactScreens } from './responsive-checks.mjs';
 import { appUrl, capture, login, newContext, prepareEnvironment, prepareState } from './support.mjs';
 
@@ -13,21 +14,21 @@ async function main() {
     await prepareEnvironment();
     const browser = await chromium.launch({ headless: true });
     try {
-        const notes = await prepareState(browser);
-        const desktopFont = await capturePublicScreens(browser, notes);
-        await captureAdminScreens(browser, notes.middle);
-        await captureCompactScreens(browser, notes.middle, desktopFont);
+        const fixtures = await prepareState(browser);
+        const desktopFont = await capturePublicScreens(browser, fixtures);
+        await captureAdminScreens(browser, fixtures);
+        await captureCompactScreens(browser, fixtures.middle, desktopFont);
     } finally {
         await browser.close();
     }
     console.log(JSON.stringify({ command: 'visual-verify', status: 'pass', artifacts: ['desktop-public-root.png', 'desktop-search.png', 'desktop-admin-dashboard.png', 'desktop-admin-note.png', 'desktop-history-index.png', 'desktop-guest-note.png', 'desktop-login.png', 'compact-public-root-closed.png', 'compact-public-root-open.png', 'compact-admin-note.png', 'compact-admin-note-preview.png', 'compact-history-index.png'] }));
 }
 
-async function captureAdminScreens(browser, note) {
+async function captureAdminScreens(browser, fixtures) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
+    const note = fixtures.middle;
     const latestSnapshot = note.snapshots.find((item) => item.snapshot_number === 4);
-    const autosavedSnapshotNumber = 5;
     assert.ok(latestSnapshot, 'expected latest snapshot fixture');
     await page.goto(`${appUrl}/login`, { waitUntil: 'networkidle' });
     await assertHead(page, { title: 'Login | kjxlkj', descriptionIncludes: 'Sign in to manage kjxlkj.', robots: 'noindex,nofollow', canonical: null });
@@ -50,29 +51,28 @@ async function captureAdminScreens(browser, note) {
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await assertAdminHomeConfiguration(page);
-    await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public notes.', robots: 'noindex,nofollow', canonical: null });
+    await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public resources.', robots: 'noindex,nofollow', canonical: null });
     await verifyUiCreatedDraft(page, false);
 
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page);
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'noindex,nofollow', canonical: null });
-    await verifyEditorFormatting(browser, page, note);
+    await verifyEditorFormatting(browser, page, note, fixtures);
     await capture(page, 'desktop-admin-note.png');
 
     const historyJson = await page.evaluate(async (id) => {
-        const response = await fetch(`/records/${id}/history?limit=2`);
+        const response = await fetch(`/resources/${id}/history?limit=2`);
         return response.json();
     }, note.id);
-    assert.equal(historyJson.snapshots.length, 2);
-    assert.equal(typeof historyJson.snapshots[0]?.id, 'string');
+    assert.equal(historyJson.snapshots.length, 2); assert.equal(typeof historyJson.snapshots[0]?.id, 'string');
     assert.equal(typeof historyJson.next_cursor, 'string');
 
     await page.goto(`${appUrl}/${note.id}/history?limit=2`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history`);
     await Promise.all([assertVisibleText(page, 'Live note'), assertVisibleText(page, 'Open GitHub')]);
     await assertVisibleText(page, 'Latest saved snapshot');
-    await assertVisibleText(page, `Saved snapshot ${autosavedSnapshotNumber - 1}`);
+    await assertVisibleText(page, 'Saved snapshot 4');
     await assertHead(page, { title: `History: ${note.title} | Launchpad`, descriptionIncludes: `Saved snapshots for ${note.title}.`, robots: 'noindex,nofollow', canonical: null });
     assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-history-index.png');
@@ -80,19 +80,20 @@ async function captureAdminScreens(browser, note) {
         page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'next'),
         page.getByRole('button', { name: 'Next', exact: true }).click(),
     ]);
-    await assertVisibleText(page, `Saved snapshot ${autosavedSnapshotNumber - 2}`);
+    await assertVisibleText(page, 'Saved snapshot 3');
 
     await page.goto(`${appUrl}/${latestSnapshot.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${latestSnapshot.id}`);
     await assertHead(page, { title: `Saved snapshot 4: ${note.title} | Launchpad`, descriptionIncludes: 'Saved snapshot 4 for Orbit Ledger.', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Current shared revision stretches across the list card');
+    await verifyUiCreatedMedia(page);
     await Promise.all([
         page.waitForURL('**/'),
         page.getByRole('button', { name: 'Logout', exact: true }).first().click(),
     ]);
     await assertVisibleText(page, 'Home');
-    await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public notes.', robots: 'index,follow', canonical: `${appUrl}/` });
-    await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`] });
+    await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public resources.', robots: 'index,follow', canonical: `${appUrl}/` });
+    await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`, `${appUrl}/${fixtures.image.ref}</loc>`] });
     await capture(page, 'desktop-login.png');
     await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared revision stretches across the list card', robots: 'index,follow', canonical: `${appUrl}/${note.ref}` });
@@ -110,7 +111,7 @@ async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await expectPublicRoot(page);
     await assertBrandName(page, 'kjxlkj');
-    await assertHead(page, { title: 'Home | kjxlkj', descriptionIncludes: 'Markdown note system for LLM-operated workflows.', robots: 'noindex,nofollow', canonical: null });
+    await assertHead(page, { title: 'Home | kjxlkj', descriptionIncludes: 'Markdown-first resource system for LLM-operated workflows.', robots: 'noindex,nofollow', canonical: null });
     await assertDiscoveryDisabled(page);
     await assertIconAssets(page);
     assert.equal(await page.getByRole('button', { name: '30d', exact: true }).getAttribute('class'), 'btn btn-primary');
@@ -121,15 +122,14 @@ async function capturePublicScreens(browser, notes) {
 
     await page.goto(`${appUrl}/search?scope=favorites`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, false);
-    await assertHead(page, { title: 'Search | kjxlkj', descriptionIncludes: 'Markdown note system for LLM-operated workflows.', robots: 'noindex,nofollow', canonical: null });
-    assert.equal(await page.locator('#search-sort').inputValue(), 'favorite_position_asc');
-    assert.equal(await page.getByText('Atlas Entry', { exact: true }).count(), 0);
+    await assertHead(page, { title: 'Search | kjxlkj', descriptionIncludes: 'Markdown-first resource system for LLM-operated workflows.', robots: 'noindex,nofollow', canonical: null });
+    assert.equal(await page.locator('#search-sort').inputValue(), 'favorite_position_asc'); assert.equal(await page.getByText('Atlas Entry', { exact: true }).count(), 0);
     await assertVisibleText(page, 'Beacon Log');
     await assertVisibleText(page, 'Orbit Ledger');
 
     await page.goto(`${appUrl}/search?limit=2`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, false);
-    await assertVisibleText(page, 'Notes');
+    await assertVisibleText(page, 'Resources');
     assert.equal(await page.getByText('Query', { exact: true }).count(), 0);
     await assertVisibleText(page, notes.newest.title);
     await assertVisibleText(page, notes.middle.title);
@@ -159,10 +159,11 @@ async function capturePublicScreens(browser, notes) {
     const titles = await page.locator('.note-grid .card-title').evaluateAll((nodes) =>
         nodes.map((node) => node.textContent.trim())
     );
-    assert.equal(titles[0], 'Orbit Ledger');
+    assert.equal(titles[0], notes.image.title);
 
     await page.goto(`${appUrl}/search?q=orbit`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, true);
+    await assertMediaSearchFilter(page, notes, notes.middle.title);
 
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
@@ -173,10 +174,12 @@ async function capturePublicScreens(browser, notes) {
     await capture(page, 'desktop-guest-note.png');
 
     await page.goto(`${appUrl}/${notes.oldest.ref}`, { waitUntil: 'networkidle' });
-    await expectGuestNote(page, null, notes.middle.title);
+    await expectGuestNote(page, notes.video.title, notes.middle.title);
 
     await page.goto(`${appUrl}/${notes.newest.ref}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.middle.title, null);
+    await assertPublicMediaPage(page, notes.image);
+    await assertPublicMediaPage(page, notes.video);
 
     const publicSnapshotResponse = await page.goto(`${appUrl}/${publicSnapshot.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${publicSnapshot.id}`);
@@ -186,7 +189,7 @@ async function capturePublicScreens(browser, notes) {
     assert.equal(publicSnapshotResponse?.status(), 200, 'public snapshot should stay guest-readable');
     assert.equal(privateSnapshotResponse?.status(), 404, 'private snapshot should return 404');
     await assertHead(page, { title: 'Not Found | kjxlkj', descriptionIncludes: 'could not be found', robots: 'noindex,nofollow', canonical: null });
-    await assertVisibleText(page, 'Note not found');
+    await assertVisibleText(page, 'Resource not found');
     const fontFamily = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     await context.close();
     return fontFamily;

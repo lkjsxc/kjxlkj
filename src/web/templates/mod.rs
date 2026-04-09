@@ -18,11 +18,16 @@ mod model;
 mod note;
 mod note_shell;
 #[cfg(test)]
+mod note_shell_tests;
+#[cfg(test)]
 mod note_tests;
 mod popular_sections;
 #[cfg(test)]
 mod popular_sections_tests;
+mod resource_media;
+mod resource_words;
 mod search;
+mod search_form;
 #[cfg(test)]
 mod search_tests;
 mod sections;

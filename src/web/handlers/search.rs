@@ -2,7 +2,7 @@
 
 use crate::error::AppError;
 use crate::web::db::{
-    self, DbPool, ListDirection, ListRequest, ListScope, ListSort, PopularWindow,
+    self, DbPool, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow,
 };
 use crate::web::handlers::session;
 use crate::web::site::SiteContext;
@@ -15,6 +15,7 @@ use serde::Deserialize;
 pub struct SearchParams {
     pub q: Option<String>,
     pub direction: Option<String>,
+    pub kind: Option<String>,
     pub sort: Option<String>,
     pub scope: Option<String>,
     pub popular_window: Option<String>,
@@ -43,6 +44,7 @@ pub async fn search_page(
         .map(str::to_string);
     let limit = params.limit.unwrap_or(settings.search_results_per_page);
     let direction = ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref());
+    let kind = ListKind::resolve(params.kind.as_deref());
     let scope = ListScope::resolve(params.scope.as_deref());
     let popular_window = PopularWindow::resolve(params.popular_window.as_deref());
     let sort = ListSort::resolve(params.sort.as_deref(), query.is_some(), &scope);
@@ -53,6 +55,7 @@ pub async fn search_page(
             limit,
             query: query.clone(),
             direction,
+            kind: kind.clone(),
             scope: scope.clone(),
             sort: sort.clone(),
             popular_window,
@@ -68,6 +71,7 @@ pub async fn search_page(
             .collect::<Vec<_>>(),
         previous_cursor: page.previous_cursor.as_deref(),
         next_cursor: page.next_cursor.as_deref(),
+        kind: kind.as_str(),
         query: query.as_deref(),
         limit,
         scope: scope.as_str(),

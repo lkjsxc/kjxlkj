@@ -29,8 +29,8 @@ export async function expectPublicRoot(
     for (const hidden of ['Popular', 'Recently updated', 'Favorites'].filter((item) => !sections.includes(item))) {
         assert.equal(await page.getByRole('heading', { name: hidden, exact: true }).count(), 0);
     }
-    assert.equal(await page.getByRole('link', { name: /View more notes/i }).count(), sections.length);
-    await page.getByLabel('Quick search').waitFor({ state: 'visible' });
+    assert.equal(await page.getByRole('link', { name: /View more resources/i }).count(), sections.length);
+    await page.getByLabel('Quick search resources').waitFor({ state: 'visible' });
     await page.getByRole('button', { name: '7d', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: '30d', exact: true }).waitFor({ state: 'visible' });
     await page.getByRole('button', { name: '90d', exact: true }).waitFor({ state: 'visible' });
@@ -51,14 +51,15 @@ export async function expectSearchPage(page, hasQueryCard = false) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Search');
-    await page.getByLabel('Search notes').waitFor({ state: 'visible' });
+    await page.getByLabel('Search resources').waitFor({ state: 'visible' });
     if (hasQueryCard) {
         await assertVisibleText(page, 'Query');
     } else {
         assert.equal(await page.getByText('Query', { exact: true }).count(), 0);
     }
     await page.getByLabel('Sort').waitFor({ state: 'visible' });
-    assert.equal(await page.locator('.search-sort .visually-hidden').count(), 1);
+    await page.getByLabel('Kind').waitFor({ state: 'visible' });
+    assert.equal(await page.locator('.search-sort .visually-hidden').count(), 2);
     assert.equal(await page.locator('.search-sort span:not(.visually-hidden)').count(), 0);
     await assertSearchControlsAligned(page);
     await page.getByRole('button', { name: 'Prev', exact: true }).waitFor({ state: 'visible' });
@@ -68,7 +69,7 @@ export async function expectSearchPage(page, hasQueryCard = false) {
 }
 
 export async function expectAdminDashboard(page) {
-    await expectFlatShell(page, ['New note', 'Logout']);
+    await expectFlatShell(page, ['New note', 'New media', 'Logout']);
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Dashboard');
     await assertVisibleText(page, 'Settings');
@@ -91,7 +92,7 @@ export async function expectAdminDashboard(page) {
 }
 
 export async function expectSettingsPage(page) {
-    await expectFlatShell(page, ['New note', 'Logout']);
+    await expectFlatShell(page, ['New note', 'New media', 'Logout']);
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Settings');
     await page.getByLabel('Site name').waitFor({ state: 'visible' });
@@ -100,7 +101,7 @@ export async function expectSettingsPage(page) {
     await page.getByLabel('Home intro Markdown').waitFor({ state: 'visible' });
     await page.getByLabel('Session timeout (minutes)').waitFor({ state: 'visible' });
     await page.getByLabel('Search page size').waitFor({ state: 'visible' });
-    await page.getByLabel('New notes start private').waitFor({ state: 'visible' });
+    await page.getByLabel('New resources start private').waitFor({ state: 'visible' });
     await assertVisibleText(page, 'Home sections');
     await assertVisibleText(page, 'Sessions');
     await assertVisibleText(page, 'Defaults');
@@ -142,9 +143,9 @@ export async function expectGuestNote(page, previousTitle, nextTitle) {
     await assertRailOrder(page, ['History', 'Open GitHub', 'Admin sign in']);
     assert.equal(await page.getByText('Views total', { exact: true }).count(), 0);
     await assertVisibleText(page, 'Prev');
-    await assertVisibleText(page, previousTitle ?? 'No older accessible note.');
+    await assertVisibleText(page, previousTitle ?? 'No older accessible resource.');
     await assertVisibleText(page, 'Next');
-    await assertVisibleText(page, nextTitle ?? 'No newer accessible note.');
+    await assertVisibleText(page, nextTitle ?? 'No newer accessible resource.');
 }
 
 async function assertSectionOrder(page, titles) {
