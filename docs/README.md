@@ -10,7 +10,7 @@
 4. Keep every authored source file at 200 lines or fewer.
 5. Prefer short declarative bullets over narrative prose.
 6. Remove stale contracts instead of preserving conflicting versions.
-7. Record exact routes, labels, defaults, and file shapes when they matter.
+7. Document exact routes, labels, defaults, and file shapes when they matter.
 8. Optimize for LLM retrieval before human ornament.
 
 ## Start Paths

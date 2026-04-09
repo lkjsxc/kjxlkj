@@ -2,8 +2,8 @@
 
 ## Storage
 
-- Record timestamps remain UTC RFC3339 with trailing `Z`.
-- Revision timestamps remain UTC RFC3339 with trailing `Z`.
+- Resource timestamps remain UTC RFC3339 with trailing `Z`.
+- Saved-snapshot timestamps remain UTC RFC3339 with trailing `Z`.
 
 ## Presentation
 

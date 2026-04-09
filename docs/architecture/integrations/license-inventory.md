@@ -4,7 +4,7 @@
 
 - This inventory covers direct third-party dependencies that this repo names, vendors, or executes directly.
 - Transitive dependencies are governed by their upstream manifests and lockfiles and are not duplicated here.
-- Container images are multi-license aggregates; this file records the primary upstream projects and any notice handling this repo must keep.
+- Container images are multi-license aggregates; this file lists the primary upstream projects and any notice handling this repo must keep.
 
 ## Repo License
 

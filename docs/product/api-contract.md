@@ -114,7 +114,7 @@
 
 ```json
 {
-  "current_note": {
+  "current_resource": {
     "id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
     "kind": "note",
     "alias": "release-notes",
@@ -140,7 +140,7 @@
 
 - The endpoint creates one media resource for each uploaded file.
 - The endpoint does not create generated notes that only link to or embed media.
-- The current note is updated only when the entire batch succeeds.
+- The target live note is updated only when the entire batch succeeds.
 - `selection_fallback = true` means the embeds were appended because the submitted selection was not valid for the submitted draft body.
 
 ## Preview API
