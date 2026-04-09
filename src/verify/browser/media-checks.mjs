@@ -5,9 +5,12 @@ import { appUrl } from './support.mjs';
 export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
     await page.goto(`${appUrl}/search?kind=media`, { waitUntil: 'networkidle' });
     await page.getByLabel('Kind').selectOption('media');
-    await assertVisibleText(page, media.image.title);
-    await assertVisibleText(page, media.video.title);
-    assert.equal(await page.getByText(hiddenNoteTitle, { exact: true }).count(), 0);
+    const titles = await page
+        .locator('.note-row[data-card-title]')
+        .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
+    assert.ok(titles.includes(media.image.title));
+    assert.ok(titles.includes(media.video.title));
+    assert.ok(!titles.includes(hiddenNoteTitle));
 }
 
 export async function assertPublicMediaPage(page, media) {

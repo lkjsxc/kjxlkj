@@ -21,18 +21,11 @@ pub struct AttachmentCreate {
     pub original_filename: String,
 }
 
-pub struct NoteAttachmentUpdate<'a> {
-    pub body: &'a str,
-    pub alias: Option<&'a str>,
-    pub is_favorite: bool,
-    pub is_private: bool,
-}
+#[rustfmt::skip]
+pub struct NoteAttachmentUpdate<'a> { pub body: &'a str, pub alias: Option<&'a str>, pub is_favorite: bool, pub is_private: bool }
 
-pub struct AttachmentBatchResult {
-    pub current_note: Record,
-    pub created_media: Vec<Record>,
-    pub created_notes: Vec<Record>,
-}
+#[rustfmt::skip]
+pub struct AttachmentBatchResult { pub current_note: Record, pub created_media: Vec<Record>, pub created_notes: Vec<Record> }
 
 pub async fn attach_media_to_note(
     pool: &DbPool,

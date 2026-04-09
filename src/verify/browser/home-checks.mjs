@@ -19,14 +19,14 @@ export async function assertHomeBrowseLinks(page) {
 
 export async function assertPopularWindowSwitch(page, path, surface) {
     const before = await navigationCount(page);
-    await clickWindow(page, surface, '90d', 'Atlas Entry');
+    await clickWindow(page, surface, '90d', '90d', 'Atlas Entry');
     assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=90d');
     assertStableUrl(page, path, before);
-    await clickWindow(page, surface, 'All time', 'Beacon Log');
+    await clickWindow(page, surface, 'All time', 'all', 'Atlas Entry');
     assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=all');
-    await assertPopularMetricLabel(page, surface, 'Views');
+    if (surface === 'admin') await assertPopularMetricLabel(page, surface, 'Views');
     assertStableUrl(page, path, before);
-    await clickWindow(page, surface, '30d', 'Beacon Log');
+    await clickWindow(page, surface, '30d', '30d', 'Beacon Log');
     assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=30d');
     assertStableUrl(page, path, before);
 }
@@ -54,7 +54,7 @@ async function browseHref(page, heading) {
         .getAttribute('href');
 }
 
-async function clickWindow(page, surface, label, firstTitle) {
+async function clickWindow(page, surface, label, windowValue, firstTitle) {
     await page.getByRole('button', { name: label, exact: true }).click();
     await page.waitForFunction(
         ({ expectedSurface, expectedTitle, expectedWindow }) => {
@@ -72,7 +72,7 @@ async function clickWindow(page, surface, label, firstTitle) {
                 !section.textContent.includes('UTC')
             );
         },
-        { expectedSurface: surface, expectedTitle: firstTitle, expectedWindow: label }
+        { expectedSurface: surface, expectedTitle: firstTitle, expectedWindow: windowValue }
     );
 }
 

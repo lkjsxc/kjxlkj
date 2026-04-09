@@ -146,11 +146,11 @@ fn card_badges(note: &IndexItem) -> String {
 fn card_cover(note: &IndexItem) -> String {
     match (note.media_family, note.media_href.as_ref()) {
         (Some(MediaFamily::Image), Some(href)) => format!(
-            r#"<div class="card-cover"><img src="{}" alt="" style="width:100%;aspect-ratio:16 / 9;object-fit:cover;display:block;"></div>"#,
+            r#"<div class="card-cover"><img class="card-cover-media" src="{}" alt=""></div>"#,
             html_escape(href),
         ),
         (Some(MediaFamily::Video), Some(href)) => format!(
-            r#"<div class="card-cover"><video preload="metadata" muted playsinline src="{}" style="width:100%;aspect-ratio:16 / 9;object-fit:cover;display:block;"></video></div>"#,
+            r#"<div class="card-cover"><video class="card-cover-media" preload="metadata" muted playsinline src="{}"></video></div>"#,
             html_escape(href),
         ),
         _ => String::new(),
