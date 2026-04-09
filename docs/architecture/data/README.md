@@ -14,4 +14,4 @@ Use this subtree for canonical storage and identifier rules.
 - [id-rules.md](id-rules.md): opaque note and snapshot identifier rules
 - [alias-rules.md](alias-rules.md): human-readable URL alias rules
 - [search-indexing.md](search-indexing.md): derived search document fields and visibility rules
-- [consistency-rules.md](consistency-rules.md): note, revision, navigation, and settings consistency rules
+- [consistency-rules.md](consistency-rules.md): resource, saved-snapshot, navigation, and settings consistency rules

@@ -4,13 +4,13 @@ Use this subtree for canonical `Prev` / `Next` rules shared across rails and pag
 
 ## Read This Section When
 
-- You need note-to-note navigation semantics.
+- You need resource-to-resource navigation semantics.
 - You need search or history pager behavior.
 - You need compact-layout rules for navigation surfaces.
 
 ## Child Index
 
-- [timeline/README.md](timeline/README.md): note-to-note rail navigation
+- [timeline/README.md](timeline/README.md): resource-to-resource rail navigation
 - [paging/README.md](paging/README.md): search and history pager navigation
 
 ## Start Here

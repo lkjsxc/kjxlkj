@@ -16,25 +16,40 @@
 
 | Crate | Version | License |
 |---|---:|---|
+| `actix-multipart` | 0.7.2 | `MIT OR Apache-2.0` |
 | `actix-rt` | 2.11.0 | `MIT OR Apache-2.0` |
 | `actix-web` | 4.13.0 | `MIT OR Apache-2.0` |
+| `ammonia` | 4.1.2 | `MIT OR Apache-2.0` |
 | `async-trait` | 0.1.89 | `MIT OR Apache-2.0` |
+| `aws-config` | 1.8.15 | `Apache-2.0` |
+| `aws-credential-types` | 1.2.14 | `Apache-2.0` |
+| `aws-sdk-s3` | 1.129.0 | `Apache-2.0` |
 | `base64` | 0.22.1 | `MIT OR Apache-2.0` |
 | `bcrypt` | 0.16.0 | `MIT` |
 | `chrono` | 0.4.44 | `MIT OR Apache-2.0` |
 | `clap` | 4.6.0 | `MIT OR Apache-2.0` |
 | `deadpool-postgres` | 0.14.1 | `MIT OR Apache-2.0` |
+| `futures-util` | 0.3.32 | `MIT OR Apache-2.0` |
 | `once_cell` | 1.21.4 | `MIT OR Apache-2.0` |
 | `pulldown-cmark` | 0.13.3 | `MIT` |
 | `regex` | 1.12.3 | `MIT OR Apache-2.0` |
 | `serde` | 1.0.228 | `MIT OR Apache-2.0` |
 | `serde_json` | 1.0.149 | `MIT OR Apache-2.0` |
+| `sha2` | 0.10.9 | `MIT OR Apache-2.0` |
 | `thiserror` | 1.0.69 | `MIT OR Apache-2.0` |
 | `tokio` | 1.50.0 | `MIT` |
 | `tokio-postgres` | 0.7.16 | `MIT OR Apache-2.0` |
 | `tracing` | 0.1.44 | `MIT` |
 | `tracing-subscriber` | 0.3.23 | `MIT` |
+| `url` | 2.5.8 | `MIT OR Apache-2.0` |
 | `uuid` | 1.22.0 | `Apache-2.0 OR MIT` |
+
+## Direct Test Crates
+
+| Crate | Version | License |
+|---|---:|---|
+| `actix-http` | 3.12.0 | `MIT OR Apache-2.0` |
+| `tempfile` | 3.27.0 | `MIT OR Apache-2.0` |
 
 ## Verification Tooling
 
@@ -48,7 +63,8 @@
 | Image | Primary Upstream Project | Primary License Signal | Repo Handling |
 |---|---|---|---|
 | `postgres:16-alpine` | PostgreSQL server + Alpine base | PostgreSQL server uses the PostgreSQL License; Alpine packages retain their own licenses | Operational dependency only; not vendored in repo |
-| `rust:1.88-alpine` | Rust toolchain + Alpine base | Rust components are generally `MIT OR Apache-2.0`; Alpine packages retain their own licenses | Build-time dependency only; not vendored in repo |
+| `minio/minio:RELEASE.2025-02-18T16-25-55Z` | MinIO object storage server | MinIO server uses `GNU AGPLv3`; bundled packages retain their own licenses | Operational dependency only; not vendored in repo |
+| `rust:1.91-alpine` | Rust toolchain + Alpine base | Rust components are generally `MIT OR Apache-2.0`; Alpine packages retain their own licenses | Build-time and verification dependency only; not vendored in repo |
 | `alpine:3.19` | Alpine Linux base image | package-by-package upstream licenses | Runtime base image only; not vendored in repo |
 | `mcr.microsoft.com/playwright:v1.54.2-noble` | Playwright tooling + browser bundles + Ubuntu base | Playwright is `Apache-2.0`; bundled browsers keep their vendor licenses | Verification image only; not vendored in repo |
 

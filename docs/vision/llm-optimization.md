@@ -19,9 +19,15 @@
 - Docs files: `<= 300` lines.
 - Authored source files: `<= 200` lines.
 
+## Terminology Rules
+
+- `resource` is the shared term for live `note` and `media` items.
+- `saved snapshot` is the shared term for immutable historical states.
+- Use `note` or `media` only when the rule is kind-specific.
+- Avoid older shared terms such as `record` and `revision` in docs and public implementation names.
+
 ## Resource Rules
 
-- `resource` is the shared term for live `note` and `media` records.
 - Notes and media share IDs, aliases, visibility, favorites, history, and search participation.
 - Notes store canonical Markdown in `body`.
 - Media stores canonical Markdown in `body` plus one current binary object in S3-compatible storage.

@@ -16,13 +16,13 @@
 
 ## Routing
 
-- The canonical note page route is `/{ref}`.
+- The canonical resource page route is `/{ref}`.
 - When `alias` is present, the canonical `ref` is the alias.
 - When `alias` is absent, the canonical `ref` is the `id`.
 - History routes append `/history` after the same canonical `ref`.
 
 ## Reservation Rules
 
-- Aliases must be unique among live notes.
-- Aliases may not match reserved application paths such as `admin`, `search`, `login`, `logout`, `setup`, `records`, `assets`, and `healthz`.
+- Aliases must be unique among live resources.
+- Aliases may not match reserved application paths such as `admin`, `search`, `login`, `logout`, `setup`, `resources`, `assets`, `robots.txt`, `sitemap.xml`, and `healthz`.
 - Aliases may not equal the ID format.

@@ -2,11 +2,11 @@
 
 ## Meaning
 
-- `Prev` means the nearest older accessible live note.
-- `Next` means the nearest newer accessible live note.
-- Timeline relationships are computed from live-note `created_at`.
-- Guest timeline navigation skips private notes.
-- Admin timeline navigation includes private notes.
+- `Prev` means the nearest older accessible live resource.
+- `Next` means the nearest newer accessible live resource.
+- Timeline relationships are computed from live-resource `created_at`.
+- Guest timeline navigation skips private resources.
+- Admin timeline navigation includes private resources.
 
 ## Shared Surface Rules
 

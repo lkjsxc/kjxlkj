@@ -33,9 +33,16 @@
 
 1. Parse environment variables.
 2. Validate database and object-storage configuration.
-3. Connect to PostgreSQL and run migrations.
-4. Connect to object storage and ensure the target bucket exists.
-5. Start the HTTP server.
+3. Connect to PostgreSQL.
+4. Run non-destructive PostgreSQL migrations.
+5. Connect to object storage and ensure the target bucket exists.
+6. Start the HTTP server.
+
+## Migration Rule
+
+- Startup migrations may create missing schema objects and indexes.
+- Startup migrations must not drop active runtime tables or truncate runtime data.
+- Destructive cleanup belongs only to explicit disposable verification commands such as `docker compose down -v`.
 
 ## Persistent and Disposable State
 

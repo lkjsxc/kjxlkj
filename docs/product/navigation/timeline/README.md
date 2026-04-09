@@ -1,6 +1,6 @@
 # Timeline Navigation
 
-Use this subtree for the note-to-note `Prev` / `Next` cards shown in note and history rails.
+Use this subtree for the resource-to-resource `Prev` / `Next` cards shown in resource and history rails.
 
 ## Read This Section When
 
@@ -10,5 +10,5 @@ Use this subtree for the note-to-note `Prev` / `Next` cards shown in note and hi
 
 ## Child Index
 
-- [semantics-and-order.md](semantics-and-order.md): note-to-note meaning, visibility, and slot order
+- [semantics-and-order.md](semantics-and-order.md): resource-to-resource meaning, visibility, and slot order
 - [compact-rail-layout.md](compact-rail-layout.md): narrow-screen timeline layout and stability rules

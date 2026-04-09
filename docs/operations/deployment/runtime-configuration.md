@@ -5,6 +5,7 @@
 - `.env` owns host port exposure, bind address, PostgreSQL credentials, MinIO credentials, and S3 endpoint settings.
 - Compose assembles `DATABASE_URL` and S3-compatible environment for the runtime container.
 - `docker-compose.yml` treats `.env` as authoritative rather than relying on inline fallback defaults.
+- CI must create `.env` from `.env.example` before running compose-backed verification.
 - Compose environment does not own site identity, search defaults, session timeout, home section ordering, or discovery public-origin state.
 
 ## Persisted Operator Settings

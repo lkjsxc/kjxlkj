@@ -13,7 +13,7 @@
 
 - `unauthorized` -> `401`: No valid session for write operation.
 - `invalid_request` -> `400`: Malformed request body.
-- `not_found` -> `404`: Note does not exist or is private.
+- `not_found` -> `404`: Resource does not exist or is private.
 - `storage_error` -> `500`: Database error.
 
 ## Determinism Rules
@@ -24,5 +24,5 @@
 
 ## HTML Error Pages
 
-- `404` page: "Note not found" with link to home.
+- `404` page: "Resource not found" with link to home.
 - `500` page: "Something went wrong" with link to home.
