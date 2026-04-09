@@ -9,12 +9,12 @@
 ## List Rails
 
 - List rails cover home, search, dashboard, and settings pages.
-- Section order is primary navigation, optional `New note`, `Open GitHub`, then mode-specific actions.
+- Section order is primary navigation, optional `New note`, optional `New media`, `Open GitHub`, then mode-specific actions.
 - Guest list rails place `Open GitHub` above `Admin sign in`.
 - Admin list rails place `Open GitHub` above `Logout`.
 
-## Note and History Rails
+## Resource and History Rails
 
-- Note/history section order is live context, timeline, `History`, `Open GitHub`, then mode-specific actions.
+- Resource/history section order is live context, timeline, `History`, `Open GitHub`, then mode-specific actions.
 - `History` stays above `Open GitHub`.
-- `Open GitHub` stays above guest sign-in and admin note-management/session actions.
+- `Open GitHub` stays above guest sign-in and admin resource-management/session actions.

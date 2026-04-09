@@ -2,9 +2,9 @@
 
 ## Formatting Rules
 
-- Use stable section names: `Goal`, `Rules`, `Contract`, `Verification`.
+- Use stable section names such as `Goal`, `Rules`, `Contract`, and `Verification`.
 - Keep one requirement per bullet.
-- Keep canonical definitions in one file and link to them.
+- Keep canonical definitions in one file and link outward.
 - Prefer short declarative statements over narrative paragraphs.
 - Delete obsolete contracts instead of preserving conflicting versions.
 
@@ -16,13 +16,16 @@
 
 ## Length Rules
 
-- Docs files: <= 300 lines.
-- Source files: <= 200 lines.
+- Docs files: `<= 300` lines.
+- Authored source files: `<= 200` lines.
 
-## Note Content Rules
+## Resource Rules
 
-- Title is extracted from the first `# heading` line in the body.
-- Stored content remains canonical Markdown even when the editor shows rendered content.
-- New-note visibility comes from the current global default and initial installs default that setting to public.
-- Homepage hero content uses only the editable `home_intro_markdown` field.
-- Empty `home_intro_markdown` removes the hero block entirely.
+- `resource` is the shared term for live `note` and `media` records.
+- Notes and media share IDs, aliases, visibility, favorites, history, and search participation.
+- Notes store canonical Markdown in `body`.
+- Media stores canonical Markdown in `body` plus one current binary object in S3-compatible storage.
+- Markdown images render inline from standard image syntax.
+- Markdown video embeds render from safe inline HTML `<video>` markup.
+- Saved snapshots keep immutable binary object references for media.
+- Initial installs default new resources to public unless settings change that default.

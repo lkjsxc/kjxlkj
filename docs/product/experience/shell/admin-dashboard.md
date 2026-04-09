@@ -3,44 +3,26 @@
 ## Dashboard Intent
 
 - `GET /admin` is the admin dashboard.
-- The page is for scan, analytics, favorites, recent activity, settings entry, and entry into note editing.
+- The page is for scan, analytics, favorites, recent activity, settings entry, and entry into resource editing.
 
 ## Layout
 
 - The persistent shell rail remains visible.
-- The rail contains navigation and restrained actions.
-- For admins, `New note` sits near the top of the rail rather than below logout or delete actions.
+- For admins, `New note` sits near the top of the rail.
+- `New media` sits directly below `New note`.
 - Admin dashboard rails place `Open GitHub` above `Logout`.
-- Main content starts with compact stats, then a `Settings` entry section, then stacked `Popular`, `Recently updated`, and `Favorites` sections.
-- Dashboard spacing should stay tighter than the early tall-card builds without collapsing section readability.
-- The dashboard does not include the canonical settings form.
-- The dashboard does not include the full note library.
-- The page header does not show `Admin browse`.
-- The page does not expose a top-right search button.
-- The dashboard label for popularity is `Popular`, while internal routes and params remain `popular-notes` and `popular_window`.
+- Main content starts with compact stats, then `Settings`, `Popular`, `Recently updated`, and `Favorites`.
 
 ## Main Blocks
 
-- Statistics cards for total, public/private split, favorites, and current month or year activity.
-- Statistics also expose note-view activity totals and recent popularity context.
-- `Settings` is a compact summary block with a link to `/admin/settings`.
-- `Settings` summary also shows the configured session timeout.
+- Statistics cards for total resources, public/private split, favorites, and current month or year activity.
+- Statistics also expose resource-view activity totals and recent popularity context.
 - `Popular` uses an in-place `7d` / `30d` / `90d` switch.
-- Popular switching leaves the visible URL at `/admin`.
-- Popular switching replaces the full section from server-rendered HTML without a full page reload.
-- Popular switching preserves browser-local timestamp rendering after fragment replacement.
-- Popular rows show rolling-window and all-time totals.
-- `Popular` includes a `View more notes` card into the matching `/search` state.
-- Recently updated includes a `View more notes` card into `/search`.
-- Favorites use a full reorderable admin list of all favorites.
-- Favorites include a `View more notes` card into `/search?scope=favorites`.
-- The settings summary should describe intro presence and section order rather than a removed home-title field.
+- Recently updated and Favorites may both contain notes and media.
+- Favorites use one full reorderable admin list across mixed resources.
 
 ## Visual Rules
 
 - Actions are text-first.
 - Full browsing belongs on `/search`, not in the dashboard.
 - Empty states remain compact and factual.
-- Explanatory helper blocks such as `Admin index` are omitted.
-- Section wrappers stay lighter than note cards and do not stack repeated nested borders.
-- Settings summary cards keep a clearer gap between their labels and values than the tighter early pass.

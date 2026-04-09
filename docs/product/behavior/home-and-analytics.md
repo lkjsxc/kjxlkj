@@ -1,53 +1,20 @@
 # Home and Analytics Behavior
 
-## Home Content
+## Home
 
-- The homepage hero uses only the editable global `home_intro_markdown`.
-- Empty hero Markdown removes the hero block entirely rather than rendering placeholder text.
-- `Quick search` always renders.
-- `Popular`, `Recently updated`, and `Favorites` follow the configured visibility and order.
-- Initial installs default each visible note section limit to `5`.
-- Each visible note section ends with one `View more notes` card that links to the matching `/search` state.
+- Homepage Popular, Recently updated, and Favorites are mixed-resource sections.
+- Section cards remain shared across notes and media.
+- Image media may render a lightweight thumbnail inside list cards.
+- Video media cards may use a media-family badge rather than autoplay behavior.
 
-## Popular Windows
+## Dashboard Stats
 
-- Popular ranking is available for `7d`, `30d`, and `90d`.
-- The homepage defaults to `30d`.
-- The admin dashboard also defaults to `30d`.
-- Homepage and dashboard window switching are client-driven and replace the visible section in place.
-- Homepage and dashboard switching must not reload the page.
-- Homepage and dashboard switching must not add a query string, hash, or alternate path to the visible URL.
-- `/search` remains the canonical query-param surface for popularity browsing and uses `popular_window` when `sort=popular_desc`.
-- Homepage and dashboard switching use server-rendered HTML fragments rather than client-side reordering.
-- Homepage and dashboard switching must preserve browser-local timestamp rendering after each fragment replacement.
-- Guest homepage popularity uses public notes only.
-- Admin homepage popularity may include private notes.
+- Dashboard totals count live resources rather than only notes.
+- Public/private split, favorites, and recent-update counts also count live resources.
+- View totals count successful live-resource page views.
 
-## Popular Metrics
+## Popularity
 
-- Admin-facing Popular cards show the selected rolling-window count.
-- Admin-facing Popular cards also show the lifetime `all-time` view total.
-- Guest-facing Popular cards do not reveal any view counts.
-- Lifetime totals come from the stored `view_count_total` value.
-- When rolling-window totals tie, higher lifetime totals sort first.
-
-## View Counting
-
-- A successful canonical `GET /{ref}` note page increments note analytics.
-- Counting happens for both guest and admin note views.
-- Redirect responses do not increment counters.
-- Search pages, home pages, dashboards, settings pages, history indexes, and saved-snapshot pages do not increment counters.
-
-## Stored Metrics
-
-- Each note stores lifetime view count and last-viewed timestamp.
-- Recent popularity is derived from per-note daily view rollups.
-- The product exposes `7d`, `30d`, and `90d` rolling totals.
-- Rolling totals use UTC day buckets including the current UTC day.
-- Failed homepage or dashboard window refresh keeps the previous visible list and reports a compact inline error.
-
-## Visibility
-
-- Dashboard surfaces show popularity and note-view analytics.
-- Admin note pages show note-level view metrics.
-- Non-admin surfaces do not expose rolling or lifetime totals.
+- Popularity windows remain `7d`, `30d`, and `90d`.
+- Popularity ranking applies to live note pages and live media pages.
+- Admin dashboard popularity cards may expose rolling-window and all-time totals.

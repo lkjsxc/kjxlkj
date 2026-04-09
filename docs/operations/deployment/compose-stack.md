@@ -9,39 +9,36 @@
 
 ## Services
 
-- `postgres`: PostgreSQL database for notes, revisions, search, settings, analytics, and sessions
-- `app`: Rust runtime service exposing `${APP_PORT:-8080}` on the host and `${BIND_PORT:-8080}` in-container
+- `postgres`: PostgreSQL database for resources, snapshots, settings, analytics, and sessions
+- `minio`: S3-compatible object storage for media binaries
+- `app`: Rust runtime service
 - `verify`: quality-gate service from the verification overlay
 - `visual-verify`: browser verification service from the verification overlay
 
 ## Service Dependencies
 
-- `app` depends on `postgres` being healthy.
-- `verify` depends on `app` being healthy.
-- `visual-verify` depends on `app` being healthy.
-- Default `docker compose up` starts only `postgres` and `app`.
+- `app` depends on healthy `postgres` and healthy `minio`.
+- `verify` depends on healthy `app`.
+- `visual-verify` depends on healthy `app`.
+- Default `docker compose up` starts `postgres`, `minio`, and `app`.
 
 ## Runtime Environment
 
-- `BIND_HOST` default: `0.0.0.0`
-- `BIND_PORT` default: `8080`
-- `DATABASE_URL` format: `postgres://user:password@host:port/database`
-- `DATABASE_URL` is required by the runtime and is assembled by Compose for the `app` service.
-- `site_name`, `site_description`, `public_base_url`, and session timeout are not environment variables; they are loaded from `app_settings`.
-- Compose env config and persisted operator config are split explicitly in [runtime-configuration.md](runtime-configuration.md).
+- `.env` owns PostgreSQL credentials, host ports, MinIO credentials, and S3 endpoint settings.
+- Compose assembles `DATABASE_URL` and the S3-compatible environment for `app`.
+- Persisted operator settings still own `site_name`, `site_description`, `public_base_url`, search defaults, and session timeout.
 
 ## Boot Behavior
 
 1. Parse environment variables.
-2. Validate `DATABASE_URL` and `BIND_PORT`.
-3. Connect to PostgreSQL.
-4. Run database migrations.
+2. Validate database and object-storage configuration.
+3. Connect to PostgreSQL and run migrations.
+4. Connect to object storage and ensure the target bucket exists.
 5. Start the HTTP server.
 
 ## Persistent and Disposable State
 
 - PostgreSQL state is stored in `kjxlkj-postgres-data`.
-- `verify` uses `kjxlkj-verify-cargo` for Cargo registry cache.
-- `verify` uses `kjxlkj-verify-target` for the Rust target directory.
+- MinIO state is stored in `kjxlkj-minio-data`.
+- `verify` uses `kjxlkj-verify-cargo` and `kjxlkj-verify-target`.
 - Browser verification writes screenshots to `tmp/visual-artifacts/`.
-- The app container does not require a writable notes filesystem.

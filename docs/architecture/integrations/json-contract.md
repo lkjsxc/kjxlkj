@@ -1,26 +1,22 @@
 # JSON Contract
 
-## Note Success
+## Resource Success
 
-- `POST /records` returns the created note object with `id`.
-- `PUT /records/{id}` returns the updated note object with `id`.
-- `DELETE /records/{id}` returns `204` with no body.
-- JSON note payloads continue to store canonical raw Markdown in `body`.
+- `POST /resources/notes` returns the created resource object with `id` and `kind = "note"`.
+- `POST /resources/media` returns the created resource object with `id` and `kind = "media"`.
+- `PUT /resources/{id}` returns the updated resource object with `id`.
+- `DELETE /resources/{id}` returns `204` with no body.
 
 ## History Success
 
-- `GET /records/{id}/history` returns:
-  - `snapshots`: newest-first saved-snapshot objects with `id`, `snapshot_number`, `alias`, `title`, `summary`, `body`, `is_private`, and `created_at`
-  - `previous_cursor`: nullable cursor for older pages
-  - `next_cursor`: nullable cursor for newer pages
+- `GET /resources/{id}/history` returns newest-first saved snapshots plus `previous_cursor` and `next_cursor`.
 - History JSON remains admin-only.
 
 ## Navigation Success
 
-- `GET /records/{id}/prev` returns `{ "id": "..." }` or `{ "id": null }`.
-- `GET /records/{id}/next` returns `{ "id": "..." }` or `{ "id": null }`.
-- HTML timeline placeholders are derived from `null` responses rather than a separate API.
+- `GET /resources/{id}/prev` returns `{ "id": "..." }` or `{ "id": null }`.
+- `GET /resources/{id}/next` returns `{ "id": "..." }` or `{ "id": null }`.
 
 ## Error Shape
 
-- Error responses stay machine-readable and non-HTML on `/records/*`.
+- Error responses stay machine-readable and non-HTML on `/resources/*`.

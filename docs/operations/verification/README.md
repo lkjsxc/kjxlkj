@@ -12,5 +12,5 @@ Use this subtree for the canonical acceptance path and deeper manual verificatio
 
 - [compose-pipeline.md](compose-pipeline.md): full compose acceptance bundle and pass/fail rules
 - [compose-verification-services.md](compose-verification-services.md): service-level contracts for `verify` and `visual-verify`
-- [local-runbook.md](local-runbook.md): manual setup, endpoint, and page verification
+- [local-runbook.md](local-runbook.md): manual setup, endpoint, resource, and file verification
 - [browser/README.md](browser/README.md): screenshot assertions and browser failure triage

@@ -1,72 +1,70 @@
 # Postgres Schema Contract
 
-## `records`
+## `resources`
 
 - `id`: `CHAR(26)` primary key.
-- `alias`: nullable unique route alias.
+- `kind`: `TEXT` constrained to `note` or `media`.
+- `alias`: nullable unique live-resource alias shared across all kinds.
 - `body`: current Markdown body.
 - `title`: current derived title.
 - `summary`: current derived summary.
+- `media_family`: nullable `image` or `video`.
+- `file_key`: nullable current object-storage key for media.
+- `content_type`: nullable current media MIME type.
+- `byte_size`: nullable current media byte length.
+- `sha256_hex`: nullable current media checksum.
+- `original_filename`: nullable current upload filename.
+- `width`: nullable current intrinsic width.
+- `height`: nullable current intrinsic height.
+- `duration_ms`: nullable current video duration.
 - `is_favorite`: favorite flag.
 - `favorite_position`: nullable persistent favorite ordering slot.
 - `is_private`: privacy flag.
-- `view_count_total`: lifetime successful note-page views.
-- `last_viewed_at`: last counted note view timestamp.
+- `view_count_total`: lifetime successful page views.
+- `last_viewed_at`: last counted page-view timestamp.
 - `created_at`: immutable UTC timestamp.
 - `updated_at`: mutable UTC timestamp.
 - `deleted_at`: nullable soft-delete timestamp.
 - `search_document`: current full-text search column.
 
-## `record_revisions`
+## `resource_snapshots`
 
-- This table stores immutable saved snapshots even though the table name still uses `revisions`.
-
-- `id`: `CHAR(26)` primary key for one saved snapshot.
-- `record_id`: live-note reference.
-- `alias`: saved route alias at snapshot time.
+- `id`: `CHAR(26)` primary key.
+- `resource_id`: live-resource reference.
+- `kind`: copied resource kind.
+- `alias`: saved route alias.
 - `title`: saved derived title.
 - `summary`: saved derived summary.
-- `body`: saved snapshot body.
-- `is_private`: saved snapshot privacy.
-- `snapshot_number`: immutable per-note saved-snapshot sequence.
+- `body`: saved Markdown body.
+- `media_family`: nullable saved media family.
+- `file_key`: nullable immutable object-storage key.
+- `content_type`: nullable saved media MIME type.
+- `byte_size`: nullable saved media byte length.
+- `sha256_hex`: nullable saved media checksum.
+- `original_filename`: nullable saved upload filename.
+- `width`: nullable saved intrinsic width.
+- `height`: nullable saved intrinsic height.
+- `duration_ms`: nullable saved video duration.
+- `is_private`: saved visibility.
+- `snapshot_number`: immutable per-resource sequence.
 - `created_at`: snapshot UTC timestamp.
 
-## `record_daily_views`
+## `resource_daily_views`
 
-- `record_id`: note reference.
+- `resource_id`: live-resource reference.
 - `view_date`: UTC date bucket.
-- `view_count`: counted note views for that UTC day.
-- Primary key: `(record_id, view_date)`.
+- `view_count`: counted resource-page views for that UTC day.
+- Primary key: `(resource_id, view_date)`.
 
 ## `app_settings`
 
 - `id`: singleton key fixed to `1`.
 - `home_intro_markdown`: optional homepage hero Markdown.
-- `home_recent_limit`: homepage recent-note count.
-- `home_favorite_limit`: homepage favorite count.
-- `home_popular_limit`: homepage popular-note count.
-- `home_recent_visible`: homepage recent-section visibility.
-- `home_favorite_visible`: homepage favorite-section visibility.
-- `home_popular_visible`: homepage popular-section visibility.
-- `home_recent_position`: homepage recent-section order slot.
-- `home_favorite_position`: homepage favorite-section order slot.
-- `home_popular_position`: homepage popular-section order slot.
+- `home_recent_limit`, `home_favorite_limit`, `home_popular_limit`: mixed-resource section counts.
+- `home_recent_visible`, `home_favorite_visible`, `home_popular_visible`: section visibility flags.
+- `home_recent_position`, `home_favorite_position`, `home_popular_position`: section order slots.
 - `search_results_per_page`: default HTML search page size.
-- `default_new_note_is_private`: default visibility flag for freshly opened note pages; the product default is `FALSE` so new notes start public unless the setting is turned on.
-- `session_timeout_minutes`: future-login session lifetime; the product default is `1440`.
-- `site_name`: operator-configurable visible site label and browser-title site suffix.
-- `site_description`: operator-configurable shared metadata description.
-- `public_base_url`: blank-or-origin public discovery base URL; blank disables discovery.
+- `default_new_resource_is_private`: default visibility for newly created notes and media.
+- `session_timeout_minutes`: login session lifetime.
+- `site_name`, `site_description`, `public_base_url`: shared site identity and discovery fields.
 - `updated_at`: mutable UTC timestamp.
-
-## Required Indexes
-
-- active-record index on non-deleted rows
-- unique partial index on `alias`
-- updated-order index for public/admin indexes
-- created-order index for `Prev` / `Next`
-- favorite-order index on `(favorite_position, id)` for active favorites
-- record-daily-view lookup index covering `(view_date, view_count DESC)`
-- GIN index for `search_document`
-- trigram index support for alias/title/body fallback matching
-- saved-snapshot lookup index on `(record_id, snapshot_number DESC)`

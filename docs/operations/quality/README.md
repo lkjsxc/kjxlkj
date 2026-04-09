@@ -6,7 +6,7 @@ Use this subtree for the hard acceptance rules that gate changes.
 
 - You need the mandatory gates for acceptance.
 - You need the expected mix of unit, integration, compose, and browser checks.
-- You need the authored-file line-limit policy.
+- You need the docs and source-file structural rules.
 
 ## Child Index
 

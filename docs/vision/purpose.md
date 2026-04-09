@@ -2,19 +2,20 @@
 
 ## Goal
 
-`kjxlkj` is a Markdown note system for LLM-operated workflows with direct root-path note URLs, live admin editing, full immutable saved-snapshot history, an editable homepage hero, a compact analytics dashboard, and a dedicated settings workspace.
+`kjxlkj` is an LLM-operated resource system for Markdown notes and uploaded media.
 
 ## Product Intent
 
-- Serve notes at root paths such as `/{alias}` or `/{id}`.
-- Use opaque Base32 note IDs and optional human-managed aliases.
-- Keep editing fast for one admin with autosave, live chrome updates, and on-demand preview.
-- Support configurable new-note visibility while defaulting initial installs to public notes.
-- Preserve immutable saved-snapshot history.
-- Keep homepage, favorites, popularity, search, and analytics surfaces workable for thousands of notes.
+- Treat `note` and `media` as peer live resources with one shared identity model.
+- Serve live resources at root paths such as `/{alias}` or `/{id}`.
+- Keep immutable saved-snapshot history for both notes and media.
+- Let Markdown notes embed current or saved media files directly.
+- Keep admin editing fast for one operator with autosave, preview, and direct file replacement.
+- Keep home, search, favorites, popularity, and analytics workable for thousands of mixed resources.
+- Keep deployment single-host friendly through Docker Compose, PostgreSQL, and S3-compatible object storage.
 
 ## Non-Goals
 
 - No multi-user collaboration.
-- No offline-first support.
-- No backward compatibility for old IDs, old routes, or old payload shapes.
+- No backward compatibility for old routes, old schema names, or old payload shapes.
+- No browser-only storage path outside the canonical runtime state stores.

@@ -2,122 +2,48 @@
 
 ## HTML Setup + Session Endpoints
 
-- `GET /`:
-  - before setup: `302` to `/setup`
-  - after setup: `200` HTML homepage
-- `GET /setup`:
-  - before setup: `200` HTML setup page
-  - after setup: `302` to `/login`
-- `POST /setup`:
-  - invalid payload before setup: `400` HTML validation page
-  - valid payload before setup: `303` to `/login`
-  - after setup: `302` to `/login`
-- `GET /login`:
-  - before setup: `302` to `/setup`
-  - after setup without session: `200` HTML login page
-  - with valid session: `303` to `/admin`
-- `POST /login`:
-  - before setup: `302` to `/setup`
-  - invalid credentials: `401` HTML error page
-  - valid credentials: `303` to `/admin` and sets `session_id` cookie
-- `POST /logout`:
-  - after setup: `303` to `/` and clears `session_id` cookie
+- `GET /`, `GET /setup`, `POST /setup`, `GET /login`, `POST /login`, and `POST /logout` keep the same setup and session behavior.
 
-## Home, Admin, and Search Pages
+## HTML Resource Pages
 
-- `GET /`:
-  - returns auth-aware homepage shell
-- `GET /admin` and `GET /admin/`:
-  - before setup: `302` to `/setup`
-  - without valid session: `302` to `/login`
-  - with valid session: `200` HTML admin dashboard
-- `GET /admin/settings`:
-  - before setup: `302` to `/setup`
-  - without valid session: `302` to `/login`
-  - with valid session: `200` HTML admin settings page
-- `GET /search`:
-  - before setup: `302` to `/setup`
-  - without valid session: `200` HTML public browse/search page using `q`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, `limit`
-  - with valid session: `200` HTML admin-capable browse/search page using `q`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, `limit`
+- `GET /`: auth-aware homepage shell for mixed resources.
+- `GET /admin` and `GET /admin/`: admin dashboard.
+- `GET /admin/settings`: admin settings page.
+- `GET /admin/media/new`: admin upload-first media creation page.
+- `GET /search`: auth-aware browse/search page using `q`, `kind`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, and `limit`.
+- `GET /{ref}`: live note page, live media page, or saved-snapshot page.
+- `GET /{ref}/history`: history index for one live resource.
+- `GET /{ref}/file`: current media binary or `404` for note resources.
+- `GET /{snapshot_id}/file`: saved-snapshot media binary or `404` for note snapshots.
 
 ## HTML Fragment Endpoints
 
-- `GET /_/popular-notes/home/{window}`:
-  - `{window}` is `7d`, `30d`, or `90d`
-  - returns the homepage Popular section as HTML
-  - uses current session state to decide guest vs admin note details
-- `GET /_/popular-notes/admin/{window}`:
-  - `{window}` is `7d`, `30d`, or `90d`
-  - without valid session: `401`
-  - with valid session: returns the admin dashboard Popular section as HTML
-- invalid popularity fragment route parts return `404`
+- `GET /_/popular-resources/home/{window}` returns the homepage Popular section.
+- `GET /_/popular-resources/admin/{window}` returns the dashboard Popular section.
+- `{window}` is `7d`, `30d`, or `90d`.
 
 ## Asset Delivery
 
-- `GET /favicon.ico`:
-  - returns the canonical production favicon
-- `GET /assets/icon.svg`:
-  - returns the authored vector icon source
-- `GET /robots.txt`:
-  - valid non-blank `public_base_url` setting: `200` plain text robots policy
-  - blank or invalid `public_base_url` setting: `404`
-- `GET /sitemap.xml`:
-  - valid non-blank `public_base_url` setting: `200` XML sitemap
-  - blank or invalid `public_base_url` setting: `404`
-- `POST /admin/markdown-preview`:
-  - without valid session: `401` JSON error
-  - valid session: `200` JSON containing rendered preview HTML
+- `GET /favicon.ico` returns the canonical favicon.
+- `GET /assets/icon.svg` returns the authored icon source.
+- `GET /robots.txt` and `GET /sitemap.xml` still depend on persisted `public_base_url`.
+- `POST /admin/markdown-preview` renders sanitized Markdown preview HTML for admins only.
 
-## Note Viewing
+## Resource Management
 
-- `GET /{ref}`:
-  - target not found: `404`
-  - target is private and no session: `404`
-  - canonical redirect responses do not count as note views
-  - accessible current note: `200` HTML note page with first-party Markdown editor for admins
-  - accessible saved snapshot: `200` HTML history snapshot page
-- `GET /{ref}/history`:
-  - note not found: `404`
-  - note is private and no session: `404`
-  - accessible note: `200` HTML history index using `cursor`, `direction`, and `limit`
+- `POST /resources/notes`: admin-only JSON note create.
+- `POST /resources/media`: admin-only multipart media create.
+- `PUT /resources/{id}`: admin-only JSON metadata and Markdown update for both resource kinds.
+- `PUT /resources/media/{id}/file`: admin-only multipart file replacement for live media.
+- `DELETE /resources/{id}`: admin-only soft delete.
+- `PUT /resources/favorites/order`: admin-only favorite reorder across mixed resources.
 
-## Note Management (Admin Only)
+## Resource History + Navigation JSON
 
-- `POST /records`:
-  - without valid session: `401` JSON error
-  - invalid payload or missing `body`: `400` JSON error
-  - valid session: `201` JSON with new note editor state and generated `id`
-- `PUT /records/favorites/order`:
-  - without valid session: `401` JSON error
-  - invalid favorite set or invalid IDs: `400` JSON error
-  - valid session: `204`
-- `PUT /records/{id}`:
-  - without valid session: `401` JSON error
-  - note not found: `404` JSON error
-  - valid session and note exists: `200` JSON with updated note editor state
-- `DELETE /records/{id}`:
-  - without valid session: `401` JSON error
-  - note not found: `404` JSON error
-  - valid session: `204`
-- `POST /admin/settings`:
-  - without valid session: `302` to `/login`
-  - invalid payload: `400` HTML validation page
-  - valid session: `303` to `/admin/settings`
-  - successful save may immediately change canonical URLs, robots meta, `robots.txt`, and `sitemap.xml`
-
-## Revision History and Navigation JSON
-
-- `GET /records/{id}/history`:
-  - without valid session: `401`
-  - note not found: `404`
-  - valid session: `200` JSON paginated saved-snapshot payload using `cursor`, `direction`, and `limit`
-- `GET /records/{id}/prev`:
-  - note not found or inaccessible: `404`
-  - returns previous accessible note `id` by `created_at`
-- `GET /records/{id}/next`:
-  - note not found or inaccessible: `404`
-  - returns next accessible note `id` by `created_at`
+- `GET /resources/{id}/history`: admin-only JSON history listing.
+- `GET /resources/{id}/prev`: previous accessible resource `id`.
+- `GET /resources/{id}/next`: next accessible resource `id`.
 
 ## Health Check
 
-- `GET /healthz` -> `200` with body `ok`.
+- `GET /healthz` returns `200` with body `ok`.

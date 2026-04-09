@@ -1,27 +1,28 @@
 # Product
 
-Use this subtree for the user-visible canon: routes, API shapes, runtime behavior, and UI contracts.
+Use this subtree for user-visible canon: routes, APIs, resource behavior, and UI contracts.
 
 ## Read This Section When
 
 - You need to know what the app exposes.
-- You need behavior rules for notes, history, search, settings, or errors.
-- You need canonical `Prev` / `Next` navigation rules.
+- You need resource lifecycle rules for notes, media, history, search, settings, or errors.
+- You need canonical embed, file-delivery, or root-route behavior.
 - You need the interface and visual rules for the HTML product.
 
 ## Child Index
 
-- [surface/README.md](surface/README.md): routes, pages, and write-auth surface
+- [resources/README.md](resources/README.md): shared resource model, media pages, and embed rules
+- [surface/README.md](surface/README.md): routes, pages, file URLs, and write-auth surface
 - [navigation/README.md](navigation/README.md): shared timeline and pager navigation canon
-- [behavior/README.md](behavior/README.md): note lifecycle, listing, analytics, history, settings, and errors
+- [behavior/README.md](behavior/README.md): lifecycle, listing, analytics, history, settings, and errors
 - [experience/README.md](experience/README.md): layout, shell, editor, theme, and responsive contracts
 - [discoverability/README.md](discoverability/README.md): site identity, metadata, indexing, robots, and sitemap contracts
-- [api-contract.md](api-contract.md): API payload shapes and shared field semantics
+- [api-contract.md](api-contract.md): payload shapes and shared field semantics
 
 ## Start Here
 
+- Resource model: [resources/resource-kinds.md](resources/resource-kinds.md)
 - Route map: [surface/routes.md](surface/routes.md)
-- Navigation map: [navigation/README.md](navigation/README.md)
-- Behavior map: [behavior/list-and-fetch.md](behavior/list-and-fetch.md)
+- Listing behavior: [behavior/list-and-fetch.md](behavior/list-and-fetch.md)
 - UI map: [experience/README.md](experience/README.md)
 - Discovery map: [discoverability/README.md](discoverability/README.md)

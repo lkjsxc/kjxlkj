@@ -1,29 +1,41 @@
 # Create, Update, and Delete Behavior
 
-## Create (`POST /records`)
+## Create Note (`POST /resources/notes`)
 
 - Requires valid session.
 - Auto-generates a 26-character opaque `id`.
-- Request body must include `body`.
+- Request body must include Markdown `body`.
 - Request body may include `alias`, `is_favorite`, and `is_private`.
-- The browser create flow seeds `body` with a local-time heading in `YYYY-MM-DD HH:mm`.
-- Server create behavior does not invent fallback note content when `body` is missing.
-- Alias may be `null`.
-- Default `is_favorite = false`.
-- Default `is_private = true`.
-- Returns `201` with created note JSON.
-- Creates saved snapshot `1` from the persisted note state.
+- Browser note creation seeds `body` with a local-time heading in `YYYY-MM-DD HH:mm`.
+- Successful create returns `201` with created resource JSON.
+- Creating a note also creates saved snapshot `1`.
 
-## Update (`PUT /records/{id}`)
+## Create Media (`POST /resources/media`)
 
 - Requires valid session.
-- `id` must exist.
-- Request body contains `body`, `alias`, `is_favorite`, and `is_private`.
+- Requires multipart part `file`.
+- Optional parts: `alias`, `is_favorite`, and `is_private`.
+- The server stores the uploaded binary in S3-compatible storage and derives media metadata.
+- The initial Markdown `body` is seeded from the uploaded filename stem as a `# Heading`.
+- Successful create returns `201` with created resource JSON.
+- Creating media also creates saved snapshot `1`.
+
+## Shared Update (`PUT /resources/{id}`)
+
+- Requires valid session.
+- Applies to both notes and media.
+- JSON body contains `body`, `alias`, `is_favorite`, and `is_private`.
 - Updates `updated_at`.
 - Recomputes derived title, summary, and search fields.
-- Creates one new saved snapshot from the persisted post-update note state.
-- Returns `200` with updated note.
-- The stored body remains canonical raw Markdown regardless of editor presentation.
+- Creates one new immutable saved snapshot from the post-update live state.
+
+## Replace Media File (`PUT /resources/media/{id}/file`)
+
+- Requires valid session.
+- Applies only to live `media`.
+- Replaces the current binary object and derived file metadata.
+- Creates one new immutable saved snapshot from the post-replacement live state.
+- Does not rewrite earlier snapshots.
 
 ## Public Visibility Control
 
@@ -34,32 +46,14 @@
 
 ## Alias and Favorite Rules
 
-- Clearing the alias returns the note to an ID-only canonical route.
-- Alias validity and uniqueness are checked before write.
-- Direct typing and paste must preserve internal `-`, `_`, and `.` separators in the editor field.
-- Alias input normalization should not delete allowed separators while the user is typing.
-- Favorite state is current-note state only.
-- Favorite changes do not alter saved-snapshot visibility or history access.
+- Clearing the alias returns the resource to an ID-only canonical route.
+- Alias validity and uniqueness are checked across both notes and media.
+- Direct typing must preserve internal `-`, `_`, and `.` separators in the editor field.
+- Favorite ordering is shared across both resource kinds.
 
-## Editor Rules
-
-- The normal UI exposes no user-facing mode choice.
-- The note body owns the visible document heading on both admin and guest note pages.
-- The visible textarea label `Markdown body` is absent.
-- If the editor helper JS fails to load, the page still remains editable.
-
-## Delete (`DELETE /records/{id}`)
+## Delete (`DELETE /resources/{id}`)
 
 - Requires valid session.
-- `id` must exist.
-- Performs soft delete.
+- Performs soft delete on the live resource only.
 - Returns `204` with no body.
-
-## Saved Snapshot Tracking
-
-- Creating a note creates saved snapshot `1`.
-- Every update creates one additional immutable saved snapshot after the live-note write succeeds.
-- Saved snapshots store `id`, `alias`, `title`, `summary`, `body`, `is_private`, `snapshot_number`, and `created_at`.
-- Saved snapshot `id` uses the same 26-character opaque format as current notes.
-- Saved snapshot numbers increment from `1`.
-- Saved snapshots are immutable and never deleted.
+- Saved snapshots remain immutable and available when their stored visibility allows access.

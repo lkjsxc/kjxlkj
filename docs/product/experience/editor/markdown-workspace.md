@@ -2,33 +2,28 @@
 
 ## Editing Model
 
-- Admin note pages use one first-party Markdown textarea.
-- The editor surface is Markdown authoring only.
+- Admin resource pages use one first-party Markdown textarea for `body`.
 - There is no visible `Rich mode` or `Text mode` switch.
-- The app may not rely on a WYSIWYG shortcut-repair layer as its primary Markdown authoring model.
+- Notes are Markdown-first only.
+- Media is file-first plus Markdown body editing.
 
 ## Storage Rule
 
-- Canonical stored content remains raw Markdown in `body`.
-- The editor writes `body` directly as Markdown text.
+- Canonical descriptive content remains raw Markdown in `body`.
+- Media binaries live in S3-compatible object storage rather than inside Markdown.
+- File replacement is explicit and separate from Markdown autosave.
 
 ## UI Rules
 
-- The editor lives inside the normal note shell.
-- The editor surface stays flat, dark, and document-first.
-- Opening an admin note should place typing focus into the visible editor.
-- Preview starts closed and opens on demand from note chrome.
-- The `Public` checkbox remains outside the editor body and inside the note workspace chrome.
-- Alias, canonical URL, and metadata controls should use a consistent card-like presentation.
-- The note page owns vertical scrolling; the editor body may not add its own normal vertical scroll region.
-- The page itself may not require horizontal scrolling in order to edit.
+- The editor lives inside the normal resource shell.
+- Preview starts closed and opens on demand from resource chrome.
+- The `Public` checkbox remains outside the textarea and inside the workspace chrome.
+- Alias, canonical URL, file URL, and metadata controls should use a consistent card-like presentation.
+- The page itself may not require horizontal scrolling to edit.
 - The visible textarea label `Markdown body` is absent.
-- Alias typing must preserve allowed separators `-`, `_`, and `.` while the user edits.
-- Typed Markdown must stay legible in the editor and render correctly in the opened preview before save.
-- The preview must use the current unsaved Markdown body, not only the last persisted state.
-- Verification must target the visible Markdown editor and preview surfaces.
+- Typed Markdown must stay legible in the editor and render correctly in opened preview before save.
 
 ## Asset Delivery
 
 - Editor behavior is implemented by local authored JS and CSS only.
-- Admin note HTML may not depend on an external editor CDN at runtime.
+- Admin pages may not depend on an external editor CDN at runtime.

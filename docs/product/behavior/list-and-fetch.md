@@ -3,81 +3,59 @@
 ## Home Page
 
 - `GET /` returns the homepage shell after setup completes.
-- The homepage hero uses only the editable global `home_intro_markdown`.
-- The homepage always contains `Quick search`.
-- The homepage may contain `Popular`, `Recently updated`, and `Favorites` in the configured order and visibility.
-- The homepage popular-window switch is in-place and does not alter the visible URL.
-- Guests see public-only home data.
+- The homepage hero still uses only editable global `home_intro_markdown`.
+- Home sections list mixed resources rather than note-only rows.
+- Guests see public-only resources.
 - Signed-in admins see the same structure with private-capable data and admin actions.
-- The homepage is intentionally short and does not act as the full browse surface.
-- The homepage is the only library-style page that remains search-indexable.
+- The homepage remains intentionally short and does not become the full browse surface.
 
 ## Admin Dashboard
 
 - `GET /admin` returns the admin dashboard.
-- The dashboard includes statistics, popularity, recent activity, favorites, and a settings entry point.
-- The dashboard popular-window switch is in-place and does not alter the visible URL.
-- The dashboard does not own the canonical settings form.
-- The dashboard does not include the full note library.
-- Dashboard data includes public and private notes.
-
-## Admin Settings
-
-- `GET /admin/settings` returns the dedicated settings workspace.
-- The settings page owns the canonical global settings form.
-- Saving settings affects rendered HTML routes and new-note defaults immediately.
-- Saving settings affects future login session lifetime immediately.
+- The dashboard includes resource statistics, popularity, recent activity, favorites, and a settings entry point.
+- Dashboard data includes both notes and media.
 
 ## Search and Browse
 
 - `GET /search` is the canonical browse and search workspace.
-- Search accepts `q`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.
-- `scope=all` is the default.
-- `scope=favorites` narrows search and browse results to favorite notes only.
-- Empty `q` returns the first paginated page of viewable notes inside the current scope and sort.
-- Non-empty `q` returns paginated matches inside the current scope only.
-- `/search` remains guest-readable but is not search-indexable.
+- Search accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.
+- `kind=all` is the default.
+- `scope=favorites` narrows results to favorite resources only.
+- Empty `q` returns the first paginated page of viewable resources inside the current kind, scope, and sort.
+- Non-empty `q` returns paginated matches inside the current kind and scope only.
 
 ## Default Ordering
 
 - Homepage recent blocks sort by `updated_at DESC, id ASC`.
 - Homepage favorite blocks use persistent `favorite_position ASC`.
 - Homepage popular blocks sort by the selected rolling window, then lifetime views, then `updated_at DESC, id ASC`.
-- Empty-query `/search` defaults to `updated_desc` for `scope=all`.
-- Empty-query `/search` defaults to `favorite_position_asc` for `scope=favorites`.
-- Non-empty-query `/search` defaults to `relevance`.
-- Note-to-note `Prev` and `Next` follow [../navigation/timeline/semantics-and-order.md](../navigation/timeline/semantics-and-order.md).
+- Note-to-note `Prev` and `Next` semantics now apply to the mixed resource timeline.
 
 ## Fetch (`GET /{ref}`)
 
-- Returns the live note page or a saved-snapshot page if accessible.
+- Returns the live note page, live media page, or one saved-snapshot page if accessible.
 - Returns `404` if the target does not exist.
-- Returns `404` if the target is private and user is not authenticated.
-- Resolves `ref` by alias first, then by globally unique opaque ID.
-- Aliases resolve only to current notes.
-- Current-note IDs redirect to the alias URL when the note has an alias.
+- Returns `404` if the target is private and the user is not authenticated.
+- Resolves `ref` by alias first and then by globally unique opaque ID.
+- Current live-resource IDs redirect to the alias URL when an alias exists.
 - Saved-snapshot IDs never redirect.
-- Current-note responses include the editable current body for admins.
-- Saved-snapshot responses include the immutable saved body.
-- Public current-note routes are search-indexable only when `public_base_url` is non-blank and valid.
-- Saved snapshots remain guest-readable when allowed, but are not search-indexable.
 
-## Note Navigation
+## Current File Fetch (`GET /{ref}/file`)
 
-- Note and history rails use the shared timeline canon from [../navigation/timeline/README.md](../navigation/timeline/README.md).
-- HTML note rails always render both timeline slots even when one side resolves to `null`.
-- Timeline cards show relation label, note title, short summary preview, and created time.
-- Note and history rails order note-level sections as live context, timeline, `History`, `Open GitHub`, then the trailing action block.
-- List-rail action ordering follows [../experience/shell/actions/section-order.md](../experience/shell/actions/section-order.md).
+- Returns the current media binary when `/{ref}` is live media.
+- Returns `404` when `/{ref}` resolves to a note.
+- Returns `404` for private live media when no valid session exists.
+
+## Snapshot File Fetch (`GET /{snapshot_id}/file`)
+
+- Returns the immutable media binary stored on that snapshot.
+- Returns `404` when the snapshot belongs to a note.
+- Uses the snapshot’s stored visibility.
 
 ## History Fetch
 
-- History index returns the live note plus one visible saved-snapshot page.
+- History index returns the live resource plus one visible saved-snapshot page.
 - Saved snapshots are ordered by `snapshot_number DESC`.
-- Saved snapshots also expose stable opaque snapshot IDs.
 - Guests can fetch only saved snapshots whose stored state is public.
 - Admins can fetch all saved snapshots.
 - The history rail never expands into per-snapshot links.
-- HTML and JSON history fetches share the pager contract from [../navigation/paging/README.md](../navigation/paging/README.md).
-- History indexes are not search-indexable.
-- The history-page `Live note` card uses the same Created/Updated metadata language as Home and Search cards.

@@ -1,49 +1,29 @@
-# Note Workspace Contract
+# Resource Workspace Contract
 
 ## Overall Feel
 
-- Note pages remain dark, dense, flat, and document-first.
+- Resource pages remain dark, dense, flat, and document-first.
 - Header chrome is compact and informative.
-- History access belongs in the rail, not below the note body.
-- The rail history affordance is one `History` card, not an inline saved-snapshot list.
-- The note header does not show an eyebrow label such as `Admin note`.
+- History access belongs in the rail, not below the resource body.
+- The resource header does not show a duplicated visible title outside the main body or media surface.
 
-## Header Content
+## Shared Header Content
 
 - Created and updated time.
 - No visible raw ID chips in normal UI.
-- The header does not place a `Public` or `Private` pill between the title and editor.
-- The note page does not render a duplicate visible title outside the Markdown body.
-- Browser title, rail title, and other chrome may still derive from the first `# ` heading.
-- The rail `Live note` card shows both `Created` and `Updated` inside the shared card metadata rather than splitting Created into a separate fact row.
+- Browser title, rail title, and other chrome may derive from the first `# ` heading in `body`.
+- The rail `Live resource` card shows both `Created` and `Updated`.
 
 ## Admin Editing Surface
 
-- Admin editing uses one Markdown-first workspace.
-- The workspace uses a first-party textarea plus a rendered preview companion.
-- There is no mode-switch choice in normal UI.
-- Desktop uses a Markdown-first workspace with preview closed by default.
-- Public checkbox stays inside the editing surface.
-- Alias and favorite controls stay inside the editing surface.
-- Editor cards, input fields, and preview shells use tight rectangular corners.
-- Preview stays closed by default and opens on demand from the editor chrome.
-- Preview work may stay inactive until the user opens it.
-- The typing surface and the preview both stay within the same dark-mode presentation family.
-- The note page owns the vertical scroll path for long notes.
-- The note page never requires horizontal page scrolling to reach editor controls.
-- Opening the note should leave the caret ready for direct typing.
-
-## Live Chrome Sync
-
-- Heading edits update page title, browser title, and current-note rail title immediately.
-- Public checkbox toggles update visibility chips and related chrome immediately.
-- Alias edits update canonical-link targets after save.
-- Favorite toggles update relevant chrome immediately.
-- The removed helper text (`Guest-readable`, `Admin-only`) does not return.
-- Preview content updates from the current unsaved Markdown body.
+- Notes use one Markdown-first workspace.
+- Media uses a file-first workspace with the same Markdown body editor and preview companion.
+- Desktop uses a body-editor-first workspace with preview closed by default.
+- Public checkbox, alias, and favorite controls stay inside the editing surface.
+- Opening the resource should leave the caret ready for direct typing.
 
 ## Guest View
 
-- Guests see rendered Markdown only.
-- The rendered Markdown owns the visible document heading.
+- Guests see rendered Markdown only for notes.
+- Guests see the primary image or video plus rendered Markdown body for media.
 - Markdown typography may use a dedicated content stack separate from UI chrome.

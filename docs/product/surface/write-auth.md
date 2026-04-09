@@ -2,23 +2,22 @@
 
 ## Session Auth Rule
 
-All write operations require a valid admin session:
+All write operations require one valid admin session:
 
-- `POST /login` sets `session_id` cookie after valid password.
-- `POST /logout` clears `session_id` and redirects to `/login`.
-- Write endpoints (`POST`, `PUT`, `DELETE` on `/records/*`) require a valid non-expired `session_id`.
-- Admin credentials and session rows are persisted in PostgreSQL (`DATABASE_URL`).
-- Runtime startup fails when database connectivity is unavailable.
+- `POST /login` sets `session_id` after valid credentials.
+- `POST /logout` clears `session_id`.
+- `POST`, `PUT`, and `DELETE` on `/resources/*` require a valid non-expired session.
+- `POST /admin/markdown-preview` requires a valid non-expired session.
+- Admin credentials and sessions are persisted in PostgreSQL.
 
 ## Validation
 
-- Session cookie is `HttpOnly`, `Path=/`, and cleared with `Max-Age=0` on logout.
-- Missing or invalid session returns `401` JSON error on record write endpoints.
-- Expired session returns `401` JSON error.
-- Note viewing respects `is_private` flag: private notes return `404` for unauthenticated users.
+- Missing, invalid, or expired session returns `401` on JSON and multipart write endpoints.
+- HTML admin pages still redirect to `/login` when no valid session exists.
+- Private resource pages and private file routes return `404` for unauthenticated readers.
 
 ## Security Boundaries
 
-- Session ID is random UUID and never emitted in JSON responses.
-- Password hash never exposed in responses.
-- Session ID is compared exactly as UTF-8 string.
+- Session IDs are random UUIDs and never emitted in JSON.
+- Password hashes are never exposed in responses.
+- Media file routes must respect the same visibility and snapshot-visibility rules as HTML pages.

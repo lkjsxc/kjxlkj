@@ -1,19 +1,41 @@
 # API Contract
 
-## Resource
-
-The system manages `note` resources.
-
-## Note Schema
+## Resource Schema
 
 ```json
 {
   "id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
+  "kind": "note",
   "alias": "release-notes",
   "body": "# Title\n\nMarkdown content...",
   "is_favorite": true,
   "favorite_position": 2,
-  "is_private": true,
+  "is_private": false,
+  "created_at": "2026-03-26T08:34:00Z",
+  "updated_at": "2026-03-26T08:35:00Z"
+}
+```
+
+## Media Resource Extension
+
+```json
+{
+  "id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
+  "kind": "media",
+  "alias": "launch-video",
+  "body": "# Launch Video\n\nPrimary product walkthrough.",
+  "media_family": "video",
+  "file_href": "/launch-video/file",
+  "content_type": "video/mp4",
+  "byte_size": 18342012,
+  "original_filename": "launch-video.mp4",
+  "sha256_hex": "c0ffee...",
+  "width": 1920,
+  "height": 1080,
+  "duration_ms": 93210,
+  "is_favorite": false,
+  "favorite_position": null,
+  "is_private": false,
   "created_at": "2026-03-26T08:34:00Z",
   "updated_at": "2026-03-26T08:35:00Z"
 }
@@ -21,151 +43,97 @@ The system manages `note` resources.
 
 ## Field Rules
 
-- `id`: Primary key. Exact 26-character lowercase Base32 string representing 128 random bits.
-- `alias`: Optional lowercase route alias.
-- `body`: UTF-8 Markdown content. May be empty. Supported authoring paths include headings, lists, task lists, blockquotes, fenced code, links, and GFM tables.
-- `is_favorite`: Boolean. Default `false`.
-- `favorite_position`: Nullable positive integer. Present when the note is favorited.
-- `is_private`: Boolean. Default `true`.
-- `created_at`: UTC RFC3339 timestamp.
-- `updated_at`: UTC RFC3339 timestamp.
+- `kind`: `note` or `media`.
+- `id`: exact 26-character lowercase Base32 string.
+- `alias`: optional lowercase route alias unique across all live resources.
+- `body`: UTF-8 Markdown content. May be empty.
+- `is_favorite`: boolean. Default `false`.
+- `favorite_position`: nullable positive integer.
+- `is_private`: boolean. Default comes from `default_new_resource_is_private`.
+- `created_at` and `updated_at`: UTC RFC3339 timestamps.
+- Media-only fields are absent for `note`.
 
-## Global Settings Schema
+## Browse Query Parameters
+
+- `/search` accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.
+- `kind=all` is the default.
+- `kind=note` narrows to notes only.
+- `kind=media` narrows to media only.
+
+## Settings Schema
 
 ```json
 {
   "site_name": "kjxlkj",
-  "site_description": "Markdown note system for LLM-operated workflows.",
-  "public_base_url": "https://notes.example.com"
+  "site_description": "Markdown-first resource system for LLM-operated workflows.",
+  "public_base_url": "https://notes.example.com",
+  "default_new_resource_is_private": false
 }
 ```
 
-- `site_name`: Visible HTML brand and browser-title site suffix.
-- `site_description`: Shared metadata description fallback and homepage/search description source.
-- `public_base_url`: Persisted absolute public origin for canonical URLs, `robots.txt`, and `sitemap.xml`. Blank disables discovery.
-
-## Admin Analytics Schema
-
-```json
-{
-  "view_count_total": 18,
-  "view_count_7d": 4,
-  "view_count_30d": 9,
-  "view_count_90d": 12,
-  "last_viewed_at": "2026-04-01T08:35:00Z"
-}
-```
-
-- Analytics fields are admin-only presentation data.
-- Non-admin HTML and non-admin note payloads do not expose view totals.
-
-## Create Payload
+## Note Create Payload
 
 ```json
 {
   "body": "# 2026-03-27 21:04\n",
   "alias": null,
   "is_favorite": false,
-  "is_private": true
+  "is_private": false
 }
 ```
 
-- `POST /records` requires `body`.
-- Browser-created notes use a browser-local minute timestamp heading as the default title seed.
-- Browser-created notes initialize `is_private` from the current global default-new-note visibility setting.
-- The server does not synthesize fallback body text when `body` is omitted.
+- `POST /resources/notes` requires JSON `body`.
+- Browser-created notes seed `body` with a browser-local minute heading.
 
-## Derived Presentation Rules
+## Media Create Payload
 
-- Display title is extracted from the first `# ` heading line.
-- Missing heading yields `Untitled note`.
-- Normal UI does not display raw `id` values.
-- Created time is the secondary identity cue in lists and note chrome.
-- Admin note pages edit the canonical body through a first-party Markdown textarea with on-demand preview.
-- Admin note pages should open with keyboard focus in the visible editor.
-- Note pages do not render a duplicate visible title outside the Markdown body.
-- The editor does not show a visible `Markdown body` label.
-- Browser titles use `Page | site`.
-- Saved settings own SEO origin state; the runtime must not derive public origins from incoming requests.
-- Alias typing must preserve internal `-`, `_`, and `.` separators until save-time validation.
-- Homepage hero content uses only editable intro Markdown.
-- Homepage and dashboard popularity default to `30d` and switch windows without mutating the visible URL.
-- `/search` popularity supports `popular_window=7d|30d|90d` and defaults to `30d`.
-- Public note URLs prefer `alias` when present.
-- `/search` with empty `q` is the canonical paginated all-notes card view.
-- Public homepage and live notes are the only HTML pages intended for search indexing.
+- `POST /resources/media` is `multipart/form-data`.
+- Required part: `file`.
+- Optional parts: `alias`, `is_favorite`, `is_private`.
+- The server derives `media_family`, content metadata, and the initial Markdown body from the uploaded file.
 
-## UI Semantics
+## Shared Update Rules
 
-- The public-facing control is `Public`.
-- `Public = checked` maps to `is_private = false`.
-- `Public = unchecked` maps to `is_private = true`.
-- Search and browse UI are canonical on `/search`.
-- Favorite state is explicit admin-managed note state.
-- Favorite ordering is explicit admin-managed note state.
+- `PUT /resources/{id}` accepts JSON updates for `body`, `alias`, `is_favorite`, and `is_private`.
+- `PUT /resources/media/{id}/file` accepts `multipart/form-data` with a replacement `file`.
+- Every successful live-resource update creates one new immutable saved snapshot.
 
 ## Preview API
 
 ```json
 {
-  "body": "# Preview me"
+  "body": "# Preview me\n\n![](/demo/file)\n\n<video controls src=\"/clip/file\"></video>"
 }
 ```
 
 ```json
 {
-  "html": "<h1>Preview me</h1>\n"
+  "html": "<h1>Preview me</h1>\n<p><img src=\"/demo/file\" alt=\"\"></p>\n<video controls=\"\" src=\"/clip/file\"></video>\n"
 }
 ```
 
 - `POST /admin/markdown-preview` is admin-only.
-- The endpoint renders Markdown through the same server path used by note display.
-- Preview rendering does not mutate note state.
+- The endpoint uses the same sanitized Markdown renderer as guest display.
 
-## Saved Snapshot History
-
-Creating a note creates saved snapshot `1`. Every successful update creates one new immutable saved snapshot:
+## Saved Snapshot Schema
 
 ```json
 {
   "id": "aj6m3m3jy6hm74m6rfj7dnu3ga",
+  "resource_id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
+  "kind": "media",
   "snapshot_number": 3,
-  "alias": "release-notes",
-  "title": "Title",
-  "summary": "Old content...",
-  "body": "# Title\n\nSaved content...",
-  "is_private": true,
+  "alias": "launch-video",
+  "title": "Launch Video",
+  "summary": "Primary product walkthrough.",
+  "body": "# Launch Video\n\nPrimary product walkthrough.",
+  "is_private": false,
+  "file_href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file",
+  "content_type": "video/mp4",
+  "byte_size": 18342012,
   "created_at": "2026-03-26T08:35:00Z"
 }
 ```
 
-History listing responses are paginated:
-
-```json
-{
-  "snapshots": [
-    {
-      "id": "aj6m3m3jy6hm74m6rfj7dnu3ga",
-      "snapshot_number": 3,
-      "alias": "release-notes",
-      "title": "Title",
-      "summary": "Saved content...",
-      "body": "# Title\n\nSaved content...",
-      "is_private": true,
-      "created_at": "2026-03-26T08:35:00Z"
-    }
-  ],
-  "previous_cursor": null,
-  "next_cursor": "opaque"
-}
-```
-
-## Navigation Payload
-
-```json
-{
-  "id": "01jvq6z3f4t2p8k7m9n0b1c2d3"
-}
-```
-
-When no accessible neighbor exists, `id` is `null`.
+- Media snapshots also preserve immutable object references and file metadata.
+- Note snapshots omit media-only fields.

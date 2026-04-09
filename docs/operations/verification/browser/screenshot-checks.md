@@ -8,93 +8,25 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 
 ## Required Captures
 
-- Desktop homepage shell with rail.
-- Desktop search page.
+- Desktop homepage shell with mixed resource cards.
+- Desktop search page with `kind` filtering.
 - Desktop admin dashboard shell.
-- Desktop admin settings page.
-- Desktop admin note page with the Markdown editor.
-- Desktop guest note page.
-- Desktop history index page showing the live note plus saved snapshots.
-- Compact homepage shell closed by default.
-- Compact homepage shell opened through the menu toggle.
-- Compact admin note page with the drawer available.
-- Compact history index page.
-- Compact admin note page with the preview overlay opened.
+- Desktop admin note page.
+- Desktop admin media page.
+- Desktop guest media page.
+- Desktop history index page.
+- Compact homepage shell closed and opened.
+- Compact admin note page.
+- Compact admin media page.
+- Compact admin note page with preview overlay opened.
 
 ## Required Assertions
 
-- Text-first actions remain readable and non-flashy.
-- Desktop homepage spacing remains as restrained as compact homepage spacing.
-- Visible timestamps are browser-local 24-hour strings.
-- Fragment-refreshed Popular sections still show browser-local timestamps and never expose a visible `UTC` suffix.
-- Raw note IDs are not shown in normal UI.
-- Visible shell branding uses the configured site name.
-- Rail search input does not appear.
-- `RECENT` does not appear.
-- `Rich mode`, `Text mode`, `Saving`, and `Saved` do not appear.
-- Drawer toggle appears only on narrow screens.
-- Narrow screens start with the drawer closed.
-- Surfaces remain flat with solid fills rather than gradients or blur.
-- Rectangular cards, inputs, and buttons keep tight `2px` through `4px` corners rather than soft rounded shells.
-- Note and history rails keep metadata readable without wrap regressions.
-- Note rails render one `History` card and never render inline saved-snapshot lists.
-- Note and history rails place `History` above `Open GitHub`.
-- Note and history rails place `Open GitHub` above the trailing action block.
-- Guest home and search rails place `Open GitHub` above `Admin sign in`.
-- Admin home, search, dashboard, and settings rails place `Open GitHub` above `Logout`.
-- Live-note cards on note and history pages show both `Created` and `Updated` inside shared card metadata.
-- Timeline cards keep a stable two-card layout, including disabled placeholders.
-- Search and homepage cards keep consistent heights without row-stretch artifacts.
-- Search and history paging expose `Prev` and `Next` actions.
-- Guest note and history rails place the GitHub control between `History` and `Admin sign in`.
-- Rail GitHub controls keep their own section instead of merging into auth or session actions.
-- Rail timeline labels stay outside the shared preview cards.
-- Rail titles clamp to one line and rail summaries clamp to two lines without height drift.
-- Search sort and search-submit controls align vertically on desktop.
-- Compact admin note pages do not overflow horizontally.
-- Compact note and history rails keep `Prev` above `Next`.
-- Compact search and history pagers keep `Prev` and `Next` in one horizontal row.
-- Search, admin, history, snapshot, setup, and login pages emit `noindex` robots metadata.
-- Homepage and public live-note pages emit meta descriptions.
-- Homepage and public live-note pages emit canonical URLs only when saved `public_base_url` is non-blank and valid.
-- `robots.txt` and `sitemap.xml` exist only when saved `public_base_url` is non-blank and valid.
-- Saving `public_base_url` changes later HTML metadata plus discovery routes without restarting the running app service.
-- Admin rails keep `New note` near the top.
-- Rail navigation controls use the same size family as rail actions.
-- Rail GitHub controls use the same size family as nearby rail actions.
-- Search sort remains functional without a visible `Sort` label.
-- Rail brand spacing clearly separates `kjxlkj` from the first navigation card.
-- The shell brand renders the circular icon cleanly on desktop and compact headers.
-- HTML links `/favicon.ico` and the generated icon remain centered and legible at favicon scale.
-- The icon uses the final four-solid-color composition rather than a gradient ring.
-- Opening an admin note should leave focus inside the visible textarea editor.
-- Closed drawer containers do not leave focusable descendants reachable.
-- Preview starts closed by default.
-- Compact preview opens as a fixed overlay.
-- Compact preview stays correctly placed when the rail is drawer-only or closed.
-- Newly typed Markdown renders correctly in the opened preview and in guest view after reload.
-- Compact preview content stays in the same dark-mode family as the guest note surface.
-- Browser verification types into the visible Markdown editor surface.
-- Browser verification covers heading, list, blockquote, fenced code, and table authoring behavior.
-- The main note page owns vertical scrolling; the editor body does not expose a second normal vertical scrollbar.
-- History pages expose `Live note`, `Latest saved snapshot`, and numbered `Saved snapshot N` labels.
-- Empty-query `/search` renders note cards instead of helper guidance.
-- Search exposes a query display card near sort only when `q` is non-empty.
-- Empty-query `/search` does not render a `Query` or `All notes` state card.
-- Dashboard does not render a library block.
-- Dashboard stacks `Settings`, `Popular`, `Recently updated`, and `Favorites`.
-- Dashboard favorites follow persistent favorite order and expose reorder controls.
-- Dashboard links to a dedicated settings page instead of embedding the full settings form.
-- Settings page covers site name, site description, public base URL, intro Markdown, section visibility and drag order, section counts, session timeout, search page size, and default new-note visibility.
-- Settings page does not expose visible order numbers for home sections.
-- Settings page section order is draggable and persists after save.
-- Dashboard and admin note surfaces expose note-view analytics.
-- Markdown links are visibly accented in guest content and preview.
-- Long URLs, code spans, and prose content do not trigger page-level horizontal overflow.
-- Homepage intro Markdown renders when configured.
-- Homepage popular-window switching updates the visible popular list.
-- Homepage and dashboard popular-window switching do not mutate the visible URL.
-- Homepage and dashboard popular-window switching replace the section without a full page reload.
-- Guest homepage popular cards do not expose counts.
-- Admin homepage popular cards expose rolling-window and all-time totals.
-- Homepage note sections expose `View more notes` cards for popular, recent, and favorites.
+- Admin rails keep `New note` above `New media`, and `New media` above `Open GitHub`.
+- Search, home, and dashboard cards can render notes and media in one shared visual language.
+- Image media cards may show a thumbnail without breaking shared card height rules.
+- Guest note preview and guest note display both render inline images from Markdown image syntax.
+- Guest note preview and guest note display both render safe inline video embeds.
+- Admin media pages expose a file preview plus a Markdown body editor.
+- Media replacement keeps current-page preview usable after the new file is stored.
+- Private file URLs do not leak to guest verification flows.

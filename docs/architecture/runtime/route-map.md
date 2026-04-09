@@ -4,27 +4,20 @@
 - `/` -> auth-aware homepage handler.
 - `/admin` and `/admin/` -> admin dashboard handler.
 - `/admin/settings` -> admin settings page and submit handlers.
+- `/admin/media/new` -> admin media upload page and submit path.
 - `/search` -> auth-aware browse/search handler.
-- `/favicon.ico` -> production favicon handler.
-- `/assets/icon.svg` -> visible brand icon handler.
-- `/robots.txt` -> conditional robots policy handler.
-- `/sitemap.xml` -> conditional sitemap handler.
+- `/favicon.ico` and `/assets/icon.svg` -> site asset handlers.
+- `/robots.txt` and `/sitemap.xml` -> conditional discovery handlers.
 - `/admin/markdown-preview` -> admin-only preview renderer.
-- `/{ref}` -> root resource handler for live notes and saved snapshots.
+- `/{ref}` -> root resource handler for live resources and saved snapshots.
 - `/{ref}/history` -> history index handler.
-- `/records` -> note create handler.
-- `/records/favorites/order` -> favorite reorder handler.
-- `/records/{id}` -> note update (PUT), delete (DELETE) handlers.
-- `/records/{id}/history` -> saved-snapshot history handler.
-- `/records/{id}/prev` -> previous note handler.
-- `/records/{id}/next` -> next note handler.
+- `/{ref}/file` -> current media file handler.
+- `/{snapshot_id}/file` -> snapshot media file handler.
+- `/resources/notes` -> note create handler.
+- `/resources/media` -> media create handler.
+- `/resources/favorites/order` -> favorite reorder handler.
+- `/resources/{id}` -> shared metadata update and delete handlers.
+- `/resources/media/{id}/file` -> media replacement handler.
+- `/resources/{id}/history` -> saved-snapshot history handler.
+- `/resources/{id}/prev` and `/resources/{id}/next` -> adjacent resource handlers.
 - `/healthz` -> health handler.
-
-## Access Notes
-
-- Public root is a homepage rather than a library dump.
-- Admin dashboard uses session guard.
-- Admin settings uses session guard.
-- Search widens to private notes only when session is valid.
-- Note and history handlers check live-note access and saved-snapshot visibility.
-- Root-path current-note routes resolve alias first and opaque ID second.
