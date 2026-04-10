@@ -32,6 +32,7 @@ mod search_tests;
 mod sections;
 mod settings_page;
 mod settings_security;
+mod style_bundle;
 
 pub use auth::{login_page, password_reset_page, setup_page};
 pub use dashboard::admin_page;

@@ -5,6 +5,7 @@ use crate::error::AppError;
 use crate::web::db::{
     self, DbPool, ListedResource, MediaFamily, PopularWindow, Resource, ResourceSnapshot,
 };
+use crate::web::history_summary::changed_summary;
 use crate::web::templates::{
     render_time, HistoryLink, IndexItem, IndexMetric, NavLink, ResourceAnalytics, ResourceChrome,
 };
@@ -72,7 +73,10 @@ pub fn history_links(snapshots: &[ResourceSnapshot], first_page: bool) -> Vec<Hi
             } else {
                 format!("Saved snapshot {}", snapshot.snapshot_number)
             },
-            summary: snapshot.summary.clone(),
+            summary: snapshots
+                .get(index + 1)
+                .map(|older| changed_summary(&older.body, &snapshot.body, &snapshot.summary))
+                .unwrap_or_else(|| snapshot.summary.clone()),
             created_at: render_time(&snapshot.created_at),
             status: visibility_label(snapshot.is_private),
         })

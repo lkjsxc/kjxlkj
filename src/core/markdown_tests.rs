@@ -18,3 +18,12 @@ fn render_markdown_strips_unsafe_html() {
     assert!(!html.contains("onclick="));
     assert!(html.contains("<video"));
 }
+
+#[test]
+fn render_markdown_cards_local_file_links() {
+    let html = render_markdown("[/demo/file](/demo/file)\n\n[external](https://example.com/file)");
+
+    assert!(html.contains("class=\"local-url-card\""));
+    assert!(html.contains("src=\"/demo/file?variant=card\""));
+    assert!(html.contains("https://example.com/file"));
+}

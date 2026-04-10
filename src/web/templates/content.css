@@ -111,3 +111,30 @@
 .pager .btn {
     width: 100%;
 }
+
+.local-url-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--panel-2);
+}
+
+.local-url-card a {
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr);
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.local-url-card img {
+    width: 128px;
+    height: 96px;
+    object-fit: cover;
+    background: var(--bg-1);
+}
+
+.local-url-card span {
+    padding: 12px 14px;
+    overflow-wrap: anywhere;
+}

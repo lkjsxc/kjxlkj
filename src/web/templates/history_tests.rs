@@ -23,6 +23,7 @@ fn sample_resource() -> Resource {
         width: None,
         height: None,
         duration_ms: None,
+        media_variants: None,
         is_favorite: true,
         favorite_position: Some(1),
         is_private: false,

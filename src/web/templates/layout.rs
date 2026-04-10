@@ -1,20 +1,8 @@
 //! Layout and helper functions
 
+use super::style_bundle::stylesheet;
 use crate::web::site::PageMeta;
 
-const BASE_CSS: &str = include_str!("base.css");
-const CONTENT_CSS: &str = include_str!("content.css");
-const CONTROLS_CSS: &str = include_str!("controls.css");
-const SHELL_CSS: &str = include_str!("shell.css");
-const SURFACES_CSS: &str = include_str!("surfaces.css");
-const SUMMARY_CARDS_CSS: &str = include_str!("summary_cards.css");
-const OVERVIEW_CSS: &str = include_str!("overview.css");
-const RESPONSIVE_CSS: &str = include_str!("responsive.css");
-const PAGE_CSS: &str = include_str!("page.css");
-const FAVORITES_CSS: &str = include_str!("favorites.css");
-const EDITOR_CSS: &str = include_str!("editor.css");
-const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
-const SETTINGS_CSS: &str = include_str!("settings.css");
 const SHELL_JS: &str = include_str!("shell.js");
 
 pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str) -> String {
@@ -29,24 +17,13 @@ pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str
 <link rel="icon" href="/assets/site-icon" sizes="any">
 {}
 {extra_head}
-<style>{BASE_CSS}
-{CONTENT_CSS}
-{CONTROLS_CSS}
-{SHELL_CSS}
-{SURFACES_CSS}
-{SUMMARY_CARDS_CSS}
-{OVERVIEW_CSS}
-{RESPONSIVE_CSS}
-{PAGE_CSS}
-{FAVORITES_CSS}
-{EDITOR_CSS}
-{EDITOR_EXTRA_CSS}
-{SETTINGS_CSS}</style>
+<style>{}</style>
 </head>
 <body>{content}<script>{SHELL_JS}</script>{extra_script}</body>
 </html>"#,
         html_escape(&meta.full_title()),
         meta.head_tags(),
+        stylesheet(),
     )
 }
 

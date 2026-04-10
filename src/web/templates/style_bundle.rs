@@ -1,0 +1,85 @@
+//! Minified inline stylesheet bundle
+
+use once_cell::sync::Lazy;
+
+const BASE_CSS: &str = include_str!("base.css");
+const CONTENT_CSS: &str = include_str!("content.css");
+const CONTROLS_CSS: &str = include_str!("controls.css");
+const SHELL_CSS: &str = include_str!("shell.css");
+const SURFACES_CSS: &str = include_str!("surfaces.css");
+const SUMMARY_CARDS_CSS: &str = include_str!("summary_cards.css");
+const OVERVIEW_CSS: &str = include_str!("overview.css");
+const RESPONSIVE_CSS: &str = include_str!("responsive.css");
+const PAGE_CSS: &str = include_str!("page.css");
+const FAVORITES_CSS: &str = include_str!("favorites.css");
+const EDITOR_CSS: &str = include_str!("editor.css");
+const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
+const SETTINGS_CSS: &str = include_str!("settings.css");
+
+static STYLESHEET: Lazy<String> = Lazy::new(|| minify_css(raw_css()));
+
+pub fn stylesheet() -> &'static str {
+    &STYLESHEET
+}
+
+fn raw_css() -> String {
+    [
+        BASE_CSS,
+        CONTENT_CSS,
+        CONTROLS_CSS,
+        SHELL_CSS,
+        SURFACES_CSS,
+        SUMMARY_CARDS_CSS,
+        OVERVIEW_CSS,
+        RESPONSIVE_CSS,
+        PAGE_CSS,
+        FAVORITES_CSS,
+        EDITOR_CSS,
+        EDITOR_EXTRA_CSS,
+        SETTINGS_CSS,
+    ]
+    .join("\n")
+}
+
+fn minify_css(input: String) -> String {
+    let mut output = String::with_capacity(input.len());
+    let mut chars = input.chars().peekable();
+    let mut pending_space = false;
+    while let Some(ch) = chars.next() {
+        if ch == '/' && chars.peek() == Some(&'*') {
+            chars.next();
+            skip_comment(&mut chars);
+            continue;
+        }
+        if ch.is_whitespace() {
+            pending_space = true;
+            continue;
+        }
+        if pending_space && needs_space(output.chars().last(), ch) {
+            output.push(' ');
+        }
+        pending_space = false;
+        if matches!(ch, ':' | ';' | ',' | '{' | '}' | '>' | '+') && output.ends_with(' ') {
+            output.pop();
+        }
+        output.push(ch);
+    }
+    output
+}
+
+fn skip_comment<I: Iterator<Item = char>>(chars: &mut std::iter::Peekable<I>) {
+    while let Some(ch) = chars.next() {
+        if ch == '*' && chars.peek() == Some(&'/') {
+            chars.next();
+            return;
+        }
+    }
+}
+
+fn needs_space(previous: Option<char>, next: char) -> bool {
+    matches!(previous, Some(ch) if is_word(ch) && is_word(next))
+}
+
+fn is_word(ch: char) -> bool {
+    ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | ')' | ']')
+}
