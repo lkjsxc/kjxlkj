@@ -1,0 +1,33 @@
+.resource-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: start;
+}
+
+.resource-list {
+    gap: 8px;
+}
+
+.public-resource-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.public-resource-grid .resource-row {
+    grid-template-columns: 1fr;
+    min-height: 100%;
+}
+
+.public-resource-grid .card-meta {
+    justify-items: start;
+    text-align: left;
+}
+
+.public-resource-grid .status-pill {
+    justify-self: start;
+}
+
+.card-summary {
+    font-size: 0.96rem;
+    line-height: 1.45;
+}

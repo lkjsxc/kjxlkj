@@ -7,6 +7,7 @@ const CONTENT_CSS: &str = include_str!("content.css");
 const CONTROLS_CSS: &str = include_str!("controls.css");
 const SHELL_CSS: &str = include_str!("shell.css");
 const SURFACES_CSS: &str = include_str!("surfaces.css");
+const RESOURCE_LIST_CSS: &str = include_str!("resource_list.css");
 const SUMMARY_CARDS_CSS: &str = include_str!("summary_cards.css");
 const OVERVIEW_CSS: &str = include_str!("overview.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
@@ -29,6 +30,7 @@ fn raw_css() -> String {
         CONTROLS_CSS,
         SHELL_CSS,
         SURFACES_CSS,
+        RESOURCE_LIST_CSS,
         SUMMARY_CARDS_CSS,
         OVERVIEW_CSS,
         RESPONSIVE_CSS,

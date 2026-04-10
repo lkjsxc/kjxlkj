@@ -1,6 +1,6 @@
 //! Resource-view analytics queries
 
-use super::listing_cursor::row_to_listed_resource;
+use super::listing_row::row_to_listed_resource;
 use super::{DbPool, ListedResource, PopularWindow, ResourceViewStats};
 use crate::error::AppError;
 

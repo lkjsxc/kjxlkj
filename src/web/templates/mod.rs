@@ -30,7 +30,9 @@ mod search_form;
 #[cfg(test)]
 mod search_tests;
 mod sections;
+mod settings_home;
 mod settings_page;
+mod settings_panel;
 mod settings_security;
 mod style_bundle;
 

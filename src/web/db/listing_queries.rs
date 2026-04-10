@@ -1,6 +1,7 @@
 use super::listing::{ListDirection, ListPage, ListSort};
-use super::listing_cursor::{page_from_rows, row_to_listed_resource, Cursor, PageCursorContext};
+use super::listing_cursor::{page_from_rows, Cursor, PageCursorContext};
 use super::listing_params::{BrowseParams, SearchParams};
+use super::listing_row::row_to_listed_resource;
 use super::{DbPool, ListKind, ListScope, ListedResource, PopularWindow};
 use crate::error::AppError;
 

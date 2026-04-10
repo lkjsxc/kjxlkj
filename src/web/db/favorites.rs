@@ -1,6 +1,6 @@
 //! Favorite ordering queries
 
-use super::listing_cursor::row_to_listed_resource;
+use super::listing_row::row_to_listed_resource;
 use super::{DbPool, ListedResource};
 use crate::error::AppError;
 use std::collections::HashSet;

@@ -11,6 +11,7 @@ mod listing_cursor;
 mod listing_direction;
 mod listing_params;
 mod listing_queries;
+mod listing_row;
 mod listing_sort;
 mod listing_sort_sql;
 mod media;
