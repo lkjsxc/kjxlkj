@@ -13,7 +13,6 @@ use deadpool_postgres::GenericClient;
 pub struct AttachmentCreate {
     pub media_id: String,
     pub media_body: String,
-    pub bytes: Vec<u8>,
     pub media_family: MediaFamily,
     pub file_key: String,
     pub content_type: String,

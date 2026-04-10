@@ -68,8 +68,10 @@ thiserror = "1"
 # Async traits
 async-trait = "0.1"
 
-[dev-dependencies]
+# Temporary upload spill files
 tempfile = "3"
+
+[dev-dependencies]
 
 [profile.release]
 lto = true

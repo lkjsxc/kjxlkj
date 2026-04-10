@@ -2,6 +2,7 @@ use super::session;
 use crate::error::AppError;
 use crate::web::db;
 use crate::web::handlers::http;
+use crate::web::handlers::media_input::{discard_field, field_bytes_limited};
 use crate::web::routes::AppState;
 use axum::extract::multipart::Field;
 use axum::extract::{Multipart, State};
@@ -57,10 +58,7 @@ async fn parse_icon(mut payload: Multipart, max_bytes: usize) -> Result<IconUplo
         if field.name() == Some("icon") {
             icon = Some(read_icon(field, max_bytes).await?);
         } else {
-            let _ = field
-                .bytes()
-                .await
-                .map_err(|error| invalid(&format!("could not read field: {error}")))?;
+            discard_field(field, 16 * 1024).await?;
         }
     }
     icon.ok_or_else(|| invalid("icon image is required"))
@@ -75,20 +73,12 @@ async fn read_icon(field: Field<'_>, max_bytes: usize) -> Result<IconUpload, App
         .content_type()
         .map(str::to_string)
         .unwrap_or_else(|| "application/octet-stream".to_string());
-    let bytes = field
-        .bytes()
-        .await
-        .map_err(|error| invalid(&format!("could not read icon image: {error}")))?;
-    if bytes.len() > max_bytes {
-        return Err(AppError::PayloadTooLarge(
-            "icon image exceeds upload limit".to_string(),
-        ));
-    }
+    let bytes = field_bytes_limited(field, max_bytes, "icon image exceeds upload limit").await?;
     if bytes.is_empty() {
         return Err(invalid("icon image is required"));
     }
     Ok(IconUpload {
-        bytes: bytes.to_vec(),
+        bytes,
         filename,
         content_type,
     })

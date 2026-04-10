@@ -1,7 +1,6 @@
 use crate::core::generate_id;
 use crate::error::AppError;
 use crate::web::db::MediaFamily;
-use sha2::{Digest, Sha256};
 use std::path::Path;
 
 pub fn detect_media_family(content_type: &str, filename: &str) -> Result<MediaFamily, AppError> {
@@ -36,12 +35,6 @@ pub fn embed_markdown(media_ref: &str, family: MediaFamily) -> String {
 
 pub fn object_key(id: &str, filename: &str) -> String {
     format!("media/{id}/{}-{}", generate_id(), safe_name(filename))
-}
-
-pub fn sha256_hex(bytes: &[u8]) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(bytes);
-    format!("{:x}", hasher.finalize())
 }
 
 fn safe_name(filename: &str) -> String {

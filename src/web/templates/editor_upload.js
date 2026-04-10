@@ -43,7 +43,7 @@ async function uploadSelectedMedia(files) {
             method: 'POST',
             body: formData
         });
-        var payload = await response.json();
+        var payload = await readUploadResponse(response);
         if (!response.ok) throw new Error(payload.message || 'Media upload failed.');
         if (requestId !== editorState.latestRequest) return;
         var cursor = payload.selection_fallback
@@ -68,6 +68,25 @@ async function uploadSelectedMedia(files) {
         editorState.uploading = false;
         if (editorState.uploadButton) editorState.uploadButton.disabled = false;
     }
+}
+
+async function readUploadResponse(response) {
+    var text = await response.text();
+    if (!text) return {};
+    try {
+        return JSON.parse(text);
+    } catch (_) {
+        return { message: plainErrorText(text) || 'Media upload failed.' };
+    }
+}
+
+function plainErrorText(text) {
+    return text
+        .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
 function currentSelectionRange() {

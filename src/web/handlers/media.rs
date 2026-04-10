@@ -1,5 +1,5 @@
 use super::media_input::parse_media_form;
-use super::media_support::{detect_media_family, initial_body, object_key, sha256_hex};
+use super::media_support::{detect_media_family, initial_body, object_key};
 use super::resource_payload::ResourcePayload;
 use crate::core::normalize_alias;
 use crate::error::AppError;
@@ -19,31 +19,35 @@ pub async fn create(
     let pool = &state.pool;
     let storage = &state.storage;
     super::session::require_session(&headers, pool).await?;
-    let form = parse_media_form(payload).await?;
+    let form = parse_media_form(payload, state.media_upload_max_bytes).await?;
     let settings = db::get_settings(pool).await?;
     let id = db::generate_resource_id(pool).await?;
     let file_key = object_key(&id, &form.file.original_filename);
     let body = initial_body(&form.file.original_filename);
     let media_family = detect_media_family(&form.file.content_type, &form.file.original_filename)?;
+    let source_bytes = if media_family == db::MediaFamily::Image {
+        form.file.read_bytes().await?
+    } else {
+        Vec::new()
+    };
     let generated_variants = super::media_derivatives::build_variants(
         &id,
         media_family,
         &body,
-        &form.file.bytes,
+        &source_bytes,
         settings.media_webp_quality,
     );
     storage
-        .put_object(&file_key, form.file.bytes.clone(), &form.file.content_type)
+        .put_file(&file_key, form.file.path(), &form.file.content_type)
         .await?;
     let (media_variants, stored_variant_keys) =
         super::media_derivatives::store_variants(storage, &generated_variants).await;
-    let sha256_hex = sha256_hex(&form.file.bytes);
     let blob = MediaBlob {
         media_family,
         file_key: &file_key,
         content_type: &form.file.content_type,
-        byte_size: form.file.bytes.len() as i64,
-        sha256_hex: &sha256_hex,
+        byte_size: form.file.byte_size,
+        sha256_hex: &form.file.sha256_hex,
         original_filename: &form.file.original_filename,
         width: None,
         height: None,

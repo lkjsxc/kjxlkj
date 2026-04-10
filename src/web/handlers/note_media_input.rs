@@ -1,10 +1,8 @@
 use crate::error::AppError;
-use axum::extract::multipart::Field;
 use axum::extract::Multipart;
 
-use super::media_input::UploadedFile;
+use super::media_input::{discard_field, field_bytes_limited, read_uploaded_file, UploadedFile};
 
-const MAX_FILE_BYTES: usize = 128 * 1024 * 1024;
 const MAX_TEXT_BYTES: usize = 2 * 1024 * 1024;
 
 pub struct NoteMediaAttachmentInput {
@@ -19,6 +17,7 @@ pub struct NoteMediaAttachmentInput {
 
 pub async fn parse_note_media_form(
     mut payload: Multipart,
+    max_file_bytes: usize,
 ) -> Result<NoteMediaAttachmentInput, AppError> {
     let mut files = Vec::new();
     let mut body = None;
@@ -33,7 +32,7 @@ pub async fn parse_note_media_form(
         .map_err(|e| AppError::InvalidRequest(format!("invalid multipart payload: {e}")))?
     {
         match field.name() {
-            Some("file") => files.push(read_file(field).await?),
+            Some("file") => files.push(read_uploaded_file(field, max_file_bytes).await?),
             Some("body") => body = Some(raw_text(field).await?),
             Some("alias") => alias = text_value(field).await?,
             Some("is_favorite") => is_favorite = Some(bool_value(field).await?),
@@ -41,10 +40,7 @@ pub async fn parse_note_media_form(
             Some("insert_start") => insert_start = Some(usize_value(field).await?),
             Some("insert_end") => insert_end = Some(usize_value(field).await?),
             _ => {
-                let _ = field
-                    .bytes()
-                    .await
-                    .map_err(|e| invalid(&format!("could not read field: {e}")))?;
+                discard_field(field, MAX_TEXT_BYTES).await?;
             }
         }
     }
@@ -62,54 +58,20 @@ pub async fn parse_note_media_form(
     })
 }
 
-async fn read_file(field: Field<'_>) -> Result<UploadedFile, AppError> {
-    let original_filename = field
-        .file_name()
-        .map(str::to_string)
-        .filter(|value| !value.trim().is_empty())
-        .unwrap_or_else(|| "upload.bin".to_string());
-    let content_type = field
-        .content_type()
-        .map(str::to_string)
-        .unwrap_or_else(|| "application/octet-stream".to_string());
-    let bytes = field
-        .bytes()
-        .await
-        .map_err(|e| invalid(&format!("could not read upload: {e}")))?;
-    if bytes.len() > MAX_FILE_BYTES {
-        return Err(AppError::PayloadTooLarge(
-            "file exceeds upload limit".to_string(),
-        ));
-    }
-    if bytes.is_empty() {
-        return Err(invalid("file is required"));
-    }
-    Ok(UploadedFile {
-        bytes: bytes.to_vec(),
-        original_filename,
-        content_type,
-    })
-}
-
-async fn required_text(field: Field<'_>) -> Result<String, AppError> {
+async fn required_text(field: axum::extract::multipart::Field<'_>) -> Result<String, AppError> {
     text_value(field)
         .await?
         .ok_or_else(|| invalid("text field is required"))
 }
 
-async fn text_value(field: Field<'_>) -> Result<Option<String>, AppError> {
+async fn text_value(
+    field: axum::extract::multipart::Field<'_>,
+) -> Result<Option<String>, AppError> {
     Ok(trimmed_text(raw_text(field).await?))
 }
 
-async fn raw_text(field: Field<'_>) -> Result<String, AppError> {
-    let bytes = field
-        .bytes()
-        .await
-        .map_err(|e| invalid(&format!("could not read field: {e}")))?;
-    if bytes.len() > MAX_TEXT_BYTES {
-        return Err(invalid("text field exceeds limit"));
-    }
-    decode_text(bytes.to_vec())
+async fn raw_text(field: axum::extract::multipart::Field<'_>) -> Result<String, AppError> {
+    decode_text(field_bytes_limited(field, MAX_TEXT_BYTES, "text field exceeds limit").await?)
 }
 
 fn decode_text(bytes: Vec<u8>) -> Result<String, AppError> {
@@ -121,7 +83,7 @@ fn trimmed_text(value: String) -> Option<String> {
     (!trimmed.is_empty()).then(|| trimmed.to_string())
 }
 
-async fn bool_value(field: Field<'_>) -> Result<bool, AppError> {
+async fn bool_value(field: axum::extract::multipart::Field<'_>) -> Result<bool, AppError> {
     match required_text(field).await?.as_str() {
         "0" | "false" | "off" => Ok(false),
         "1" | "true" | "on" => Ok(true),
@@ -129,7 +91,7 @@ async fn bool_value(field: Field<'_>) -> Result<bool, AppError> {
     }
 }
 
-async fn usize_value(field: Field<'_>) -> Result<usize, AppError> {
+async fn usize_value(field: axum::extract::multipart::Field<'_>) -> Result<usize, AppError> {
     required_text(field)
         .await?
         .parse::<usize>()

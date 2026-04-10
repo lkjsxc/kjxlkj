@@ -3,6 +3,7 @@ use crate::error::AppError;
 use aws_config::{BehaviorVersion, Region};
 use aws_credential_types::Credentials;
 use aws_sdk_s3::{config::Builder, primitives::ByteStream, Client};
+use std::path::Path;
 
 #[derive(Clone)]
 pub struct Storage {
@@ -61,6 +62,27 @@ impl Storage {
             .key(key)
             .content_type(content_type)
             .body(ByteStream::from(bytes))
+            .send()
+            .await
+            .map(|_| ())
+            .map_err(|e| AppError::StorageError(format!("object upload failed: {e}")))
+    }
+
+    pub async fn put_file(
+        &self,
+        key: &str,
+        path: impl AsRef<Path>,
+        content_type: &str,
+    ) -> Result<(), AppError> {
+        let body = ByteStream::from_path(path.as_ref())
+            .await
+            .map_err(|e| AppError::StorageError(format!("object file open failed: {e}")))?;
+        self.client
+            .put_object()
+            .bucket(&self.bucket)
+            .key(key)
+            .content_type(content_type)
+            .body(body)
             .send()
             .await
             .map(|_| ())
