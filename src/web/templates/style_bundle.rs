@@ -59,7 +59,7 @@ fn minify_css(input: String) -> String {
             output.push(' ');
         }
         pending_space = false;
-        if matches!(ch, ':' | ';' | ',' | '{' | '}' | '>' | '+') && output.ends_with(' ') {
+        if matches!(ch, ';' | ',' | '{' | '}' | '>' | '+' | '~') && output.ends_with(' ') {
             output.pop();
         }
         output.push(ch);
@@ -77,9 +77,39 @@ fn skip_comment<I: Iterator<Item = char>>(chars: &mut std::iter::Peekable<I>) {
 }
 
 fn needs_space(previous: Option<char>, next: char) -> bool {
-    matches!(previous, Some(ch) if is_word(ch) && is_word(next))
+    let Some(previous) = previous else {
+        return false;
+    };
+    if matches!(
+        previous,
+        '{' | '}' | ':' | ';' | ',' | '>' | '+' | '~' | '('
+    ) {
+        return false;
+    }
+    if matches!(next, '{' | '}' | ';' | ',' | '>' | '+' | '~' | ')') {
+        return false;
+    }
+    true
 }
 
-fn is_word(ch: char) -> bool {
-    ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | ')' | ']')
+#[cfg(test)]
+mod tests {
+    use super::minify_css;
+
+    #[test]
+    fn minify_preserves_selector_spacing() {
+        let css = concat!(
+            ".pager .btn { width: 100%; }",
+            ".prose :is(p, li) { margin: 0; }",
+            "body.rail-open .shell-rail { transform: none; }",
+            ".public-resource-grid .resource-row { gap: 1rem; }",
+        );
+
+        let minified = minify_css(css.to_string());
+
+        assert!(minified.contains(".pager .btn"));
+        assert!(minified.contains(".prose :is"));
+        assert!(minified.contains("body.rail-open .shell-rail"));
+        assert!(minified.contains(".public-resource-grid .resource-row"));
+    }
 }
