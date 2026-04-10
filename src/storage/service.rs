@@ -2,7 +2,11 @@ use crate::config::Config;
 use crate::error::AppError;
 use aws_config::{BehaviorVersion, Region};
 use aws_credential_types::Credentials;
-use aws_sdk_s3::{config::Builder, primitives::ByteStream, Client};
+use aws_sdk_s3::{
+    config::{Builder, RequestChecksumCalculation},
+    primitives::ByteStream,
+    Client,
+};
 use std::path::Path;
 
 #[derive(Clone)]
@@ -33,6 +37,7 @@ impl Storage {
             .await;
         let conf = Builder::from(&shared)
             .force_path_style(config.seaweedfs_s3_path_style)
+            .request_checksum_calculation(RequestChecksumCalculation::WhenRequired)
             .build();
         let storage = Self {
             bucket: config.seaweedfs_s3_bucket.clone(),
