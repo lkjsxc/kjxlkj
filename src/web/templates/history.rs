@@ -73,14 +73,14 @@ pub fn snapshot_page(
     is_admin: bool,
     site: &SiteContext,
 ) -> String {
-    let history_link = is_admin
-        .then(|| {
-            format!(
-                r#"<a href="{}" class="btn">Back to history</a>"#,
-                chrome.history_href
-            )
-        })
-        .unwrap_or_default();
+    let history_link = if is_admin {
+        format!(
+            r#"<a href="{}" class="btn">Back to history</a>"#,
+            chrome.history_href
+        )
+    } else {
+        String::new()
+    };
     let content = format!(
         r#"<header class="page-head">
 <div class="page-title-stack">
