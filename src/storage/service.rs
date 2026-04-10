@@ -19,22 +19,22 @@ pub struct StoredObject {
 impl Storage {
     pub async fn from_config(config: &Config) -> Result<Self, AppError> {
         let shared = aws_config::defaults(BehaviorVersion::latest())
-            .region(Region::new(config.s3_region.clone()))
+            .region(Region::new(config.seaweedfs_s3_region.clone()))
             .credentials_provider(Credentials::new(
-                config.s3_access_key.clone(),
-                config.s3_secret_key.clone(),
+                config.seaweedfs_s3_access_key.clone(),
+                config.seaweedfs_s3_secret_key.clone(),
                 None,
                 None,
                 "kjxlkj-static",
             ))
-            .endpoint_url(config.s3_endpoint.clone())
+            .endpoint_url(config.seaweedfs_s3_endpoint.clone())
             .load()
             .await;
         let conf = Builder::from(&shared)
-            .force_path_style(config.s3_path_style)
+            .force_path_style(config.seaweedfs_s3_path_style)
             .build();
         let storage = Self {
-            bucket: config.s3_bucket.clone(),
+            bucket: config.seaweedfs_s3_bucket.clone(),
             client: Client::from_conf(conf),
         };
         storage.ensure_bucket().await?;

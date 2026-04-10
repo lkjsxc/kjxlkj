@@ -15,7 +15,7 @@ const FILE_ARGS: &[&str] = &[
 pub fn verify() -> Result<(), Box<dyn std::error::Error>> {
     let result = (|| -> Result<(), Box<dyn std::error::Error>> {
         run(&["build", "app", "verify", "visual-verify"])?;
-        run(&["up", "-d", "postgres", "app"])?;
+        run(&["up", "-d", "postgres", "seaweedfs", "app"])?;
         run(&["run", "--rm", "verify"])?;
         run(&["run", "--rm", "visual-verify"])?;
         Ok(())

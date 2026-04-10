@@ -28,7 +28,7 @@ services:
     depends_on:
       app:
         condition: service_healthy
-      minio:
+      seaweedfs:
         condition: service_healthy
 
 volumes:

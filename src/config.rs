@@ -11,6 +11,8 @@ pub enum ConfigError {
     InvalidPort(String),
     #[error("Invalid boolean: {0}")]
     InvalidBool(String),
+    #[error("Invalid number: {0}")]
+    InvalidNumber(String),
 }
 
 #[derive(Debug, Clone)]
@@ -18,12 +20,14 @@ pub struct Config {
     pub bind_host: String,
     pub bind_port: u16,
     pub database_url: String,
-    pub s3_endpoint: String,
-    pub s3_region: String,
-    pub s3_bucket: String,
-    pub s3_access_key: String,
-    pub s3_secret_key: String,
-    pub s3_path_style: bool,
+    pub seaweedfs_s3_endpoint: String,
+    pub seaweedfs_s3_region: String,
+    pub seaweedfs_s3_bucket: String,
+    pub seaweedfs_s3_access_key: String,
+    pub seaweedfs_s3_secret_key: String,
+    pub seaweedfs_s3_path_style: bool,
+    pub media_upload_max_bytes: usize,
+    pub site_icon_upload_max_bytes: usize,
     pub setup_code: Option<String>,
 }
 
@@ -33,12 +37,14 @@ impl Config {
             bind_host: env::var("BIND_HOST").unwrap_or_else(|_| "0.0.0.0".to_string()),
             bind_port: parse_port("BIND_PORT", "8080")?,
             database_url: required_var("DATABASE_URL")?,
-            s3_endpoint: required_var("S3_ENDPOINT")?,
-            s3_region: required_var("S3_REGION")?,
-            s3_bucket: required_var("S3_BUCKET")?,
-            s3_access_key: required_var("S3_ACCESS_KEY")?,
-            s3_secret_key: required_var("S3_SECRET_KEY")?,
-            s3_path_style: parse_bool("S3_PATH_STYLE", "true")?,
+            seaweedfs_s3_endpoint: required_var("SEAWEEDFS_S3_ENDPOINT")?,
+            seaweedfs_s3_region: required_var("SEAWEEDFS_S3_REGION")?,
+            seaweedfs_s3_bucket: required_var("SEAWEEDFS_S3_BUCKET")?,
+            seaweedfs_s3_access_key: required_var("SEAWEEDFS_S3_ACCESS_KEY")?,
+            seaweedfs_s3_secret_key: required_var("SEAWEEDFS_S3_SECRET_KEY")?,
+            seaweedfs_s3_path_style: parse_bool("SEAWEEDFS_S3_PATH_STYLE", "true")?,
+            media_upload_max_bytes: parse_usize("MEDIA_UPLOAD_MAX_BYTES", "536870912")?,
+            site_icon_upload_max_bytes: parse_usize("SITE_ICON_UPLOAD_MAX_BYTES", "2097152")?,
             setup_code: env::var("SETUP_CODE")
                 .ok()
                 .filter(|value| !value.is_empty()),
@@ -66,4 +72,11 @@ fn parse_bool(name: &str, default: &str) -> Result<bool, ConfigError> {
         .unwrap_or_else(|_| default.to_string())
         .parse::<bool>()
         .map_err(|_| ConfigError::InvalidBool(format!("{name} must be true or false")))
+}
+
+fn parse_usize(name: &str, default: &str) -> Result<usize, ConfigError> {
+    env::var(name)
+        .unwrap_or_else(|_| default.to_string())
+        .parse::<usize>()
+        .map_err(|_| ConfigError::InvalidNumber(format!("{name} must be a positive integer")))
 }

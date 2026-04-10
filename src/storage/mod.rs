@@ -1,4 +1,4 @@
-//! S3-compatible object storage support
+//! SeaweedFS S3 object storage support
 
 mod service;
 
