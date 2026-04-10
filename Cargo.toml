@@ -43,7 +43,7 @@ image = { version = "0.25", default-features = false, features = ["jpeg", "png",
 webp = "0.3"
 
 # Password hashing
-bcrypt = "0.16"
+argon2 = "0.5"
 
 # UUID generation
 uuid = { version = "1", features = ["v4", "serde"] }

@@ -1,6 +1,6 @@
+use super::password;
 use super::DbPool;
 use crate::error::AppError;
-use sha2::{Digest, Sha256};
 use uuid::Uuid;
 
 pub async fn issue_password_reset_token(pool: &DbPool) -> Result<Option<String>, AppError> {
@@ -17,7 +17,7 @@ pub async fn issue_password_reset_token(pool: &DbPool) -> Result<Option<String>,
         .execute(
             "INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) \
              VALUES ($1, $2, NOW() + INTERVAL '15 minutes')",
-            &[&row.get::<_, Uuid>("id"), &token_hash(&token)],
+            &[&row.get::<_, Uuid>("id"), &password::hash_secret(&token)?],
         )
         .await
         .map_err(db_error)?;
@@ -31,15 +31,18 @@ pub async fn reset_admin_password(
 ) -> Result<bool, AppError> {
     let mut db = client(pool).await?;
     let tx = db.transaction().await.map_err(db_error)?;
-    let hash = token_hash(token.trim());
-    let Some(row) = tx
-        .query_opt(
-            "SELECT id, user_id FROM password_reset_tokens \
-             WHERE token_hash = $1 AND used_at IS NULL AND expires_at > NOW() FOR UPDATE",
-            &[&hash],
+    let rows = tx
+        .query(
+            "SELECT id, user_id, token_hash FROM password_reset_tokens \
+             WHERE used_at IS NULL AND expires_at > NOW() \
+             ORDER BY created_at DESC FOR UPDATE",
+            &[],
         )
         .await
-        .map_err(db_error)?
+        .map_err(db_error)?;
+    let Some(row) = rows
+        .into_iter()
+        .find(|row| password::verify_secret(token.trim(), &row.get::<_, String>("token_hash")))
     else {
         return Ok(false);
     };
@@ -83,7 +86,7 @@ pub async fn verify_admin_password(
         return Ok(false);
     };
     let hash: String = row.get("password_hash");
-    Ok(bcrypt::verify(password, &hash).unwrap_or(false))
+    Ok(password::verify_secret(password, &hash))
 }
 
 async fn update_password_in_tx(
@@ -91,8 +94,7 @@ async fn update_password_in_tx(
     user_id: Uuid,
     password: &str,
 ) -> Result<(), AppError> {
-    let password_hash = bcrypt::hash(password, 12)
-        .map_err(|e| AppError::StorageError(format!("Password hash failed: {e}")))?;
+    let password_hash = password::hash_secret(password)?;
     tx.execute(
         "UPDATE admin_user SET password_hash = $2 WHERE id = $1",
         &[&user_id, &password_hash],
@@ -107,12 +109,6 @@ async fn update_password_in_tx(
 
 fn new_token() -> String {
     format!("{}{}", Uuid::new_v4().simple(), Uuid::new_v4().simple())
-}
-
-fn token_hash(token: &str) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(token.as_bytes());
-    format!("{:x}", hasher.finalize())
 }
 
 async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {

@@ -1,5 +1,6 @@
 //! Authentication database operations
 
+use super::password;
 use super::DbPool;
 use crate::error::AppError;
 use uuid::Uuid;
@@ -21,8 +22,7 @@ pub async fn is_setup(pool: &DbPool) -> Result<bool, AppError> {
 
 /// Create admin user
 pub async fn create_admin(pool: &DbPool, username: &str, password: &str) -> Result<Uuid, AppError> {
-    let hash = bcrypt::hash(password, 12)
-        .map_err(|e| AppError::StorageError(format!("Password hash failed: {e}")))?;
+    let hash = password::hash_secret(password)?;
 
     let client = pool
         .get()
@@ -62,8 +62,7 @@ pub async fn verify_credentials(
     match row {
         Some(r) => {
             let hash: String = r.get("password_hash");
-            let valid = bcrypt::verify(password, &hash).unwrap_or(false);
-            if valid {
+            if password::verify_secret(password, &hash) {
                 Ok(Some(r.get("id")))
             } else {
                 Ok(None)

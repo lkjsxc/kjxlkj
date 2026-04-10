@@ -18,6 +18,7 @@ mod media_attachments;
 mod migrations;
 mod models;
 mod navigation;
+mod password;
 mod password_reset;
 mod popular_window;
 mod resource_ids;
