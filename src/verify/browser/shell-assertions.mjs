@@ -144,7 +144,7 @@ async function assertBrandSpacing(page) {
 }
 
 async function assertBrandIcon(page) {
-    assert.equal(await page.locator('link[rel="icon"][href="/favicon.ico"]').count(), 1);
+    assert.equal(await page.locator('link[rel="icon"][href="/assets/site-icon"]').count(), 1);
     const marks = page.locator('.brand-mark');
     const visibleSources = await marks.evaluateAll((nodes) =>
         nodes
@@ -156,7 +156,7 @@ async function assertBrandIcon(page) {
             .map((node) => node.getAttribute('src'))
     );
     assert.ok(visibleSources.length >= 1, 'at least one visible brand icon should render');
-    assert.ok(visibleSources.every((src) => src === '/assets/icon.svg'));
+    assert.ok(visibleSources.every((src) => src === '/assets/site-icon'));
 }
 
 async function assertRestrainedMainColumn(page) {

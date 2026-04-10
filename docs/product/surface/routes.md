@@ -31,6 +31,7 @@
 - `GET /robots.txt` and `GET /sitemap.xml` still depend on persisted `public_base_url`.
 - `POST /admin/markdown-preview` renders sanitized Markdown preview HTML for admins only.
 - `POST /admin/password` changes the signed-in admin password.
+- `POST /admin/site-icon` stores an uploaded image as the effective site icon.
 
 ## Resource Management
 

@@ -36,8 +36,17 @@ pub fn valid_return_to(value: Option<&str>) -> String {
     value
         .filter(|value| value.starts_with('/') && !value.starts_with("//"))
         .filter(|value| !value.contains('\\'))
+        .filter(|value| !invalid_return_path(value))
         .unwrap_or("/admin")
         .to_string()
+}
+
+fn invalid_return_path(value: &str) -> bool {
+    matches!(
+        value.split('?').next().unwrap_or(value),
+        "/login" | "/logout" | "/setup" | "/reset-password" | "/healthz"
+    ) || value.starts_with("/resources/")
+        || value.starts_with("/admin/markdown-preview")
 }
 
 fn return_path(req: &HttpRequest) -> String {

@@ -29,3 +29,4 @@ pub mod session;
 pub mod settings;
 mod settings_input;
 pub mod setup;
+pub mod site_icon;

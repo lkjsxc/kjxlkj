@@ -1,11 +1,11 @@
 # Runtime Route Map
 
-- `/setup`, `/login`, `/logout` -> setup and session handlers.
+- `/setup`, `/login`, `/logout`, and `/reset-password` -> setup, session, and password recovery handlers.
 - `/` -> auth-aware homepage handler.
 - `/admin` and `/admin/` -> admin dashboard handler.
-- `/admin/settings` -> admin settings page and submit handlers.
+- `/admin/settings`, `/admin/password`, and `/admin/site-icon` -> admin settings, password, and icon handlers.
 - `/search` -> auth-aware browse/search handler.
-- `/favicon.ico` and `/assets/icon.svg` -> site asset handlers.
+- `/favicon.ico`, `/assets/icon.svg`, and `/assets/site-icon` -> site asset handlers.
 - `/robots.txt` and `/sitemap.xml` -> conditional discovery handlers.
 - `/admin/markdown-preview` -> admin-only preview renderer.
 - `/{ref}` -> root resource handler for live resources and saved snapshots.

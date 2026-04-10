@@ -26,7 +26,7 @@ pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>document.documentElement.classList.add('js');</script>
 <title>{}</title>
-<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/site-icon" sizes="any">
 {}
 {extra_head}
 <style>{BASE_CSS}
@@ -141,7 +141,7 @@ pub fn format_date(dt: &chrono::DateTime<chrono::Utc>) -> String {
 
 fn brand_lockup(site_name: &str) -> String {
     format!(
-        r#"<a href="/" class="brand brand-lockup"><img src="/assets/icon.svg" class="brand-mark" alt="" aria-hidden="true"><span>{}</span></a>"#,
+        r#"<a href="/" class="brand brand-lockup"><img src="/assets/site-icon" class="brand-mark" alt="" aria-hidden="true"><span>{}</span></a>"#,
         html_escape(site_name),
     )
 }

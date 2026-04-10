@@ -7,7 +7,7 @@ use crate::web::db;
 use crate::web::handlers::{
     admin, assets, discoverability, favorites, health, history, home, login, logout, media,
     media_attachments, password_reset, popular_sections, preview, resource, resource_file,
-    resource_history, resources, search, settings, setup,
+    resource_history, resources, search, settings, setup, site_icon,
 };
 use actix_web::{middleware::Compress, web, App, HttpServer};
 use tracing::{info, warn};
@@ -48,6 +48,7 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(logout::logout)
             .service(assets::favicon)
             .service(assets::icon_svg)
+            .service(assets::site_icon)
             .service(discoverability::robots_txt)
             .service(discoverability::sitemap_xml)
             .service(home::home_page)
@@ -57,6 +58,7 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
             .service(settings::settings_page)
             .service(settings::settings_submit)
             .service(settings::password_submit)
+            .service(site_icon::upload)
             .service(preview::render_markdown_preview)
             .service(search::search_page)
             .service(resource_file::current_file)

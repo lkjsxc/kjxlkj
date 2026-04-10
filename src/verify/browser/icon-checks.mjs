@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 
 export async function assertIconAssets(page) {
     const svg = await inspectIcon(page, '/assets/icon.svg', 128);
+    const site = await inspectIcon(page, '/assets/site-icon', 128);
     const ico = await inspectIcon(page, '/favicon.ico', 64);
-    for (const metrics of [svg, ico]) {
+    for (const metrics of [svg, site, ico]) {
         assert.ok(metrics.corners.every((alpha) => alpha < 0.05), 'icon corners should stay transparent');
         assert.ok(metrics.whiteSample[3] > 0.9, 'icon inner circle should stay opaque');
         assertColorApprox(metrics.whiteSample, [255, 255, 255], 26, 'icon inner circle should stay white');

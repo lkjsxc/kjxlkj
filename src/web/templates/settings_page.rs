@@ -24,7 +24,7 @@ pub fn settings_page(settings: &AppSettings, site: &SiteContext) -> String {
         "{}{}{}",
         page_header("Settings", None, "settings-head"),
         settings_form,
-        security_section()
+        security_section(settings)
     );
     base(
         &site.page_meta(
