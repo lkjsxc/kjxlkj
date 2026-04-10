@@ -31,8 +31,9 @@ mod search_form;
 mod search_tests;
 mod sections;
 mod settings_page;
+mod settings_security;
 
-pub use auth::{login_page, setup_page};
+pub use auth::{login_page, password_reset_page, setup_page};
 pub use dashboard::admin_page;
 pub use history::{history_page, snapshot_page, HistoryPage};
 pub use home::home_page;

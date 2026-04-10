@@ -16,6 +16,7 @@ mod media_input;
 mod media_insert;
 mod media_support;
 mod note_media_input;
+pub mod password_reset;
 pub mod popular_sections;
 pub mod preview;
 pub mod resource;

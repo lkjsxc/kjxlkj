@@ -73,6 +73,14 @@ pub fn snapshot_page(
     is_admin: bool,
     site: &SiteContext,
 ) -> String {
+    let history_link = is_admin
+        .then(|| {
+            format!(
+                r#"<a href="{}" class="btn">Back to history</a>"#,
+                chrome.history_href
+            )
+        })
+        .unwrap_or_default();
     let content = format!(
         r#"<header class="page-head">
 <div class="page-title-stack">
@@ -81,7 +89,7 @@ pub fn snapshot_page(
 </div>
 <div class="page-actions">
 <span class="status-pill">{}</span>
-<a href="{}" class="btn">Back to history</a>
+{}
 <a href="{}" class="btn">{}</a>
 </div>
 </header>
@@ -95,7 +103,7 @@ pub fn snapshot_page(
         } else {
             "Public"
         },
-        chrome.history_href,
+        history_link,
         chrome.current_href,
         open_live_label(chrome.kind),
         if snapshot.kind == ResourceKind::Media {

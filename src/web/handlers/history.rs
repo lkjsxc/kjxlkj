@@ -21,9 +21,12 @@ pub async fn history_page(
     }
     let reference = path.into_inner();
     let is_admin = session::check_session(&req, &pool).await?;
+    if !is_admin {
+        return Ok(redirect(&session::login_url(&req)));
+    }
     let settings = db::get_settings(&pool).await?;
     let site = SiteContext::from_settings(&settings);
-    let Some(resource) = accessible_resource(&pool, &reference, is_admin).await? else {
+    let Some(resource) = db::get_resource_by_ref(&pool, &reference).await? else {
         return Ok(not_found(&site));
     };
     if resource
@@ -40,13 +43,13 @@ pub async fn history_page(
     let page = db::list_resource_snapshots(
         &pool,
         &resource.id,
-        is_admin,
+        true,
         params.limit.unwrap_or(settings.search_results_per_page),
         &ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref()),
         params.cursor.as_deref(),
     )
     .await?;
-    let chrome = view::resource_chrome(&pool, &resource, is_admin).await?;
+    let chrome = view::resource_chrome(&pool, &resource, true).await?;
     let history = view::history_links(&page.snapshots, params.cursor.is_none());
     Ok(html(templates::history_page(
         &resource,
@@ -57,18 +60,9 @@ pub async fn history_page(
             next_cursor: page.next_cursor.as_deref(),
             limit: params.limit.unwrap_or(settings.search_results_per_page),
         },
-        is_admin,
+        true,
         &site,
     )))
-}
-
-async fn accessible_resource(
-    pool: &DbPool,
-    reference: &str,
-    is_admin: bool,
-) -> Result<Option<db::Resource>, AppError> {
-    let resource = db::get_resource_by_ref(pool, reference).await?;
-    Ok(resource.filter(|resource| is_admin || !resource.is_private))
 }
 
 fn redirect(location: &str) -> HttpResponse {

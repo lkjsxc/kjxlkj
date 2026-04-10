@@ -14,6 +14,12 @@ use serde::Deserialize;
 pub struct LoginForm {
     pub username: String,
     pub password: String,
+    pub return_to: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct LoginQuery {
+    pub return_to: Option<String>,
 }
 
 /// Login page GET handler
@@ -21,16 +27,18 @@ pub struct LoginForm {
 pub async fn login_page(
     pool: web::Data<DbPool>,
     req: HttpRequest,
+    query: web::Query<LoginQuery>,
 ) -> Result<HttpResponse, AppError> {
     if !crate::web::db::is_setup(&pool).await? {
         return Ok(redirect("/setup"));
     }
+    let return_to = session::valid_return_to(query.return_to.as_deref());
     if session::check_session(&req, &pool).await? {
-        return Ok(see_other("/admin"));
+        return Ok(see_other(&return_to));
     }
     let settings = crate::web::db::get_settings(&pool).await?;
     let site = SiteContext::from_settings(&settings);
-    Ok(html(templates::login_page(&site, None)))
+    Ok(html(templates::login_page(&site, None, &return_to)))
 }
 
 /// Login form POST handler
@@ -44,6 +52,7 @@ pub async fn login_submit(
     }
 
     let user_id = crate::web::db::verify_credentials(&pool, &form.username, &form.password).await?;
+    let return_to = session::valid_return_to(form.return_to.as_deref());
 
     match user_id {
         Some(id) => {
@@ -60,7 +69,7 @@ pub async fn login_submit(
 
             Ok(HttpResponse::SeeOther()
                 .cookie(cookie)
-                .append_header(("Location", "/admin"))
+                .append_header(("Location", return_to))
                 .finish())
         }
         None => Ok(html_status(
@@ -68,6 +77,7 @@ pub async fn login_submit(
             templates::login_page(
                 &SiteContext::from_settings(&crate::web::db::get_settings(&pool).await?),
                 Some("Invalid username or password"),
+                &return_to,
             ),
         )),
     }

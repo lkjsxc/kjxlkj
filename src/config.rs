@@ -24,6 +24,7 @@ pub struct Config {
     pub s3_access_key: String,
     pub s3_secret_key: String,
     pub s3_path_style: bool,
+    pub setup_code: Option<String>,
 }
 
 impl Config {
@@ -38,6 +39,9 @@ impl Config {
             s3_access_key: required_var("S3_ACCESS_KEY")?,
             s3_secret_key: required_var("S3_SECRET_KEY")?,
             s3_path_style: parse_bool("S3_PATH_STYLE", "true")?,
+            setup_code: env::var("SETUP_CODE")
+                .ok()
+                .filter(|value| !value.is_empty()),
         })
     }
 

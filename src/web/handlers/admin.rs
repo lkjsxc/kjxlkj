@@ -32,7 +32,7 @@ async fn admin_page_impl(
         return Ok(redirect("/setup"));
     }
     if !session::check_session(&req, &pool).await? {
-        return Ok(redirect("/login"));
+        return Ok(redirect(&session::login_url(&req)));
     }
     let settings = db::get_settings(&pool).await?;
     let site = SiteContext::from_settings(&settings);

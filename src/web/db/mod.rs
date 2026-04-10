@@ -18,6 +18,7 @@ mod media_attachments;
 mod migrations;
 mod models;
 mod navigation;
+mod password_reset;
 mod popular_window;
 mod resource_ids;
 mod resource_support;
@@ -46,6 +47,7 @@ pub use models::{
     ResourceStats, ResourceViewStats, SitemapResource,
 };
 pub use navigation::{get_next_resource, get_previous_resource};
+pub use password_reset::{issue_password_reset_token, reset_admin_password, update_admin_password};
 pub use popular_window::PopularWindow;
 pub use resource_ids::generate_resource_id;
 pub use resources::{

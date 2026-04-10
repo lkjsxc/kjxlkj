@@ -3,6 +3,7 @@
 use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, html_escape, shell_page};
 use super::sections::{page_header, section};
+use super::settings_security::security_section;
 use crate::web::db::AppSettings;
 use crate::web::site::SiteContext;
 
@@ -11,14 +12,19 @@ const SETTINGS_ORDER_JS: &str = include_str!("settings_order.js");
 
 pub fn settings_page(settings: &AppSettings, site: &SiteContext) -> String {
     let admin_actions = admin_create_actions();
-    let content = format!(
-        "{}<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
-        page_header("Settings", None, "settings-head"),
+    let settings_form = format!(
+        "<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
         site_identity_section(settings),
         home_hero_section(settings),
         home_sections_section(settings),
         sessions_section(settings),
         defaults_section(settings),
+    );
+    let content = format!(
+        "{}{}{}",
+        page_header("Settings", None, "settings-head"),
+        settings_form,
+        security_section()
     );
     base(
         &site.page_meta(

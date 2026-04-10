@@ -20,7 +20,10 @@ pub fn resource_rail(chrome: &ResourceChrome, is_admin: bool, active_href: &str)
     sections.push(rail_section("timeline", &timeline(chrome)));
     sections.push(rail_section("history", &history(chrome, active_href)));
     sections.push(rail_section("project", &project_link()));
-    sections.push(rail_section("actions", &actions(chrome, is_admin)));
+    sections.push(rail_section(
+        "actions",
+        &actions(chrome, is_admin, active_href),
+    ));
     sections.join("")
 }
 
@@ -133,7 +136,7 @@ fn missing_timeline_card(empty: &str) -> String {
     )
 }
 
-fn actions(chrome: &ResourceChrome, is_admin: bool) -> String {
+fn actions(chrome: &ResourceChrome, is_admin: bool, active_href: &str) -> String {
     if is_admin {
         format!(
             r#"<div class="rail-actions">
@@ -144,8 +147,10 @@ fn actions(chrome: &ResourceChrome, is_admin: bool) -> String {
             delete_label(chrome.kind),
         )
     } else {
-        r#"<div class="rail-actions"><a href="/login" class="btn">Admin sign in</a></div>"#
-            .to_string()
+        format!(
+            r#"<div class="rail-actions"><a href="/login?return_to={}" class="btn">Admin sign in</a></div>"#,
+            html_escape(active_href),
+        )
     }
 }
 

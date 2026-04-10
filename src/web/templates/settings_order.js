@@ -1,4 +1,6 @@
 (function () {
+    setupUnsavedPrompt();
+
     var list = document.querySelector('[data-settings-order-list]');
     if (!list || list.children.length < 2) return;
 
@@ -46,5 +48,22 @@
             var input = item.querySelector('input[type="hidden"][name$="_position"]');
             if (input) input.value = value;
         });
+    }
+
+    function setupUnsavedPrompt() {
+        var form = document.querySelector('form[action="/admin/settings"]');
+        if (!form) return;
+        var initial = formSnapshot(form);
+        var submitted = false;
+        form.addEventListener('submit', function () { submitted = true; });
+        window.addEventListener('beforeunload', function (event) {
+            if (submitted || formSnapshot(form) === initial) return;
+            event.preventDefault();
+            event.returnValue = '';
+        });
+    }
+
+    function formSnapshot(form) {
+        return new URLSearchParams(new FormData(form)).toString();
     }
 })();

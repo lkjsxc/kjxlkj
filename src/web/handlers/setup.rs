@@ -6,6 +6,28 @@ use crate::web::site::SiteContext;
 use crate::web::templates;
 use actix_web::{get, post, web, HttpResponse};
 use serde::Deserialize;
+use uuid::Uuid;
+
+#[derive(Clone)]
+pub struct SetupCode {
+    value: String,
+}
+
+impl SetupCode {
+    pub fn new(configured: Option<String>) -> Self {
+        Self {
+            value: configured.unwrap_or_else(|| Uuid::new_v4().to_string()),
+        }
+    }
+
+    pub fn reveal(&self) -> &str {
+        &self.value
+    }
+
+    fn matches(&self, candidate: &str) -> bool {
+        self.value == candidate.trim()
+    }
+}
 
 /// Setup form data
 #[derive(Debug, Deserialize)]
@@ -13,6 +35,7 @@ pub struct SetupForm {
     pub username: String,
     pub password: String,
     pub confirm_password: String,
+    pub setup_code: String,
 }
 
 /// Setup page GET handler
@@ -30,13 +53,14 @@ pub async fn setup_page(pool: web::Data<DbPool>) -> Result<HttpResponse, AppErro
 #[post("/setup")]
 pub async fn setup_submit(
     pool: web::Data<DbPool>,
+    setup_code: web::Data<SetupCode>,
     form: web::Form<SetupForm>,
 ) -> Result<HttpResponse, AppError> {
     if crate::web::db::is_setup(&pool).await? {
         return Ok(redirect("/login"));
     }
 
-    let errors = validate_setup_form(&form);
+    let errors = validate_setup_form(&form, &setup_code);
     if !errors.is_empty() {
         let settings = crate::web::db::get_settings(&pool).await?;
         let site = SiteContext::from_settings(&settings);
@@ -50,7 +74,7 @@ pub async fn setup_submit(
     Ok(see_other("/login"))
 }
 
-fn validate_setup_form(form: &SetupForm) -> Vec<&'static str> {
+fn validate_setup_form(form: &SetupForm, setup_code: &SetupCode) -> Vec<&'static str> {
     let mut errors = Vec::new();
     if form.username.len() < 3 {
         errors.push("Username must be at least 3 characters");
@@ -60,6 +84,9 @@ fn validate_setup_form(form: &SetupForm) -> Vec<&'static str> {
     }
     if form.password != form.confirm_password {
         errors.push("Passwords do not match");
+    }
+    if !setup_code.matches(&form.setup_code) {
+        errors.push("Setup code is invalid");
     }
     errors
 }
