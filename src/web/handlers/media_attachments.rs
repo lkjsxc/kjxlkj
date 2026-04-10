@@ -108,6 +108,7 @@ async fn build_attachments(
             byte_size: file.bytes.len() as i64,
             sha256_hex: sha256_hex(&file.bytes),
             original_filename: file.original_filename.clone(),
+            media_variants: None,
         });
     }
     Ok(attachments)

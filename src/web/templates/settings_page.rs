@@ -128,9 +128,11 @@ fn defaults_section(settings: &AppSettings) -> String {
         &surface_panel(&format!(
             r#"<div class="settings-section-grid">
 <label class="form-group"><span>Search page size</span><input type="number" name="search_results_per_page" min="5" max="100" value="{}"></label>
+<label class="form-group"><span>Media WebP quality</span><input type="number" name="media_webp_quality" min="1" max="100" value="{}"></label>
 <label class="check-row check-row-field settings-wide"><input type="checkbox" name="default_new_resource_is_private" {}><span>New resources start private</span></label>
 </div>"#,
             settings.search_results_per_page,
+            settings.media_webp_quality,
             if settings.default_new_resource_is_private {
                 "checked"
             } else {

@@ -23,10 +23,14 @@ pub struct SettingsForm {
     pub home_popular_position: i64,
     pub search_results_per_page: i64,
     pub session_timeout_minutes: i64,
+    pub media_webp_quality: i64,
     pub default_new_resource_is_private: Option<String>,
 }
 
-pub fn validate_settings_form(form: &SettingsForm) -> Result<AppSettings, AppError> {
+pub fn validate_settings_form(
+    form: &SettingsForm,
+    current: &AppSettings,
+) -> Result<AppSettings, AppError> {
     let site_name = form.site_name.trim();
     let site_description = form.site_description.trim();
     let public_base_url = validate_public_base_url(&form.public_base_url)?;
@@ -49,6 +53,9 @@ pub fn validate_settings_form(form: &SettingsForm) -> Result<AppSettings, AppErr
             "session timeout must be between 5 and 10080 minutes",
         ));
     }
+    if !(1..=100).contains(&form.media_webp_quality) {
+        return Err(invalid("WebP quality must be between 1 and 100"));
+    }
     if !positions_are_valid(form) {
         return Err(invalid("section order must use 1, 2, and 3 exactly once"));
     }
@@ -68,7 +75,10 @@ pub fn validate_settings_form(form: &SettingsForm) -> Result<AppSettings, AppErr
         home_popular_position: form.home_popular_position,
         search_results_per_page: form.search_results_per_page,
         session_timeout_minutes: form.session_timeout_minutes,
+        media_webp_quality: form.media_webp_quality,
         default_new_resource_is_private: form.default_new_resource_is_private.is_some(),
+        site_icon_key: current.site_icon_key.clone(),
+        site_icon_content_type: current.site_icon_content_type.clone(),
     })
 }
 
@@ -109,6 +119,7 @@ fn invalid(message: &str) -> AppError {
 #[cfg(test)]
 mod tests {
     use super::{validate_settings_form, SettingsForm};
+    use crate::web::db::AppSettings;
 
     fn sample_form() -> SettingsForm {
         SettingsForm {
@@ -127,6 +138,7 @@ mod tests {
             home_popular_position: 1,
             search_results_per_page: 20,
             session_timeout_minutes: 1440,
+            media_webp_quality: 82,
             default_new_resource_is_private: None,
         }
     }
@@ -135,20 +147,25 @@ mod tests {
     fn validate_accepts_blank_public_origin() {
         let mut form = sample_form();
         form.public_base_url = "   ".to_string();
-        assert_eq!(validate_settings_form(&form).unwrap().public_base_url, "");
+        assert_eq!(
+            validate_settings_form(&form, &AppSettings::default())
+                .unwrap()
+                .public_base_url,
+            ""
+        );
     }
 
     #[test]
     fn validate_rejects_invalid_public_origin() {
         let mut form = sample_form();
         form.public_base_url = "https://example.com/path".to_string();
-        assert!(validate_settings_form(&form).is_err());
+        assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
     }
 
     #[test]
     fn validate_rejects_blank_site_name() {
         let mut form = sample_form();
         form.site_name = "   ".to_string();
-        assert!(validate_settings_form(&form).is_err());
+        assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
     }
 }

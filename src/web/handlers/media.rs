@@ -34,6 +34,7 @@ pub async fn create(
         width: None,
         height: None,
         duration_ms: None,
+        media_variants: None,
     };
     let result = db::create_media(
         &pool,

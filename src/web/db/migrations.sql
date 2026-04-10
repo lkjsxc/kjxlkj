@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS resources (
     width INTEGER,
     height INTEGER,
     duration_ms BIGINT,
+    media_variants JSONB,
     is_favorite BOOLEAN NOT NULL DEFAULT FALSE,
     favorite_position BIGINT,
     is_private BOOLEAN NOT NULL DEFAULT FALSE,
@@ -91,6 +92,7 @@ CREATE TABLE IF NOT EXISTS resource_snapshots (
     width INTEGER,
     height INTEGER,
     duration_ms BIGINT,
+    media_variants JSONB,
     is_private BOOLEAN NOT NULL,
     snapshot_number INTEGER NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -125,11 +127,34 @@ CREATE TABLE IF NOT EXISTS app_settings (
     search_results_per_page BIGINT NOT NULL DEFAULT 20,
     session_timeout_minutes BIGINT NOT NULL DEFAULT 1440,
     default_new_resource_is_private BOOLEAN NOT NULL DEFAULT FALSE,
+    media_webp_quality BIGINT NOT NULL DEFAULT 82,
     site_name TEXT NOT NULL DEFAULT 'kjxlkj',
     site_description TEXT NOT NULL DEFAULT 'Markdown-first resource system for LLM-operated workflows.',
     public_base_url TEXT NOT NULL DEFAULT '',
+    site_icon_key TEXT,
+    site_icon_content_type TEXT,
+    site_icon_updated_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE resources ADD COLUMN IF NOT EXISTS media_variants JSONB;
+ALTER TABLE resource_snapshots ADD COLUMN IF NOT EXISTS media_variants JSONB;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS media_webp_quality BIGINT NOT NULL DEFAULT 82;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_key TEXT;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_content_type TEXT;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_updated_at TIMESTAMPTZ;
+
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    token_hash VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_active
+    ON password_reset_tokens(expires_at)
+    WHERE used_at IS NULL;
 
 INSERT INTO app_settings (id) VALUES (1)
 ON CONFLICT (id) DO NOTHING;

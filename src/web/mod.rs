@@ -1,6 +1,6 @@
 //! Web layer
 
-mod db;
+pub(crate) mod db;
 pub mod handlers;
 mod routes;
 mod site;

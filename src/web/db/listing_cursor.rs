@@ -2,6 +2,7 @@ use super::listing::{ListDirection, ListPage, ListSort};
 use super::models::{MediaFamily, ResourceKind};
 use super::{ListKind, ListScope, ListedResource, PopularWindow, Resource};
 use crate::error::AppError;
+use crate::media::media_variants_from_json;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -97,6 +98,7 @@ pub(crate) fn row_to_listed_resource(row: tokio_postgres::Row) -> ListedResource
             width: row.get("width"),
             height: row.get("height"),
             duration_ms: row.get("duration_ms"),
+            media_variants: media_variants_from_json(row.get("media_variants")),
             is_favorite: row.get("is_favorite"),
             favorite_position: row.get("favorite_position"),
             is_private: row.get("is_private"),

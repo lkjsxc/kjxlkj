@@ -3,6 +3,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::media::MediaVariants;
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum ResourceKind {
@@ -67,6 +69,7 @@ pub struct Resource {
     pub width: Option<i32>,
     pub height: Option<i32>,
     pub duration_ms: Option<i64>,
+    pub media_variants: Option<MediaVariants>,
     pub is_favorite: bool,
     pub favorite_position: Option<i64>,
     pub is_private: bool,
@@ -94,6 +97,7 @@ pub struct ResourceSnapshot {
     pub width: Option<i32>,
     pub height: Option<i32>,
     pub duration_ms: Option<i64>,
+    pub media_variants: Option<MediaVariants>,
     pub is_private: bool,
     pub created_at: DateTime<Utc>,
 }
@@ -120,9 +124,12 @@ pub struct AppSettings {
     pub search_results_per_page: i64,
     pub session_timeout_minutes: i64,
     pub default_new_resource_is_private: bool,
+    pub media_webp_quality: i64,
     pub site_name: String,
     pub site_description: String,
     pub public_base_url: String,
+    pub site_icon_key: Option<String>,
+    pub site_icon_content_type: Option<String>,
 }
 
 impl Default for AppSettings {
@@ -141,10 +148,13 @@ impl Default for AppSettings {
             search_results_per_page: 20,
             session_timeout_minutes: 1440,
             default_new_resource_is_private: false,
+            media_webp_quality: 82,
             site_name: "kjxlkj".to_string(),
             site_description: "Markdown-first resource system for LLM-operated workflows."
                 .to_string(),
             public_base_url: String::new(),
+            site_icon_key: None,
+            site_icon_content_type: None,
         }
     }
 }

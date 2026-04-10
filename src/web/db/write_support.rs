@@ -2,6 +2,7 @@ use super::models::Resource;
 use super::resource_ids::next_resource_id;
 use super::DbPool;
 use crate::error::AppError;
+use crate::media::media_variants_to_json;
 use deadpool_postgres::GenericClient;
 
 pub async fn client(pool: &DbPool) -> Result<deadpool_postgres::Object, AppError> {
@@ -30,11 +31,12 @@ pub async fn create_snapshot<C: GenericClient>(
     snapshot_number: i32,
 ) -> Result<(), AppError> {
     let snapshot_id = next_resource_id(db).await?;
+    let media_variants = media_variants_to_json(&resource.media_variants);
     db.execute(
         "INSERT INTO resource_snapshots \
          (id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
-          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, is_private) \
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)",
+          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, is_private) \
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)",
         &[
             &snapshot_id,
             &resource.id,
@@ -53,6 +55,7 @@ pub async fn create_snapshot<C: GenericClient>(
             &resource.width,
             &resource.height,
             &resource.duration_ms,
+            &media_variants,
             &resource.is_private,
         ],
     )

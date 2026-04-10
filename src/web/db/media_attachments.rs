@@ -7,6 +7,7 @@ use super::write_support::{client, create_snapshot, next_snapshot_number};
 use super::{DbPool, MediaFamily};
 use crate::core::{derive_summary, derive_title, derive_title_with_fallback};
 use crate::error::AppError;
+use crate::media::media_variants_to_json;
 use deadpool_postgres::GenericClient;
 
 pub struct AttachmentCreate {
@@ -19,6 +20,7 @@ pub struct AttachmentCreate {
     pub byte_size: i64,
     pub sha256_hex: String,
     pub original_filename: String,
+    pub media_variants: Option<crate::media::MediaVariants>,
 }
 
 #[rustfmt::skip]
@@ -101,13 +103,15 @@ async fn create_media_resources<C: GenericClient>(
             width: None,
             height: None,
             duration_ms: None,
+            media_variants: attachment.media_variants.clone(),
         };
+        let media_variants = media_variants_to_json(&blob.media_variants);
         let row = db
             .query_one(
                 &format!(
                     "INSERT INTO resources (id, kind, title, summary, body, media_family, file_key, content_type, \
-                     byte_size, sha256_hex, original_filename, width, height, duration_ms, is_favorite, favorite_position, is_private) \
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, FALSE, NULL, $12) {RETURNING_RECORD}"
+                     byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, is_favorite, favorite_position, is_private) \
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, FALSE, NULL, $13) {RETURNING_RECORD}"
                 ),
                 &[
                     &attachment.media_id,
@@ -121,6 +125,7 @@ async fn create_media_resources<C: GenericClient>(
                     &blob.byte_size,
                     &blob.sha256_hex,
                     &blob.original_filename,
+                    &media_variants,
                     &is_private,
                 ],
             )

@@ -29,7 +29,8 @@ pub async fn settings_submit(
     form: web::Form<SettingsForm>,
 ) -> Result<HttpResponse, AppError> {
     session::require_session(&req, &pool).await?;
-    db::update_settings(&pool, &validate_settings_form(&form)?).await?;
+    let current = db::get_settings(&pool).await?;
+    db::update_settings(&pool, &validate_settings_form(&form, &current)?).await?;
     Ok(HttpResponse::SeeOther()
         .append_header(("Location", "/admin/settings"))
         .finish())
