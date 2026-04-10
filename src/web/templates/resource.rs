@@ -144,7 +144,7 @@ fn editor_surface(resource: &Resource, chrome: &ResourceChrome) -> String {
     let body = html_escape(&resource.body);
     let upload_controls = if resource.kind == ResourceKind::Note {
         r#"<button type="button" id="upload-media-trigger" class="btn">Upload media</button>
-<input id="upload-media-input" type="file" accept="image/*,video/*" multiple hidden>"#
+<input id="upload-media-input" type="file" accept="image/*,video/*,.mkv,.ogv,.avi,.wmv,.mpeg,.mpg,.3gp" multiple hidden>"#
     } else {
         ""
     };

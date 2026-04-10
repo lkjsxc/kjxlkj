@@ -1,12 +1,14 @@
 use super::layout::html_escape;
 use crate::web::db::{MediaFamily, Resource, ResourceSnapshot};
 use crate::web::view;
+use crate::web::view_media;
 
 pub fn current_media_block(resource: &Resource) -> String {
     media_surface(
         "Current file",
         resource.media_family,
-        &view::file_href(resource),
+        &view_media::display_file_href(resource),
+        view_media::poster_href(resource).as_deref(),
         &resource.title,
     )
 }
@@ -41,7 +43,8 @@ pub fn snapshot_media_block(snapshot: &ResourceSnapshot) -> String {
     media_surface(
         "Saved file",
         snapshot.media_family,
-        &format!("/{}/file", snapshot.id),
+        &view_media::snapshot_display_file_href(snapshot),
+        view_media::snapshot_poster_href(snapshot).as_deref(),
         &snapshot.title,
     )
 }
@@ -50,23 +53,32 @@ fn media_surface(
     label: &str,
     media_family: Option<MediaFamily>,
     href: &str,
+    poster_href: Option<&str>,
     title: &str,
 ) -> String {
     format!(
         r#"<section class="surface resource-surface media-surface"><small>{label}</small>{}</section>"#,
-        media_markup(media_family, href, title)
+        media_markup(media_family, href, poster_href, title)
     )
 }
 
-fn media_markup(media_family: Option<MediaFamily>, href: &str, title: &str) -> String {
+fn media_markup(
+    media_family: Option<MediaFamily>,
+    href: &str,
+    poster_href: Option<&str>,
+    title: &str,
+) -> String {
     match media_family.unwrap_or(MediaFamily::Image) {
         MediaFamily::Image => format!(
-            r#"<img src="{}" alt="{}" style="width:100%;height:auto;display:block;">"#,
+            r#"<img src="{}" alt="{}" fetchpriority="high" style="width:100%;height:auto;display:block;">"#,
             html_escape(href),
             html_escape(title),
         ),
         MediaFamily::Video => format!(
-            r#"<video controls preload="metadata" src="{}" style="width:100%;height:auto;display:block;"></video>"#,
+            r#"<video controls preload="metadata"{} src="{}" style="width:100%;height:auto;display:block;"></video>"#,
+            poster_href
+                .map(|href| format!(r#" poster="{}""#, html_escape(href)))
+                .unwrap_or_default(),
             html_escape(href),
         ),
     }

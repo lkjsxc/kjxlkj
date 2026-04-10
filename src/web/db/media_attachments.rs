@@ -7,7 +7,7 @@ use super::write_support::{client, create_snapshot, next_snapshot_number};
 use super::{DbPool, MediaFamily};
 use crate::core::{derive_summary, derive_title, derive_title_with_fallback};
 use crate::error::AppError;
-use crate::media::media_variants_to_json;
+use crate::media::{media_variants_to_json, GeneratedVariant};
 use deadpool_postgres::GenericClient;
 
 pub struct AttachmentCreate {
@@ -21,6 +21,7 @@ pub struct AttachmentCreate {
     pub sha256_hex: String,
     pub original_filename: String,
     pub media_variants: Option<crate::media::MediaVariants>,
+    pub generated_variants: Vec<GeneratedVariant>,
 }
 
 #[rustfmt::skip]

@@ -11,6 +11,7 @@ pub mod login;
 pub mod logout;
 pub mod media;
 pub mod media_attachments;
+mod media_derivatives;
 mod media_input;
 mod media_insert;
 mod media_support;

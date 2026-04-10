@@ -13,7 +13,10 @@ pub fn detect_media_family(content_type: &str, filename: &str) -> Result<MediaFa
     }
     match extension(filename).as_deref() {
         Some("png" | "jpg" | "jpeg" | "gif" | "webp" | "svg") => Ok(MediaFamily::Image),
-        Some("mp4" | "webm" | "mov" | "m4v" | "ogg") => Ok(MediaFamily::Video),
+        Some(
+            "mp4" | "webm" | "mov" | "m4v" | "ogg" | "ogv" | "mkv" | "avi" | "wmv" | "mpeg" | "mpg"
+            | "3gp",
+        ) => Ok(MediaFamily::Video),
         _ => Err(AppError::InvalidRequest(
             "unsupported media type; use an image or video".to_string(),
         )),

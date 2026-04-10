@@ -2,10 +2,12 @@ function bindUploadEvents() {
     if (!editorState.uploadButton || !editorState.uploadInput || !editorState.bodyField) return;
     editorState.uploadButton.addEventListener('click', function () {
         if (editorState.uploading) return;
+        editorState.uploadSelection = currentSelectionRange();
         editorState.uploadInput.click();
     });
     editorState.uploadInput.addEventListener('change', function () {
         if (!editorState.uploadInput?.files?.length || editorState.uploading) {
+            editorState.uploadSelection = null;
             if (editorState.uploadInput) editorState.uploadInput.value = '';
             return;
         }
@@ -23,7 +25,8 @@ async function uploadSelectedMedia(files) {
         files.length === 1 ? 'Uploading 1 media item...' : 'Uploading ' + files.length + ' media items...',
         ''
     );
-    var selection = currentSelectionRange();
+    var selection = editorState.uploadSelection || currentSelectionRange();
+    editorState.uploadSelection = null;
     var body = currentBody();
     var formData = new FormData();
     for (const file of files) formData.append('file', file);

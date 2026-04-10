@@ -8,6 +8,7 @@ use crate::web::db::{
 use crate::web::templates::{
     render_time, HistoryLink, IndexItem, IndexMetric, NavLink, ResourceAnalytics, ResourceChrome,
 };
+use crate::web::view_media::card_file_href;
 
 pub fn index_item(listed: &ListedResource, show_visibility: bool) -> IndexItem {
     build_index_item(listed, show_visibility, Vec::new())
@@ -98,7 +99,7 @@ fn build_index_item(
         updated_at: render_time(&resource.updated_at),
         kind_badge,
         media_family: resource.media_family,
-        media_href: resource.media_family.map(|_| file_href(resource)),
+        media_href: resource.media_family.map(|_| card_file_href(resource)),
         is_favorite: resource.is_favorite,
         visibility: show_visibility.then_some(visibility_label(resource.is_private)),
         metrics,

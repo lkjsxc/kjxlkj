@@ -42,7 +42,9 @@ pub async fn attach_media(
     validate_id(&id)?;
     let form = parse_note_media_form(payload).await?;
     let alias = normalize_alias(form.alias.as_deref())?;
-    let attachments = build_attachments(&pool, &form.files).await?;
+    let settings = db::get_settings(&pool).await?;
+    let mut attachments =
+        build_attachments(&pool, &form.files, settings.media_webp_quality).await?;
     let inserted_markdown = inserted_markdown(&attachments);
     let insertion = apply_insert(
         &form.body,
@@ -50,11 +52,7 @@ pub async fn attach_media(
         form.insert_end,
         &inserted_markdown,
     );
-    let keys = attachments
-        .iter()
-        .map(|item| item.file_key.clone())
-        .collect::<Vec<_>>();
-    store_uploads(&storage, &attachments).await?;
+    let keys = store_uploads(&storage, &mut attachments).await?;
     let result = db::attach_media_to_note(
         &pool,
         &id,
@@ -93,14 +91,23 @@ pub async fn attach_media(
 async fn build_attachments(
     pool: &db::DbPool,
     files: &[super::media_input::UploadedFile],
+    webp_quality: i64,
 ) -> Result<Vec<AttachmentCreate>, AppError> {
     let mut attachments = Vec::with_capacity(files.len());
     for file in files {
         let media_id = db::generate_resource_id(pool).await?;
         let media_family = detect_media_family(&file.content_type, &file.original_filename)?;
+        let media_body = initial_body(&file.original_filename);
+        let generated_variants = super::media_derivatives::build_variants(
+            &media_id,
+            media_family,
+            &media_body,
+            &file.bytes,
+            webp_quality,
+        );
         attachments.push(AttachmentCreate {
             media_id: media_id.clone(),
-            media_body: initial_body(&file.original_filename),
+            media_body,
             bytes: file.bytes.clone(),
             media_family,
             file_key: object_key(&media_id, &file.original_filename),
@@ -109,6 +116,7 @@ async fn build_attachments(
             sha256_hex: sha256_hex(&file.bytes),
             original_filename: file.original_filename.clone(),
             media_variants: None,
+            generated_variants,
         });
     }
     Ok(attachments)
@@ -116,10 +124,10 @@ async fn build_attachments(
 
 async fn store_uploads(
     storage: &Storage,
-    attachments: &[AttachmentCreate],
-) -> Result<(), AppError> {
+    attachments: &mut [AttachmentCreate],
+) -> Result<Vec<String>, AppError> {
     let mut stored_keys = Vec::with_capacity(attachments.len());
-    for attachment in attachments {
+    for attachment in attachments.iter_mut() {
         if let Err(error) = storage
             .put_object(
                 &attachment.file_key,
@@ -132,8 +140,12 @@ async fn store_uploads(
             return Err(error);
         }
         stored_keys.push(attachment.file_key.clone());
+        let (variants, variant_keys) =
+            super::media_derivatives::store_variants(storage, &attachment.generated_variants).await;
+        attachment.media_variants = variants;
+        stored_keys.extend(variant_keys);
     }
-    Ok(())
+    Ok(stored_keys)
 }
 
 fn inserted_markdown(attachments: &[AttachmentCreate]) -> String {

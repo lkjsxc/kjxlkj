@@ -6,5 +6,6 @@ mod routes;
 mod site;
 mod templates;
 mod view;
+mod view_media;
 
 pub use routes::run_server;

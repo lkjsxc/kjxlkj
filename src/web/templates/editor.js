@@ -24,7 +24,8 @@ var editorState = {
     lastPreviewBody: null,
     renderedTitle: '',
     renderedVisibility: '',
-    renderedAlias: ''
+    renderedAlias: '',
+    uploadSelection: null
 };
 
 function initEditor() {

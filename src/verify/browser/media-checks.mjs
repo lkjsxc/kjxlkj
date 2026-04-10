@@ -126,7 +126,7 @@ async function assertMediaCardGeometry(page) {
     );
     assert.ok(metrics.length >= 2, 'media search should render media cards');
     for (const item of metrics) {
-        assert.equal(item.coverHeight, 104, 'media thumbnail height should be fixed');
+        assert.equal(item.coverHeight, 128, 'media thumbnail height should be fixed');
         assert.ok(item.mediaHeight >= item.coverHeight - 1, 'media should fill the cover height');
         assert.ok(item.badgesTop >= item.coverBottom, 'badges should sit below the thumbnail');
     }

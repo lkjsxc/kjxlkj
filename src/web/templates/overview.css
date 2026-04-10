@@ -131,18 +131,18 @@
 .resource-grid .resource-row {
     grid-template-columns: 1fr;
     align-self: start;
-    height: 196px;
+    height: 220px;
 }
 
 .resource-grid .resource-row.resource-row-media {
-    height: 196px;
+    height: 220px;
     padding: 0;
-    grid-template-rows: 104px minmax(0, 1fr);
+    grid-template-rows: 128px minmax(0, 1fr);
     overflow: hidden;
 }
 
 .resource-row-media .card-cover {
-    height: 104px;
+    height: 128px;
     min-height: 0;
     overflow: hidden;
     border-bottom: 1px solid var(--line);
