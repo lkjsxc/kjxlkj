@@ -10,11 +10,15 @@
 ## History Pagination
 
 - HTML history pages and `GET /resources/{id}/history` share the same pager contract from [../navigation/paging/README.md](../navigation/paging/README.md).
+- HTML history pages and history JSON are admin-only.
 - Page one keeps the live resource visible above the paginated saved snapshots.
 - Snapshot cards use `Latest saved snapshot` for the newest visible snapshot on the first page.
+- Snapshot cards prefer a changed excerpt over the current leading body summary.
 
 ## History Separation
 
 - History UI must clearly separate the mutable live resource from immutable saved snapshots.
 - Live resource metadata should reflect current state.
 - Saved snapshot metadata must reflect the stored historical state, including file metadata for media.
+- Changed excerpts compare each snapshot to the previous snapshot number for the same resource.
+- Snapshot `1` may fall back to the saved summary.

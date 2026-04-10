@@ -12,7 +12,7 @@
 - [../architecture/README.md](../architecture/README.md): architecture entry point
 - [../architecture/runtime/stack.md](../architecture/runtime/stack.md): runtime service shape
 - [../architecture/data/postgres-schema.md](../architecture/data/postgres-schema.md): storage schema
-- [../architecture/integrations/README.md](../architecture/integrations/README.md): JSON, password, time, and license contracts
+- [../architecture/integrations/README.md](../architecture/integrations/README.md): JSON, password, setup-code, time, and license contracts
 
 ## If You Need Operations Truth
 

@@ -16,6 +16,7 @@
 - Requires multipart part `file`.
 - Optional parts: `alias`, `is_favorite`, and `is_private`.
 - The server stores the uploaded binary in S3-compatible storage and derives media metadata.
+- The server prepares derivative WebP metadata when supported by the media family.
 - The initial Markdown `body` is seeded from the uploaded filename stem as a `# Heading`.
 - Successful create returns `201` with created resource JSON.
 - Creating media also creates saved snapshot `1`.
@@ -27,10 +28,12 @@
 - Applies only to a live `note`.
 - Requires one or more multipart `file` parts.
 - The request also supplies the current draft `body`, `alias`, `is_favorite`, `is_private`, and the textarea `insert_start` and `insert_end`.
+- The browser captures `insert_start` and `insert_end` before opening the file picker.
 - The draft `body` is raw Markdown and is not trimmed before insertion or persistence.
 - The server validates and processes the entire batch atomically.
 - Each selected file creates one new `media` resource.
 - Created media inherit the triggering note visibility.
+- Created media receive the same derivative preparation as direct media uploads.
 - The upload flow does not create generated notes that only link to or embed the media.
 - The current note updates by inserting direct media embeds at the supplied selection range in picker order.
 - If the supplied selection range is stale or invalid for the submitted draft, the current note appends the embeds instead of failing the batch.

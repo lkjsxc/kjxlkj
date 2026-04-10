@@ -12,3 +12,4 @@ Use this subtree for media binary storage contracts.
 
 - [object-storage.md](object-storage.md): runtime, bucket, and client behavior contract
 - [media-object-lifecycle.md](media-object-lifecycle.md): create, replace, snapshot, and delete rules
+- [media-derivative-storage.md](media-derivative-storage.md): WebP derivative object and retention rules

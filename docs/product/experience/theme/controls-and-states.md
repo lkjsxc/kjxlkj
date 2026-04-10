@@ -14,6 +14,7 @@
 - The drawer may use a backdrop but no loud close chrome.
 - Rail interactions must remain keyboard accessible.
 - Search and history paging controls should make backward and forward movement obvious.
+- Settings forms warn before navigation when unsaved fields are present.
 - Narrow note/history rails keep the same vertical `Prev` then `Next` order as wide rails.
 - Narrow search and history pagers keep `Prev` and `Next` side by side.
 

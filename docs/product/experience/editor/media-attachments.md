@@ -5,6 +5,7 @@
 - Live admin note pages expose `Upload media` beside `Show preview`.
 - The control is absent on guest pages and on media edit pages.
 - The picker accepts one or more image or video files.
+- The editor captures the textarea selection before the file picker opens.
 - Upload state and failure messaging stay inside the note editor surface.
 
 ## Batch Behavior

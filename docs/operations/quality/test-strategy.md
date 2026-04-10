@@ -7,6 +7,9 @@
 - Markdown sanitization and safe embed rendering.
 - Object-storage key handling and snapshot retention rules.
 - Note-attachment upload preserves raw body text and falls back to append-at-end for stale selection ranges.
+- Media derivative metadata, WebP quality validation, and variant selection.
+- Setup code, password change, reset-token, and login return-path validation.
+- History changed-excerpt generation.
 
 ## Integration Tests
 
@@ -14,6 +17,8 @@
 - Public and admin resource fetch behavior.
 - Session-protected write behavior.
 - End-to-end note create, direct media upload, note-attachment upload, metadata update, and delete lifecycle.
+- Admin-only history list behavior with guest direct public snapshot access.
+- Multipart media failures return JSON instead of HTML.
 
 ## Compose Verification
 
@@ -25,3 +30,4 @@
 - Browser-rendered screenshots verify desktop and compact layouts.
 - Visual checks assert mixed resource cards, note-editor upload flow, media page rendering, inline note embeds, and rail ordering.
 - Browser checks cover note-editor upload against trailing blank lines and stale insertion ranges.
+- Browser checks cover uploaded site icon delivery, settings unsaved prompts, local media URL cards, and password flows.

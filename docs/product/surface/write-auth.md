@@ -8,6 +8,7 @@ All write operations require one valid admin session:
 - `POST /logout` clears `session_id`.
 - `POST`, `PUT`, and `DELETE` on `/resources/*` require a valid non-expired session.
 - `POST /admin/markdown-preview` requires a valid non-expired session.
+- `POST /admin/settings` and `POST /admin/password` require a valid non-expired session.
 - Admin credentials and sessions are persisted in PostgreSQL.
 
 ## Validation
@@ -20,4 +21,6 @@ All write operations require one valid admin session:
 
 - Session IDs are random UUIDs and never emitted in JSON.
 - Password hashes are never exposed in responses.
+- Password reset tokens are never stored in plaintext.
+- Setup and reset one-time tokens are emitted only to the server console.
 - Media file routes must respect the same visibility and snapshot-visibility rules as HTML pages.

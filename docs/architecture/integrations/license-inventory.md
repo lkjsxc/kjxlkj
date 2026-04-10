@@ -30,6 +30,7 @@
 | `clap` | 4.6.0 | `MIT OR Apache-2.0` |
 | `deadpool-postgres` | 0.14.1 | `MIT OR Apache-2.0` |
 | `futures-util` | 0.3.32 | `MIT OR Apache-2.0` |
+| `image` | 0.25.10 | `MIT OR Apache-2.0` |
 | `once_cell` | 1.21.4 | `MIT OR Apache-2.0` |
 | `pulldown-cmark` | 0.13.3 | `MIT` |
 | `regex` | 1.12.3 | `MIT OR Apache-2.0` |
@@ -43,6 +44,7 @@
 | `tracing-subscriber` | 0.3.23 | `MIT` |
 | `url` | 2.5.8 | `MIT OR Apache-2.0` |
 | `uuid` | 1.22.0 | `Apache-2.0 OR MIT` |
+| `webp` | 0.3.1 | `MIT OR Apache-2.0` |
 
 ## Direct Test Crates
 

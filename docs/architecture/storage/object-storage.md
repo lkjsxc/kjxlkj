@@ -21,3 +21,4 @@
 - Uploads must set canonical content type metadata.
 - Reads must support normal browser image delivery and video seeking.
 - Keys should be opaque and stable enough that snapshots can keep immutable references.
+- Derivative reads must use the same visibility rules as the original media object.

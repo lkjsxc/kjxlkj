@@ -14,6 +14,7 @@
 - Saved snapshot `id` is immutable once assigned.
 - Saved snapshot visibility is evaluated per stored snapshot.
 - Saved snapshots never become searchable current resources.
+- Saved snapshots copy media derivative metadata from the post-save resource state.
 
 ## Navigation State
 
@@ -28,4 +29,6 @@
 - Search default page size belongs to singleton app settings.
 - Session timeout belongs to singleton app settings.
 - Site identity fields belong to singleton app settings.
+- Site icon state belongs to singleton app settings.
+- Media WebP quality belongs to singleton app settings.
 - Discovery public-origin state belongs to singleton app settings.

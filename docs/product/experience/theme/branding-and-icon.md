@@ -18,9 +18,12 @@
 
 - Visible shell branding uses a sharp non-ICO asset.
 - Production favicon delivery uses `favicon.ico`.
+- Operators may replace the runtime site icon from `/admin/settings`.
+- The authored icon remains the fallback when no uploaded site icon is configured.
+- Runtime uploaded icons do not change the authored fallback SVG.
 - The generated `.ico` must render cleanly at 16px, 32px, and 48px.
 - The icon must keep its text centered and legible at favicon scale.
 - The SVG and generated ICO must share the same final composition rather than diverging by medium.
-- The icon appears in the HTML document head through `/favicon.ico`.
+- The icon appears in the HTML document head through `/assets/site-icon` and compatible favicon delivery.
 - The shell brand may pair the icon with the `kjxlkj` wordmark in desktop and compact headers.
 - Visual verification must inspect the finished icon asset rather than assuming the SVG scales correctly.

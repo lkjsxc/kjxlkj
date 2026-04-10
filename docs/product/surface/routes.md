@@ -2,7 +2,8 @@
 
 ## HTML Setup + Session Endpoints
 
-- `GET /`, `GET /setup`, `POST /setup`, `GET /login`, `POST /login`, and `POST /logout` keep the same setup and session behavior.
+- `GET /`, `GET /setup`, `POST /setup`, `GET /login`, `POST /login`, `POST /logout`, `GET /reset-password`, `POST /reset-password/request`, and `POST /reset-password` own setup, session, and password recovery behavior.
+- `GET /login` accepts optional `return_to`.
 
 ## HTML Resource Pages
 
@@ -14,6 +15,7 @@
 - `GET /{ref}/history`: history index for one live resource.
 - `GET /{ref}/file`: current media binary or `404` for note resources.
 - `GET /{snapshot_id}/file`: saved-snapshot media binary or `404` for note snapshots.
+- File routes accept optional `variant=card|display|poster`.
 
 ## HTML Fragment Endpoints
 
@@ -25,8 +27,10 @@
 
 - `GET /favicon.ico` returns the canonical favicon.
 - `GET /assets/icon.svg` returns the authored icon source.
+- `GET /assets/site-icon` returns the uploaded site icon or the fallback icon.
 - `GET /robots.txt` and `GET /sitemap.xml` still depend on persisted `public_base_url`.
 - `POST /admin/markdown-preview` renders sanitized Markdown preview HTML for admins only.
+- `POST /admin/password` changes the signed-in admin password.
 
 ## Resource Management
 

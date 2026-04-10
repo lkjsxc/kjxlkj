@@ -6,6 +6,7 @@
 - `src/config.rs`: environment and object-storage configuration parsing.
 - `src/core/`: Markdown rendering and shared validation helpers.
 - `src/storage/`: S3-compatible media object client and metadata helpers.
+- `src/media/`: media type detection, derivative generation, and derivative metadata helpers.
 - `src/web/db/`: PostgreSQL-backed persistence adapter and migrations.
 - `src/web/handlers/`: HTTP route handlers, including file delivery and media upload paths.
 - `src/web/templates/`: authored HTML, CSS, note/media shell rendering, and client-side behavior.

@@ -16,12 +16,14 @@
 ## Snapshot Fields
 
 - Each saved snapshot stores `id`, `resource_id`, `kind`, `snapshot_number`, `alias`, `title`, `summary`, `body`, `is_private`, and `created_at`.
-- Media snapshots also store immutable file-object metadata and the object reference used by `/{snapshot_id}/file`.
+- Media snapshots also store immutable file-object metadata, derivative metadata, and the object references used by `/{snapshot_id}/file`.
 - `snapshot_number` increments from `1` per live resource.
 
 ## Access Model
 
 - `/{ref}` resolves to the live resource.
 - `/{snapshot_id}` resolves to one immutable saved snapshot.
-- `/{ref}/history` shows the live resource plus paginated saved snapshots.
+- `/{ref}/history` is admin-only and shows the live resource plus paginated saved snapshots.
 - History JSON is admin-only and returns saved snapshots, not the mutable live resource.
+- Public saved snapshots remain directly readable by guests who know the opaque snapshot URL.
+- Guest saved-snapshot pages do not expose a link back to the history list.

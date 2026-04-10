@@ -5,6 +5,9 @@
 - Every HTML page emits a document `<title>`.
 - Every HTML page emits a viewport meta tag.
 - Every HTML page emits the canonical favicon link.
+- Every HTML page emits an icon link that resolves through the effective site icon.
+- Primary media-page images may use `fetchpriority="high"` when they are likely to be the largest contentful paint candidate.
+- Repeated thumbnails should not use high fetch priority.
 - Every HTML page emits a meta description.
 - HTML pages may emit a canonical link only when `public_base_url` is non-blank and valid.
 - HTML pages emit robots meta based on page type and SEO-mode state.

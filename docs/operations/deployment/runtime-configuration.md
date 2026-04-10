@@ -11,7 +11,7 @@
 ## Persisted Operator Settings
 
 - `/admin/settings` owns `site_name`, `site_description`, and `public_base_url`.
-- `/admin/settings` owns homepage intro, section visibility and order, section limits, search page size, default new-resource visibility, and session timeout.
+- `/admin/settings` owns homepage intro, section visibility and order, section limits, search page size, default new-resource visibility, media WebP quality, site icon, and session timeout.
 
 ## Bootstrap Sequence
 
@@ -19,7 +19,8 @@
 2. Complete `/setup` and `/login`.
 3. Open `/admin/settings`.
 4. Save site identity, `public_base_url`, and default new-resource visibility.
-5. Create at least one note and one media resource before handoff.
+5. Set media WebP quality and upload a site icon when desired.
+6. Create at least one note and one media resource before handoff.
 
 ## Discovery Rule
 

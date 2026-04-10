@@ -33,6 +33,9 @@
   "width": 1920,
   "height": 1080,
   "duration_ms": 93210,
+  "media_variants": {
+    "card": { "href": "/launch-video/file?variant=poster", "content_type": "image/webp" }
+  },
   "is_favorite": false,
   "favorite_position": null,
   "is_private": false,
@@ -52,6 +55,7 @@
 - `is_private`: boolean. Default comes from `default_new_resource_is_private`.
 - `created_at` and `updated_at`: UTC RFC3339 timestamps.
 - Media-only fields are absent for `note`.
+- `media_variants` is nullable derivative metadata for media resources.
 
 ## Browse Query Parameters
 
@@ -68,9 +72,13 @@
   "site_name": "kjxlkj",
   "site_description": "Markdown-first resource system for LLM-operated workflows.",
   "public_base_url": "https://notes.example.com",
+  "media_webp_quality": 82,
   "default_new_resource_is_private": false
 }
 ```
+
+- `media_webp_quality` is an integer from `1` through `100`.
+- Site icon upload is multipart on the settings form rather than JSON.
 
 ## Note Create Payload
 
@@ -92,6 +100,7 @@
 - Required part: `file`.
 - Optional parts: `alias`, `is_favorite`, `is_private`.
 - The server derives `media_family`, content metadata, and the initial Markdown body from the uploaded file.
+- The server stores the original file and attempts derivative WebP preparation.
 
 ## Note Media Attachment Payload
 
@@ -143,6 +152,14 @@
 - The target live note is updated only when the entire batch succeeds.
 - `selection_fallback = true` means the embeds were appended because the submitted selection was not valid for the submitted draft body.
 
+## File Variant Query
+
+- `GET /{ref}/file` returns the original current file.
+- `GET /{ref}/file?variant=card` returns a current card WebP when present.
+- `GET /{ref}/file?variant=display` returns a current display WebP when present.
+- `GET /{ref}/file?variant=poster` returns a current poster WebP when present.
+- Snapshot file routes accept the same variant names and use saved derivative metadata.
+
 ## Preview API
 
 ```json
@@ -176,9 +193,13 @@
   "file_href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file",
   "content_type": "video/mp4",
   "byte_size": 18342012,
+  "media_variants": {
+    "poster": { "href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file?variant=poster", "content_type": "image/webp" }
+  },
   "created_at": "2026-03-26T08:35:00Z"
 }
 ```
 
 - Media snapshots also preserve immutable object references and file metadata.
+- Media snapshots also preserve immutable derivative metadata.
 - Note snapshots omit media-only fields.

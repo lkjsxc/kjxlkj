@@ -16,6 +16,7 @@
 - Successful media upload may show brief status inside the editor surface.
 - If media upload falls back from a stale selection to append-at-end insertion, the status is `Selection changed; inserted at end.`
 - Selection fallback status is informational and must not use error styling.
+- Upload insertion uses the selection captured before the file picker opens.
 
 ## Live Sync
 

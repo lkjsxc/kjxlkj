@@ -11,6 +11,7 @@
 
 - Homepage blocks, dashboard sections, search results, and history pages use dense layouts fit for thousands of notes.
 - Rails, history entries, note metadata, and editor chrome stay compact.
+- Media thumbnails may be one line taller than the previous compact card baseline.
 - Text-first actions reduce chrome bulk relative to note content.
 - Tall empty vertical gaps should be removed before reducing useful content.
 - Wide layouts may not introduce extra top or side whitespace that compact layouts do not need.

@@ -15,6 +15,7 @@
 - `invalid_request` -> `400`: Malformed request body.
 - `not_found` -> `404`: Resource does not exist or is private.
 - `storage_error` -> `500`: Database error.
+- Multipart write endpoints always return JSON errors for invalid media or unsupported extensions.
 
 ## Determinism Rules
 

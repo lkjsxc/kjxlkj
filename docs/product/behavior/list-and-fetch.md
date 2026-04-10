@@ -43,19 +43,21 @@
 ## Current File Fetch (`GET /{ref}/file`)
 
 - Returns the current media binary when `/{ref}` is live media.
+- `variant=card|display|poster` returns the matching current derivative when it exists.
 - Returns `404` when `/{ref}` resolves to a note.
 - Returns `404` for private live media when no valid session exists.
 
 ## Snapshot File Fetch (`GET /{snapshot_id}/file`)
 
 - Returns the immutable media binary stored on that snapshot.
+- `variant=card|display|poster` returns the matching saved derivative when it exists.
 - Returns `404` when the snapshot belongs to a note.
 - Uses the snapshot’s stored visibility.
 
 ## History Fetch
 
-- History index returns the live resource plus one visible saved-snapshot page.
+- History index returns the live resource plus one saved-snapshot page for admins only.
 - Saved snapshots are ordered by `snapshot_number DESC`.
-- Guests can fetch only saved snapshots whose stored state is public.
 - Admins can fetch all saved snapshots.
 - The history rail never expands into per-snapshot links.
+- Guests may open public saved-snapshot root URLs when they already know the snapshot URL.

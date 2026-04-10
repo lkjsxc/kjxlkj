@@ -19,8 +19,11 @@
 - Media keeps `file_href`, `content_type`, `byte_size`, `sha256_hex`, and `original_filename`.
 - Images may also keep `width` and `height`.
 - Videos may also keep `width`, `height`, and `duration_ms`.
+- Media may keep WebP derivative metadata for card, display, and poster contexts.
 - `/{ref}/file` returns the current media binary.
 - `/{snapshot_id}/file` returns the immutable media binary stored on that snapshot.
+- `/{ref}/file?variant=card|display|poster` returns the requested derivative when present.
+- `/{snapshot_id}/file?variant=card|display|poster` returns the saved derivative when present.
 
 ## Shared Display Rules
 

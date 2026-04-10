@@ -13,8 +13,10 @@
 
 - Guests may read only public saved snapshots.
 - Admins may read all saved snapshots.
+- Guests cannot open the history index list.
 - Saved-snapshot pages never expose raw live-note IDs as normal page chrome.
 - Saved-snapshot pages use their own opaque root-path URL at `/{id}`.
+- Guest saved-snapshot pages do not show a `Back to history` link.
 
 ## Index Content
 
@@ -24,6 +26,7 @@
 - The first saved-snapshot card on the first page is labeled `Latest saved snapshot`.
 - Remaining saved-snapshot cards use `Saved snapshot N`.
 - Each saved-snapshot card shows saved-at time, visibility state, and summary preview.
+- Saved-snapshot cards prefer a changed excerpt that highlights text added or removed from the previous snapshot.
 - Each saved-snapshot card links directly to its root-path saved-snapshot page.
 - The live-note card remains visible on every page instead of becoming part of the paginated slice.
 - History paging is URL-shareable through `cursor`, `direction`, and `limit`.

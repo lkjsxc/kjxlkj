@@ -5,6 +5,7 @@
 - Homepage Popular, Recently updated, and Favorites are mixed-resource sections.
 - Section cards remain shared across notes and media.
 - Image media may render a fixed-height cropped thumbnail inside list cards.
+- Media card thumbnails use `128px` height.
 - Media card badges and metadata render below the thumbnail without overlapping it.
 - Video media cards may use a media-family badge rather than autoplay behavior.
 

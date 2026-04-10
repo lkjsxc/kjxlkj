@@ -17,6 +17,7 @@
 - `width`: nullable current intrinsic width.
 - `height`: nullable current intrinsic height.
 - `duration_ms`: nullable current video duration.
+- `media_variants`: nullable current derivative metadata JSON.
 - `is_favorite`: favorite flag.
 - `favorite_position`: nullable persistent favorite ordering slot.
 - `is_private`: privacy flag.
@@ -45,6 +46,7 @@
 - `width`: nullable saved intrinsic width.
 - `height`: nullable saved intrinsic height.
 - `duration_ms`: nullable saved video duration.
+- `media_variants`: nullable saved derivative metadata JSON.
 - `is_private`: saved visibility.
 - `snapshot_number`: immutable per-resource sequence.
 - `created_at`: snapshot UTC timestamp.
@@ -67,4 +69,14 @@
 - `default_new_resource_is_private`: default visibility for newly created notes and media.
 - `session_timeout_minutes`: login session lifetime.
 - `site_name`, `site_description`, `public_base_url`: shared site identity and discovery fields.
+- `media_webp_quality`: quality value for future derivative WebP generation.
+- `site_icon_key`, `site_icon_content_type`, and `site_icon_updated_at`: optional uploaded site icon state.
 - `updated_at`: mutable UTC timestamp.
+
+## `password_reset_tokens`
+
+- `id`: UUID primary key.
+- `token_hash`: hash of the one-time reset token.
+- `expires_at`: token expiry timestamp.
+- `used_at`: nullable consumption timestamp.
+- `created_at`: token creation timestamp.

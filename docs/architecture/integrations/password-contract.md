@@ -41,6 +41,20 @@ let hash = bcrypt::hash(password, 12)?;
 let valid = bcrypt::verify(password, &stored_hash)?;
 ```
 
+## Setup Code
+
+- Initial setup requires a one-time setup code when no admin user exists.
+- The server generates the setup code at startup and logs it to the console.
+- Verification may provide a deterministic setup code through environment configuration.
+- Setup code comparison must not leak which submitted field failed.
+
+## Password Reset Token
+
+- Forgotten-password reset uses a one-time token logged to the server console.
+- Only a bcrypt hash of the token is stored.
+- Reset tokens expire and are consumed on successful use.
+- Successful reset invalidates existing sessions.
+
 ## Timing Safety
 
 - bcrypt verify is constant-time
