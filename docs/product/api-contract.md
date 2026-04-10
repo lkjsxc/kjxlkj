@@ -61,8 +61,11 @@
 
 - Media upload limit defaults to `536870912` bytes.
 - Site icon upload limit defaults to `2097152` bytes.
-- Oversized multipart requests return `413` with `payload_too_large` JSON.
-- Multipart write endpoints must not emit HTML error bodies.
+- Application-detected oversized multipart payloads return `413` with `payload_too_large` JSON.
+- Browser upload clients must tolerate non-JSON limit errors from HTTP middleware or gateways and surface them as plain text instead of trying to parse them as JSON.
+- Media upload file parts spill to temporary files while the multipart stream is read.
+- SeaweedFS uploads read original media bodies from those temporary files rather than cloned in-memory buffers.
+- Image derivative generation may read the source image into memory because the derivative encoder operates on decoded bytes.
 
 ## Browse Query Parameters
 
