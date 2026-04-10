@@ -38,7 +38,7 @@ jobs:
       - name: Start application services
         run: |
           set -euo pipefail
-          docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres app
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app
 
       - name: Run repository verification
         run: |
@@ -54,7 +54,7 @@ jobs:
         if: always()
         run: |
           docker compose -f docker-compose.yml -f docker-compose.verify.yml ps > tmp/ci-logs/compose-ps.txt || true
-          docker compose -f docker-compose.yml -f docker-compose.verify.yml logs postgres app > tmp/ci-logs/compose.log || true
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml logs postgres seaweedfs app > tmp/ci-logs/compose.log || true
 
       - name: Tear down compose services
         if: always()

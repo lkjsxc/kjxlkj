@@ -3,7 +3,7 @@ name = "kjxlkj"
 version = "0.1.0"
 edition = "2021"
 authors = ["kjxlkj contributors"]
-description = "Deterministic record service for LLM-operated workflows"
+description = "Deterministic resource service for LLM-operated workflows"
 license = "Apache-2.0"
 
 [[bin]]
