@@ -25,3 +25,4 @@
 
 - `check-lines` enforces the 300-line docs limit and the 200-line authored-code limit.
 - Authored-code checks cover the authored subsets of `src/`, including `src/tests/`, `src/verify/`, and future `src/storage/`.
+- Files above the headroom targets in [../../repository/rules/line-limits.md](../../repository/rules/line-limits.md) should be split when they are already being edited.

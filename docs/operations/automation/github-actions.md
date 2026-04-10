@@ -11,6 +11,7 @@
 - Workflow logic must not replace compose verification with a weaker direct-host shortcut.
 - The workflow layers `docker-compose.verify.yml` on top of `docker-compose.yml`.
 - The workflow copies `.env.example` to `.env` before the first Compose build or run command.
+- The workflow starts `postgres`, `seaweedfs`, and `app` explicitly before verification.
 - The workflow must not depend on a tracked `.env` file or repository secrets for local verification defaults.
 
 ## Publish Job
@@ -24,4 +25,4 @@
 ## Artifacts
 
 - Browser screenshots are uploaded as workflow artifacts.
-- Failure logs stay downloadable from the workflow run.
+- Failure logs for `postgres`, `seaweedfs`, and `app` stay downloadable from the workflow run.

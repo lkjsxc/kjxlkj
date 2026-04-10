@@ -11,5 +11,6 @@ Use this subtree for scripted command bundles and CI behavior.
 ## Child Index
 
 - [command-contracts.md](command-contracts.md): CLI and compose command bundle used by automation
+- [ci-triage.md](ci-triage.md): failing-CI reproduction and diagnosis sequence
 - [failure-handling.md](failure-handling.md): required recovery sequence after failures
 - [github-actions.md](github-actions.md): workflow-file and artifact expectations for GitHub Actions

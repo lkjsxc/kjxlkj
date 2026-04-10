@@ -18,6 +18,7 @@
 
 - Docs files: `<= 300` lines.
 - Authored source files: `<= 200` lines.
+- Edited source files should keep practical headroom below the hard limit when a cohesive split is available.
 
 ## Terminology Rules
 
