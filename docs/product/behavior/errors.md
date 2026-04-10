@@ -15,8 +15,10 @@
 - `invalid_request` -> `400`: Malformed request body.
 - `payload_too_large` -> `413`: Upload body or multipart part exceeds the configured limit.
 - `not_found` -> `404`: Resource does not exist or is private.
-- `storage_error` -> `500`: Database error.
-- Multipart write endpoints always return JSON errors for upload parsing, size, invalid media, or unsupported extensions.
+- `storage_error` -> `500`: Object storage or filesystem error.
+- `database_error` -> `500`: Database error.
+- Application-raised multipart errors use the same JSON shape.
+- Browser upload code must also handle plain-text or HTML errors from HTTP middleware and gateways.
 
 ## Determinism Rules
 
