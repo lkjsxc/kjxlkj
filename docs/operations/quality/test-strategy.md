@@ -18,12 +18,12 @@
 - Session-protected write behavior.
 - End-to-end note create, direct media upload, note-attachment upload, metadata update, and delete lifecycle.
 - Admin-only history list behavior with guest direct public snapshot access.
-- Multipart media failures return JSON instead of HTML.
+- Multipart media failures return JSON instead of HTML, including oversized upload requests.
 
 ## Compose Verification
 
 - Compose verify must execute the full docs, Rust, and line-limit bundle.
-- The verification stack must include PostgreSQL, MinIO, and the app service.
+- The verification stack must include PostgreSQL, SeaweedFS, and the app service.
 
 ## Browser Verification
 

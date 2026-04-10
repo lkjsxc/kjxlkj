@@ -15,22 +15,23 @@ cp .env.example .env
 ## Configure `.env`
 
 - Set PostgreSQL credentials.
-- Set MinIO root credentials and app-facing S3 credentials.
+- Set SeaweedFS S3 credentials.
 - Set `APP_PORT` if the host should expose something other than `8080`.
+- Leave `MEDIA_UPLOAD_MAX_BYTES=536870912` unless a different upload cap is required.
 - Do not look for session timeout or discovery public origin in `.env`; those live in `/admin/settings`.
 
 ## Build and Start
 
 ```bash
 docker compose build app
-docker compose up -d postgres minio app
+docker compose up -d postgres seaweedfs app
 docker compose ps
 ```
 
 Expected:
 
 - `postgres` becomes healthy.
-- `minio` becomes healthy.
+- `seaweedfs` becomes healthy.
 - `app` becomes running.
 
 ## Confirm Health

@@ -10,7 +10,7 @@
 ## Runtime Shape
 
 - `postgres` stores live resources, snapshots, settings, analytics, and sessions.
-- `minio` stores current and historical media binaries through an S3-compatible API.
+- `seaweedfs` stores current and historical media binaries through its S3 gateway.
 - `app` is the Rust web service that runs migrations, ensures the bucket exists, and serves HTML plus JSON or multipart endpoints.
 - `verify` runs Rust and docs quality gates inside Compose.
 - `visual-verify` runs browser-rendered screenshot checks against the live stack.
@@ -28,3 +28,4 @@
 - Untouched session timeout default: `1440` minutes
 - Untouched new-resource visibility default: public
 - Canonical deployment model: one host running Docker Compose
+- Default media upload limit: `536870912` bytes

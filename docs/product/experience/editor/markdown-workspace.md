@@ -10,7 +10,7 @@
 ## Storage Rule
 
 - Canonical descriptive content remains raw Markdown in `body`.
-- Media binaries live in S3-compatible object storage rather than inside Markdown.
+- Media binaries live in SeaweedFS-backed object storage rather than inside Markdown.
 - Existing media binaries are immutable after creation.
 
 ## UI Rules

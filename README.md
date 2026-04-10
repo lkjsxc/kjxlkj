@@ -23,8 +23,9 @@ Treat [docs/README.md](docs/README.md) as the only active canon for intended beh
 ## Current Runtime Shape
 
 - Rust runtime and CLI
-- Actix Web server-rendered HTML
-- PostgreSQL for notes, revisions, search, and sessions
+- Axum server-rendered HTML
+- PostgreSQL for resources, saved snapshots, search, settings, and sessions
+- SeaweedFS S3 gateway for media binaries
 - Docker Compose for runtime boot and verification
 
 ## Rule

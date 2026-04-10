@@ -2,8 +2,8 @@
 
 ## Compose Environment
 
-- `.env` owns host port exposure, bind address, PostgreSQL credentials, MinIO credentials, S3 endpoint settings, and optional `SETUP_CODE`.
-- Compose assembles `DATABASE_URL` and S3-compatible environment for the runtime container.
+- `.env` owns host port exposure, bind address, PostgreSQL credentials, SeaweedFS S3 settings, upload byte limits, and optional `SETUP_CODE`.
+- Compose assembles `DATABASE_URL` and SeaweedFS S3 environment for the runtime container.
 - `docker-compose.yml` treats `.env` as authoritative rather than relying on inline fallback defaults.
 - CI must create `.env` from `.env.example` before running compose-backed verification.
 - Compose environment does not own site identity, search defaults, session timeout, home section ordering, or discovery public-origin state.
@@ -15,7 +15,7 @@
 
 ## Bootstrap Sequence
 
-1. Start the compose stack with database, MinIO, and bind settings only.
+1. Start the compose stack with database, SeaweedFS, upload limit, and bind settings only.
 2. Complete `/setup` and `/login`.
 3. Open `/admin/settings`.
 4. Save site identity, `public_base_url`, and default new-resource visibility.

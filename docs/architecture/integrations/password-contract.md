@@ -2,8 +2,9 @@
 
 ## Algorithm
 
-- Hash function: bcrypt
-- Cost factor: 12
+- Hash function: Argon2id
+- Version: `v=19`
+- Format: PHC string
 - Salt: automatically generated per hash
 
 ## Validation Rules
@@ -15,30 +16,30 @@
 
 ### No Maximum Length
 
-- bcrypt truncates at 72 bytes internally
-- UI may warn but does not enforce maximum
+- Argon2id does not use the old 72-byte bcrypt truncation behavior.
+- UI must not enforce a password maximum beyond transport and form limits.
 
 ## Hash Format
 
-bcrypt output format: `$2b$12$<salt><hash>`
+Argon2id output format: `$argon2id$v=19$m=<memory>,t=<iterations>,p=<lanes>$<salt>$<hash>`
 
-- Version identifier: `$2b$`
-- Cost factor: `12`
-- Salt: 22 base64 characters
-- Hash: 31 base64 characters
+- Version identifier: `$argon2id$`
+- Parameters are embedded in the PHC string.
+- Salt is random for each hash.
+- Stored hashes must begin with `$argon2id$`.
 
 ## Operations
 
 ### Hash Password
 
 ```rust
-let hash = bcrypt::hash(password, 12)?;
+let hash = password::hash_password(password)?;
 ```
 
 ### Verify Password
 
 ```rust
-let valid = bcrypt::verify(password, &stored_hash)?;
+let valid = password::verify_password(password, &stored_hash)?;
 ```
 
 ## Setup Code
@@ -51,14 +52,19 @@ let valid = bcrypt::verify(password, &stored_hash)?;
 ## Password Reset Token
 
 - Forgotten-password reset uses a one-time token logged to the server console.
-- Only a bcrypt hash of the token is stored.
+- Only an Argon2id hash of the token is stored.
 - Reset tokens expire and are consumed on successful use.
 - Successful reset invalidates existing sessions.
 
 ## Timing Safety
 
-- bcrypt verify is constant-time
+- Argon2id PHC verification is used for stored password and token hashes.
 - No early exit on mismatch
+
+## Legacy Hash Rule
+
+- bcrypt-era hashes are not accepted after the migration.
+- Existing disposable environments must complete setup or password reset again.
 
 ## Error Handling
 

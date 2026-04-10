@@ -12,7 +12,7 @@
 8. `cargo run --bin kjxlkj -- quality check-lines`
 9. `cp .env.example .env` when `.env` is absent in CI or a fresh checkout
 10. `docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify`
-11. `docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres minio app`
+11. `docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app`
 12. `docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify`
 13. `docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify`
 14. `docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v`

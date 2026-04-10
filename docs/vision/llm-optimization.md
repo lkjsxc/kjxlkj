@@ -30,7 +30,7 @@
 
 - Notes and media share IDs, aliases, visibility, favorites, history, and search participation.
 - Notes store canonical Markdown in `body`.
-- Media stores canonical Markdown in `body` plus one current binary object in S3-compatible storage.
+- Media stores canonical Markdown in `body` plus one current binary object in SeaweedFS-backed storage.
 - Markdown images render inline from standard image syntax.
 - Markdown video embeds render from safe inline HTML `<video>` markup.
 - Saved snapshots keep immutable binary object references for media.

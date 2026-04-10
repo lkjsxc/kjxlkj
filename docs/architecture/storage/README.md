@@ -4,7 +4,7 @@ Use this subtree for media binary storage contracts.
 
 ## Read This Section When
 
-- You need the S3-compatible runtime configuration.
+- You need the SeaweedFS S3 runtime configuration.
 - You need bucket, key, or object-retention rules for media.
 - You need to know how live media and snapshot media share or diverge object references.
 

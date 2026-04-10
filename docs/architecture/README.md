@@ -12,7 +12,7 @@ Use this subtree for non-UI contracts that define runtime shape, persistence, an
 
 - [runtime/README.md](runtime/README.md): runtime service stack, module boundaries, and route ownership
 - [data/README.md](data/README.md): schema, IDs, aliases, search indexing, and consistency rules
-- [storage/README.md](storage/README.md): S3-compatible object storage contracts for media
+- [storage/README.md](storage/README.md): SeaweedFS S3 object storage contracts for media
 - [integrations/README.md](integrations/README.md): protocol and dependency contracts that code must honor
 
 ## Start Here

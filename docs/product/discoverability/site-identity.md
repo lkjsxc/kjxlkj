@@ -21,7 +21,7 @@
 
 - The site icon is operator-configurable from `/admin/settings`.
 - Uploaded site icons must be image files.
-- Uploaded site icons are stored in S3-compatible object storage.
+- Uploaded site icons are stored in SeaweedFS-backed object storage.
 - `GET /assets/site-icon` serves the configured uploaded icon or the fallback icon.
 - `GET /favicon.ico` may redirect to or proxy the same effective icon.
 - Resetting the icon removes the configured icon metadata and restores the fallback icon.

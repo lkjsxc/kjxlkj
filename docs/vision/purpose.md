@@ -12,7 +12,7 @@
 - Let Markdown notes embed current or saved media files directly.
 - Keep admin editing fast for one operator with autosave, preview, and note-centered media attachment.
 - Keep home, search, favorites, popularity, and analytics workable for thousands of mixed resources.
-- Keep deployment single-host friendly through Docker Compose, PostgreSQL, and S3-compatible object storage.
+- Keep deployment single-host friendly through Docker Compose, PostgreSQL, and SeaweedFS-backed object storage.
 
 ## Non-Goals
 

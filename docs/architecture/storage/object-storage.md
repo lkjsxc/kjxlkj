@@ -2,18 +2,18 @@
 
 ## Runtime Model
 
-- Media binaries live in one S3-compatible bucket.
-- The canonical local and single-host deployment path uses MinIO.
-- Runtime code targets an S3-compatible abstraction rather than MinIO-specific APIs.
+- Media binaries live in one SeaweedFS bucket exposed through its S3 gateway.
+- The canonical local and single-host deployment path uses one SeaweedFS container.
+- Runtime code targets the S3 protocol and does not call SeaweedFS native filer APIs.
 
 ## Required Configuration
 
-- `S3_ENDPOINT`
-- `S3_REGION`
-- `S3_BUCKET`
-- `S3_ACCESS_KEY`
-- `S3_SECRET_KEY`
-- `S3_PATH_STYLE`
+- `SEAWEEDFS_S3_ENDPOINT`
+- `SEAWEEDFS_S3_REGION`
+- `SEAWEEDFS_S3_BUCKET`
+- `SEAWEEDFS_S3_ACCESS_KEY`
+- `SEAWEEDFS_S3_SECRET_KEY`
+- `SEAWEEDFS_S3_PATH_STYLE`
 
 ## Client Rules
 

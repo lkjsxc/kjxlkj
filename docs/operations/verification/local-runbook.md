@@ -3,11 +3,11 @@
 ## Start Services
 
 ```bash
-docker compose up -d postgres minio app
+docker compose up -d postgres seaweedfs app
 docker compose ps
 ```
 
-Expected: `postgres`, `minio`, and `app` are running.
+Expected: `postgres`, `seaweedfs`, and `app` are running.
 
 ## Verify Setup + Login
 

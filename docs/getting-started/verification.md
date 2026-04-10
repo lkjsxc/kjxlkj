@@ -8,7 +8,7 @@ Run the same full-compose verification bundle used as the canonical acceptance p
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify
-docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres minio app
+docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v

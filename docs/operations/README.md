@@ -7,7 +7,7 @@ Use this subtree for runtime deployment, verification, release acceptance, and a
 - You need to boot or upgrade a live stack.
 - You need the compose verification pipeline.
 - You need the exact acceptance gates or CI command bundle.
-- You need MinIO and PostgreSQL persistence rules.
+- You need SeaweedFS and PostgreSQL persistence rules.
 
 ## Child Index
 

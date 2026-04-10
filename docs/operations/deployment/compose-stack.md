@@ -10,23 +10,23 @@
 ## Services
 
 - `postgres`: PostgreSQL database for resources, snapshots, settings, analytics, and sessions
-- `minio`: S3-compatible object storage for media binaries
+- `seaweedfs`: SeaweedFS S3 gateway for media binaries
 - `app`: Rust runtime service
 - `verify`: quality-gate service from the verification overlay
 - `visual-verify`: browser verification service from the verification overlay
 
 ## Service Dependencies
 
-- `app` depends on healthy `postgres` and healthy `minio`.
+- `app` depends on healthy `postgres` and healthy `seaweedfs`.
 - `verify` depends on healthy `app`.
 - `visual-verify` depends on healthy `app`.
-- Default `docker compose up` starts `postgres`, `minio`, and `app`.
+- Default `docker compose up` starts `postgres`, `seaweedfs`, and `app`.
 
 ## Runtime Environment
 
-- `.env` owns PostgreSQL credentials, app host exposure, MinIO credentials, and S3 endpoint settings.
-- Compose assembles `DATABASE_URL` and the S3-compatible environment for `app`.
-- Runtime Compose does not expose MinIO ports on the host.
+- `.env` owns PostgreSQL credentials, app host exposure, SeaweedFS S3 credentials, endpoint settings, and upload limits.
+- Compose assembles `DATABASE_URL` and the SeaweedFS S3 environment for `app`.
+- Runtime Compose does not expose SeaweedFS ports on the host.
 - Persisted operator settings still own `site_name`, `site_description`, `public_base_url`, search defaults, and session timeout.
 
 ## Boot Behavior
@@ -35,7 +35,7 @@
 2. Validate database and object-storage configuration.
 3. Connect to PostgreSQL.
 4. Run non-destructive PostgreSQL migrations.
-5. Connect to object storage and ensure the target bucket exists.
+5. Connect to SeaweedFS S3 and ensure the target bucket exists.
 6. Start the HTTP server.
 
 ## Migration Rule
@@ -47,6 +47,6 @@
 ## Persistent and Disposable State
 
 - PostgreSQL state is stored in `kjxlkj-postgres-data`.
-- MinIO state is stored in `kjxlkj-minio-data`.
+- SeaweedFS state is stored in `kjxlkj-seaweedfs-data`.
 - `verify` uses `kjxlkj-verify-cargo` and `kjxlkj-verify-target`.
 - Browser verification writes screenshots to `tmp/visual-artifacts/`.

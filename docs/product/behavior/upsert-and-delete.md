@@ -15,7 +15,7 @@
 - Requires valid session.
 - Requires multipart part `file`.
 - Optional parts: `alias`, `is_favorite`, and `is_private`.
-- The server stores the uploaded binary in S3-compatible storage and derives media metadata.
+- The server stores the uploaded binary in SeaweedFS-backed storage and derives media metadata.
 - The server prepares derivative WebP metadata when supported by the media family.
 - The initial Markdown `body` is seeded from the uploaded filename stem as a `# Heading`.
 - Successful create returns `201` with created resource JSON.

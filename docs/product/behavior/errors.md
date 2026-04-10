@@ -13,9 +13,10 @@
 
 - `unauthorized` -> `401`: No valid session for write operation.
 - `invalid_request` -> `400`: Malformed request body.
+- `payload_too_large` -> `413`: Upload body or multipart part exceeds the configured limit.
 - `not_found` -> `404`: Resource does not exist or is private.
 - `storage_error` -> `500`: Database error.
-- Multipart write endpoints always return JSON errors for invalid media or unsupported extensions.
+- Multipart write endpoints always return JSON errors for upload parsing, size, invalid media, or unsupported extensions.
 
 ## Determinism Rules
 

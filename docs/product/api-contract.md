@@ -57,6 +57,13 @@
 - Media-only fields are absent for `note`.
 - `media_variants` is nullable derivative metadata for media resources.
 
+## Upload Limits
+
+- Media upload limit defaults to `536870912` bytes.
+- Site icon upload limit defaults to `2097152` bytes.
+- Oversized multipart requests return `413` with `payload_too_large` JSON.
+- Multipart write endpoints must not emit HTML error bodies.
+
 ## Browse Query Parameters
 
 - `/search` accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.

@@ -23,6 +23,6 @@
 ## `visual-verify` Runtime Requirements
 
 - Playwright runtime with Chromium.
-- Access to healthy `postgres`, `minio`, and `app` services.
+- Access to healthy `postgres`, `seaweedfs`, and `app` services.
 - Deterministic scripts under `src/verify/browser/`.
 - Writable artifact target at `/artifacts`, exposed to the repo as `tmp/visual-artifacts/`.

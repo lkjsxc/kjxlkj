@@ -2,7 +2,7 @@
 
 ## Object Rules
 
-- Original media objects and derivative objects live in the same S3-compatible bucket.
+- Original media objects and derivative objects live in the same SeaweedFS S3 bucket.
 - Derivative keys are opaque and scoped under the media resource id.
 - Derivative objects use `image/webp` content type.
 - Derivative metadata is stored on the resource and copied to saved snapshots.
