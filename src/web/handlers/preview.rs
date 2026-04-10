@@ -2,9 +2,12 @@
 
 use crate::core::render_markdown;
 use crate::error::AppError;
-use crate::web::db::DbPool;
+use crate::web::handlers::http;
 use crate::web::handlers::session;
-use actix_web::{post, web, HttpRequest, HttpResponse};
+use crate::web::routes::AppState;
+use axum::extract::{Json, State};
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::Response;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
@@ -17,14 +20,16 @@ pub struct PreviewOutput {
     pub html: String,
 }
 
-#[post("/admin/markdown-preview")]
 pub async fn render_markdown_preview(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    body: web::Json<PreviewInput>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    Ok(HttpResponse::Ok().json(PreviewOutput {
-        html: render_markdown(&body.body),
-    }))
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(body): Json<PreviewInput>,
+) -> Result<Response, AppError> {
+    session::require_session(&headers, &state.pool).await?;
+    Ok(http::json_status(
+        StatusCode::OK,
+        PreviewOutput {
+            html: render_markdown(&body.body),
+        },
+    ))
 }

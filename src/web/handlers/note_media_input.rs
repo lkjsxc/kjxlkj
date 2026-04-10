@@ -1,6 +1,6 @@
 use crate::error::AppError;
-use actix_multipart::Multipart;
-use futures_util::TryStreamExt;
+use axum::extract::multipart::Field;
+use axum::extract::Multipart;
 
 use super::media_input::UploadedFile;
 
@@ -27,24 +27,24 @@ pub async fn parse_note_media_form(
     let mut is_private = None;
     let mut insert_start = None;
     let mut insert_end = None;
-    while let Some(mut field) = payload
-        .try_next()
+    while let Some(field) = payload
+        .next_field()
         .await
         .map_err(|e| AppError::InvalidRequest(format!("invalid multipart payload: {e}")))?
     {
         match field.name() {
-            Some("file") => files.push(read_file(&mut field).await?),
-            Some("body") => body = Some(raw_text(&mut field).await?),
-            Some("alias") => alias = text_value(&mut field).await?,
-            Some("is_favorite") => is_favorite = Some(bool_value(&mut field).await?),
-            Some("is_private") => is_private = Some(bool_value(&mut field).await?),
-            Some("insert_start") => insert_start = Some(usize_value(&mut field).await?),
-            Some("insert_end") => insert_end = Some(usize_value(&mut field).await?),
+            Some("file") => files.push(read_file(field).await?),
+            Some("body") => body = Some(raw_text(field).await?),
+            Some("alias") => alias = text_value(field).await?,
+            Some("is_favorite") => is_favorite = Some(bool_value(field).await?),
+            Some("is_private") => is_private = Some(bool_value(field).await?),
+            Some("insert_start") => insert_start = Some(usize_value(field).await?),
+            Some("insert_end") => insert_end = Some(usize_value(field).await?),
             _ => {
                 let _ = field
-                    .bytes(MAX_TEXT_BYTES)
+                    .bytes()
                     .await
-                    .map_err(|_| invalid("unexpected field exceeds limit"))?;
+                    .map_err(|e| invalid(&format!("could not read field: {e}")))?;
             }
         }
     }
@@ -62,46 +62,53 @@ pub async fn parse_note_media_form(
     })
 }
 
-async fn read_file(field: &mut actix_multipart::Field) -> Result<UploadedFile, AppError> {
+async fn read_file(field: Field<'_>) -> Result<UploadedFile, AppError> {
+    let original_filename = field
+        .file_name()
+        .map(str::to_string)
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or_else(|| "upload.bin".to_string());
+    let content_type = field
+        .content_type()
+        .map(str::to_string)
+        .unwrap_or_else(|| "application/octet-stream".to_string());
     let bytes = field
-        .bytes(MAX_FILE_BYTES)
+        .bytes()
         .await
-        .map_err(|_| invalid("file exceeds upload limit"))?
         .map_err(|e| invalid(&format!("could not read upload: {e}")))?;
+    if bytes.len() > MAX_FILE_BYTES {
+        return Err(AppError::PayloadTooLarge(
+            "file exceeds upload limit".to_string(),
+        ));
+    }
     if bytes.is_empty() {
         return Err(invalid("file is required"));
     }
     Ok(UploadedFile {
         bytes: bytes.to_vec(),
-        original_filename: field
-            .content_disposition()
-            .and_then(|item| item.get_filename())
-            .map(str::to_string)
-            .filter(|value| !value.trim().is_empty())
-            .unwrap_or_else(|| "upload.bin".to_string()),
-        content_type: field
-            .content_type()
-            .map(|value| value.to_string())
-            .unwrap_or_else(|| "application/octet-stream".to_string()),
+        original_filename,
+        content_type,
     })
 }
 
-async fn required_text(field: &mut actix_multipart::Field) -> Result<String, AppError> {
+async fn required_text(field: Field<'_>) -> Result<String, AppError> {
     text_value(field)
         .await?
         .ok_or_else(|| invalid("text field is required"))
 }
 
-async fn text_value(field: &mut actix_multipart::Field) -> Result<Option<String>, AppError> {
+async fn text_value(field: Field<'_>) -> Result<Option<String>, AppError> {
     Ok(trimmed_text(raw_text(field).await?))
 }
 
-async fn raw_text(field: &mut actix_multipart::Field) -> Result<String, AppError> {
+async fn raw_text(field: Field<'_>) -> Result<String, AppError> {
     let bytes = field
-        .bytes(MAX_TEXT_BYTES)
+        .bytes()
         .await
-        .map_err(|_| invalid("text field exceeds limit"))?
         .map_err(|e| invalid(&format!("could not read field: {e}")))?;
+    if bytes.len() > MAX_TEXT_BYTES {
+        return Err(invalid("text field exceeds limit"));
+    }
     decode_text(bytes.to_vec())
 }
 
@@ -114,7 +121,7 @@ fn trimmed_text(value: String) -> Option<String> {
     (!trimmed.is_empty()).then(|| trimmed.to_string())
 }
 
-async fn bool_value(field: &mut actix_multipart::Field) -> Result<bool, AppError> {
+async fn bool_value(field: Field<'_>) -> Result<bool, AppError> {
     match required_text(field).await?.as_str() {
         "0" | "false" | "off" => Ok(false),
         "1" | "true" | "on" => Ok(true),
@@ -122,7 +129,7 @@ async fn bool_value(field: &mut actix_multipart::Field) -> Result<bool, AppError
     }
 }
 
-async fn usize_value(field: &mut actix_multipart::Field) -> Result<usize, AppError> {
+async fn usize_value(field: Field<'_>) -> Result<usize, AppError> {
     required_text(field)
         .await?
         .parse::<usize>()

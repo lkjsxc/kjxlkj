@@ -7,6 +7,7 @@ pub mod favorites;
 pub mod health;
 pub mod history;
 pub mod home;
+mod http;
 pub mod login;
 pub mod logout;
 pub mod media;

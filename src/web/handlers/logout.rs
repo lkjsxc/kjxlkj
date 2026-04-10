@@ -1,28 +1,24 @@
 //! Logout handler
 
 use crate::error::AppError;
-use crate::web::db::DbPool;
-use actix_web::cookie::{Cookie, SameSite};
-use actix_web::{post, web, HttpRequest, HttpResponse};
+use crate::web::handlers::{http, session};
+use crate::web::routes::AppState;
+use axum::extract::State;
+use axum::http::HeaderMap;
+use axum::response::Response;
 use uuid::Uuid;
 
-#[post("/logout")]
-pub async fn logout(pool: web::Data<DbPool>, req: HttpRequest) -> Result<HttpResponse, AppError> {
-    if let Some(cookie) = req.cookie("session_id") {
-        if let Ok(session_id) = Uuid::parse_str(cookie.value()) {
-            let _ = crate::web::db::delete_session(&pool, session_id).await;
+pub async fn logout(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Response, AppError> {
+    if let Some(value) = session::cookie_value(&headers, "session_id") {
+        if let Ok(session_id) = Uuid::parse_str(value) {
+            let _ = crate::web::db::delete_session(&state.pool, session_id).await;
         }
     }
 
-    let clear_cookie = Cookie::build("session_id", "")
-        .path("/")
-        .http_only(true)
-        .same_site(SameSite::Strict)
-        .max_age(actix_web::cookie::time::Duration::ZERO)
-        .finish();
-
-    Ok(HttpResponse::SeeOther()
-        .cookie(clear_cookie)
-        .append_header(("Location", "/"))
-        .finish())
+    let mut response = http::see_other("/");
+    http::set_cookie(&mut response, http::clear_session_cookie());
+    Ok(response)
 }

@@ -1,10 +1,13 @@
 //! Setup handlers
 
 use crate::error::AppError;
-use crate::web::db::DbPool;
+use crate::web::handlers::http;
+use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
-use actix_web::{get, post, web, HttpResponse};
+use axum::extract::{Form, State};
+use axum::http::StatusCode;
+use axum::response::Response;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -39,39 +42,36 @@ pub struct SetupForm {
 }
 
 /// Setup page GET handler
-#[get("/setup")]
-pub async fn setup_page(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
-    if crate::web::db::is_setup(&pool).await? {
-        return Ok(redirect("/login"));
+pub async fn setup_page(State(state): State<AppState>) -> Result<Response, AppError> {
+    if crate::web::db::is_setup(&state.pool).await? {
+        return Ok(http::redirect("/login"));
     }
-    let settings = crate::web::db::get_settings(&pool).await?;
+    let settings = crate::web::db::get_settings(&state.pool).await?;
     let site = SiteContext::from_settings(&settings);
-    Ok(html(templates::setup_page(&site, None)))
+    Ok(http::html(templates::setup_page(&site, None)))
 }
 
 /// Setup form POST handler
-#[post("/setup")]
 pub async fn setup_submit(
-    pool: web::Data<DbPool>,
-    setup_code: web::Data<SetupCode>,
-    form: web::Form<SetupForm>,
-) -> Result<HttpResponse, AppError> {
-    if crate::web::db::is_setup(&pool).await? {
-        return Ok(redirect("/login"));
+    State(state): State<AppState>,
+    Form(form): Form<SetupForm>,
+) -> Result<Response, AppError> {
+    if crate::web::db::is_setup(&state.pool).await? {
+        return Ok(http::redirect("/login"));
     }
 
-    let errors = validate_setup_form(&form, &setup_code);
+    let errors = validate_setup_form(&form, &state.setup_code);
     if !errors.is_empty() {
-        let settings = crate::web::db::get_settings(&pool).await?;
+        let settings = crate::web::db::get_settings(&state.pool).await?;
         let site = SiteContext::from_settings(&settings);
-        return Ok(html_status(
-            actix_web::http::StatusCode::BAD_REQUEST,
+        return Ok(http::html_status(
+            StatusCode::BAD_REQUEST,
             templates::setup_page(&site, Some(&errors.join(", "))),
         ));
     }
 
-    crate::web::db::create_admin(&pool, &form.username, &form.password).await?;
-    Ok(see_other("/login"))
+    crate::web::db::create_admin(&state.pool, &form.username, &form.password).await?;
+    Ok(http::see_other("/login"))
 }
 
 fn validate_setup_form(form: &SetupForm, setup_code: &SetupCode) -> Vec<&'static str> {
@@ -100,28 +100,4 @@ fn constant_time_eq(left: &[u8], right: &[u8]) -> bool {
             ^ right.get(index).copied().unwrap_or(0) as usize;
     }
     diff == 0
-}
-
-fn redirect(location: &str) -> HttpResponse {
-    HttpResponse::Found()
-        .append_header(("Location", location))
-        .finish()
-}
-
-fn see_other(location: &str) -> HttpResponse {
-    HttpResponse::SeeOther()
-        .append_header(("Location", location))
-        .finish()
-}
-
-fn html(body: String) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(body)
-}
-
-fn html_status(status: actix_web::http::StatusCode, body: String) -> HttpResponse {
-    HttpResponse::build(status)
-        .content_type("text/html; charset=utf-8")
-        .body(body)
 }

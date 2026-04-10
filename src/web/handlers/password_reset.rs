@@ -1,8 +1,12 @@
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
+use crate::web::handlers::http;
+use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
-use actix_web::{get, post, web, HttpResponse};
+use axum::extract::{Form, State};
+use axum::http::StatusCode;
+use axum::response::Response;
 use serde::Deserialize;
 use tracing::warn;
 
@@ -13,47 +17,42 @@ pub struct ResetForm {
     pub confirm_password: String,
 }
 
-#[get("/reset-password")]
-pub async fn reset_page(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
-    Ok(html(templates::password_reset_page(
-        &site(&pool).await?,
+pub async fn reset_page(State(state): State<AppState>) -> Result<Response, AppError> {
+    Ok(http::html(templates::password_reset_page(
+        &site(&state.pool).await?,
         None,
     )))
 }
 
-#[post("/reset-password/request")]
-pub async fn reset_request(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
-    if let Some(token) = db::issue_password_reset_token(&pool).await? {
+pub async fn reset_request(State(state): State<AppState>) -> Result<Response, AppError> {
+    if let Some(token) = db::issue_password_reset_token(&state.pool).await? {
         warn!(
             password_reset_token = %token,
             "password reset token issued; enter it on /reset-password within 15 minutes"
         );
     }
-    Ok(html(templates::password_reset_page(
-        &site(&pool).await?,
+    Ok(http::html(templates::password_reset_page(
+        &site(&state.pool).await?,
         Some("Reset token issued in the server console."),
     )))
 }
 
-#[post("/reset-password")]
 pub async fn reset_submit(
-    pool: web::Data<DbPool>,
-    form: web::Form<ResetForm>,
-) -> Result<HttpResponse, AppError> {
+    State(state): State<AppState>,
+    Form(form): Form<ResetForm>,
+) -> Result<Response, AppError> {
     if let Some(error) = password_error(&form) {
-        return Ok(html_status(
-            actix_web::http::StatusCode::BAD_REQUEST,
-            templates::password_reset_page(&site(&pool).await?, Some(error)),
+        return Ok(http::html_status(
+            StatusCode::BAD_REQUEST,
+            templates::password_reset_page(&site(&state.pool).await?, Some(error)),
         ));
     }
-    if db::reset_admin_password(&pool, &form.token, &form.password).await? {
-        return Ok(HttpResponse::SeeOther()
-            .append_header(("Location", "/login"))
-            .finish());
+    if db::reset_admin_password(&state.pool, &form.token, &form.password).await? {
+        return Ok(http::see_other("/login"));
     }
-    Ok(html_status(
-        actix_web::http::StatusCode::BAD_REQUEST,
-        templates::password_reset_page(&site(&pool).await?, Some("Reset token is invalid.")),
+    Ok(http::html_status(
+        StatusCode::BAD_REQUEST,
+        templates::password_reset_page(&site(&state.pool).await?, Some("Reset token is invalid.")),
     ))
 }
 
@@ -71,16 +70,4 @@ async fn site(pool: &DbPool) -> Result<SiteContext, AppError> {
     db::get_settings(pool)
         .await
         .map(|settings| SiteContext::from_settings(&settings))
-}
-
-fn html(body: String) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(body)
-}
-
-fn html_status(status: actix_web::http::StatusCode, body: String) -> HttpResponse {
-    HttpResponse::build(status)
-        .content_type("text/html; charset=utf-8")
-        .body(body)
 }

@@ -3,40 +3,43 @@
 use crate::core::looks_like_id;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool};
+use crate::web::handlers::http;
 use crate::web::handlers::session;
+use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
-use actix_web::{get, web, HttpRequest, HttpResponse};
+use axum::extract::{Path, State};
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::Response;
 
 enum RootResource {
     Current(Box<db::Resource>),
     Snapshot(Box<db::SnapshotTarget>),
 }
 
-#[get("/{reference}")]
 pub async fn resource_page(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    if !db::is_setup(&pool).await? {
-        return Ok(redirect("/setup"));
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(reference): Path<String>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    if !db::is_setup(pool).await? {
+        return Ok(http::redirect("/setup"));
     }
-    let reference = path.into_inner();
-    let is_admin = session::check_session(&req, &pool).await?;
-    let settings = db::get_settings(&pool).await?;
+    let is_admin = session::check_session(&headers, pool).await?;
+    let settings = db::get_settings(pool).await?;
     let site = SiteContext::from_settings(&settings);
-    let resource = match resolve_root_resource(&pool, &reference).await? {
+    let resource = match resolve_root_resource(pool, &reference).await? {
         Some(resource) => resource,
         None => return Ok(not_found(&site)),
     };
     match resource {
         RootResource::Current(resource) => {
-            render_current_resource(&pool, &reference, resource.as_ref(), is_admin, &site).await
+            render_current_resource(pool, &reference, resource.as_ref(), is_admin, &site).await
         }
         RootResource::Snapshot(resource) => {
-            render_snapshot(&pool, resource.as_ref(), is_admin, &site).await
+            render_snapshot(pool, resource.as_ref(), is_admin, &site).await
         }
     }
 }
@@ -66,7 +69,7 @@ async fn render_current_resource(
     resource: &db::Resource,
     is_admin: bool,
     site: &SiteContext,
-) -> Result<HttpResponse, AppError> {
+) -> Result<Response, AppError> {
     if resource.is_private && !is_admin {
         return Ok(not_found(site));
     }
@@ -76,7 +79,7 @@ async fn render_current_resource(
         .is_some_and(|alias| alias != reference)
         && reference == resource.id
     {
-        return Ok(redirect(&view::resource_href(resource)));
+        return Ok(http::redirect(&view::resource_href(resource)));
     }
     db::count_resource_view(pool, &resource.id).await?;
     let chrome = view::resource_chrome(pool, resource, is_admin).await?;
@@ -87,7 +90,7 @@ async fn render_current_resource(
     } else {
         None
     };
-    Ok(html(templates::resource_page(
+    Ok(http::html(templates::resource_page(
         resource,
         &chrome,
         analytics.as_ref(),
@@ -101,12 +104,12 @@ async fn render_snapshot(
     target: &db::SnapshotTarget,
     is_admin: bool,
     site: &SiteContext,
-) -> Result<HttpResponse, AppError> {
+) -> Result<Response, AppError> {
     if target.snapshot.is_private && !is_admin {
         return Ok(not_found(site));
     }
     let chrome = view::resource_chrome(pool, &target.resource, is_admin).await?;
-    Ok(html(templates::snapshot_page(
+    Ok(http::html(templates::snapshot_page(
         &chrome,
         &target.snapshot,
         is_admin,
@@ -114,25 +117,14 @@ async fn render_snapshot(
     )))
 }
 
-fn redirect(location: &str) -> HttpResponse {
-    HttpResponse::Found()
-        .append_header(("Location", location))
-        .finish()
-}
-
-fn html(body: String) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(body)
-}
-
-fn not_found(site: &SiteContext) -> HttpResponse {
-    HttpResponse::NotFound()
-        .content_type("text/html; charset=utf-8")
-        .body(templates::not_found_page(&site.page_meta(
+fn not_found(site: &SiteContext) -> Response {
+    http::html_status(
+        StatusCode::NOT_FOUND,
+        templates::not_found_page(&site.page_meta(
             "Not Found",
             "The requested resource could not be found.",
             false,
             None,
-        )))
+        )),
+    )
 }

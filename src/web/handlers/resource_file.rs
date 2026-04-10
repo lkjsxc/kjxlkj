@@ -3,8 +3,12 @@ use crate::error::AppError;
 use crate::media::MediaVariants;
 use crate::storage::Storage;
 use crate::web::db::{self, DbPool, ResourceKind};
+use crate::web::handlers::http;
 use crate::web::handlers::session;
-use actix_web::{get, http::StatusCode, web, HttpRequest, HttpResponse};
+use crate::web::routes::AppState;
+use axum::extract::{Path, Query, State};
+use axum::http::{header, HeaderMap, StatusCode};
+use axum::response::Response;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -12,21 +16,19 @@ pub struct FileQuery {
     variant: Option<String>,
 }
 
-#[get("/{reference}/file")]
 pub async fn current_file(
-    pool: web::Data<DbPool>,
-    storage: web::Data<Storage>,
-    req: HttpRequest,
-    path: web::Path<String>,
-    query: web::Query<FileQuery>,
-) -> Result<HttpResponse, AppError> {
-    let is_admin = session::check_session(&req, &pool).await?;
-    let reference = path.into_inner();
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(reference): Path<String>,
+    Query(query): Query<FileQuery>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    let is_admin = session::check_session(&headers, pool).await?;
     let variant = query.variant.as_deref();
     let file = if looks_like_id(&reference) {
-        resolve_id_backed_file(&pool, &reference, is_admin, variant).await?
+        resolve_id_backed_file(pool, &reference, is_admin, variant).await?
     } else {
-        db::get_resource_by_alias(&pool, &reference)
+        db::get_resource_by_alias(pool, &reference)
             .await?
             .map(|resource| file_from_resource(resource, is_admin, variant))
             .transpose()?
@@ -36,11 +38,11 @@ pub async fn current_file(
         return Err(AppError::NotFound("resource file not found".to_string()));
     };
     stream_file(
-        &storage,
+        &state.storage,
         file.file_key.as_deref(),
         file.content_type.as_deref(),
-        req.headers()
-            .get("Range")
+        headers
+            .get(header::RANGE)
             .and_then(|value| value.to_str().ok()),
     )
     .await
@@ -67,27 +69,34 @@ async fn stream_file(
     file_key: Option<&str>,
     content_type: Option<&str>,
     range: Option<&str>,
-) -> Result<HttpResponse, AppError> {
+) -> Result<Response, AppError> {
     let object = storage
         .get_object(
             file_key.ok_or_else(|| AppError::NotFound("file not found".to_string()))?,
             range,
         )
         .await?;
-    let mut builder = HttpResponse::build(if object.content_range.is_some() {
+    let status = if object.content_range.is_some() {
         StatusCode::PARTIAL_CONTENT
     } else {
         StatusCode::OK
-    });
-    builder.append_header(("Accept-Ranges", "bytes"));
-    builder.append_header(("Content-Length", object.content_length.to_string()));
-    builder.append_header(("Content-Encoding", "identity"));
+    };
+    let mut response = http::bytes_with_type(
+        status,
+        content_type.unwrap_or("application/octet-stream"),
+        object.body,
+    );
+    http::set_header(&mut response, header::ACCEPT_RANGES, "bytes");
+    http::set_header(
+        &mut response,
+        header::CONTENT_LENGTH,
+        &object.content_length.to_string(),
+    );
+    http::set_header(&mut response, header::CONTENT_ENCODING, "identity");
     if let Some(range) = object.content_range {
-        builder.append_header(("Content-Range", range));
+        http::set_header(&mut response, header::CONTENT_RANGE, &range);
     }
-    Ok(builder
-        .content_type(content_type.unwrap_or("application/octet-stream"))
-        .body(object.body))
+    Ok(response)
 }
 
 struct ResourceFileRef {

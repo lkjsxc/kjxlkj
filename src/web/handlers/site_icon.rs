@@ -1,14 +1,14 @@
 use super::session;
 use crate::error::AppError;
-use crate::storage::Storage;
-use crate::web::db::{self, DbPool};
-use actix_multipart::{Field, Multipart};
-use actix_web::{post, web, HttpRequest, HttpResponse};
-use futures_util::TryStreamExt;
+use crate::web::db;
+use crate::web::handlers::http;
+use crate::web::routes::AppState;
+use axum::extract::multipart::Field;
+use axum::extract::{Multipart, State};
+use axum::http::HeaderMap;
+use axum::response::Response;
 use std::path::Path;
 use uuid::Uuid;
-
-const MAX_ICON_BYTES: usize = 2 * 1024 * 1024;
 
 struct IconUpload {
     bytes: Vec<u8>,
@@ -16,15 +16,15 @@ struct IconUpload {
     content_type: String,
 }
 
-#[post("/admin/site-icon")]
 pub async fn upload(
-    pool: web::Data<DbPool>,
-    storage: web::Data<Storage>,
-    req: HttpRequest,
+    State(state): State<AppState>,
+    headers: HeaderMap,
     payload: Multipart,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    let upload = parse_icon(payload).await?;
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    let storage = &state.storage;
+    session::require_session(&headers, pool).await?;
+    let upload = parse_icon(payload, state.site_icon_upload_max_bytes).await?;
     validate_icon(&upload)?;
     let key = format!(
         "site-icons/{}-{}",
@@ -34,53 +34,63 @@ pub async fn upload(
     storage
         .put_object(&key, upload.bytes, &upload.content_type)
         .await?;
-    let mut settings = db::get_settings(&pool).await?;
+    let mut settings = db::get_settings(pool).await?;
     let old_key = settings.site_icon_key.replace(key.clone());
     settings.site_icon_content_type = Some(upload.content_type);
-    let result = db::update_settings(&pool, &settings).await;
+    let result = db::update_settings(pool, &settings).await;
     if result.is_err() {
         let _ = storage.delete_object(&key).await;
     } else if let Some(old_key) = old_key.filter(|old_key| old_key != &key) {
         let _ = storage.delete_object(&old_key).await;
     }
     result?;
-    Ok(HttpResponse::SeeOther()
-        .append_header(("Location", "/admin/settings"))
-        .finish())
+    Ok(http::see_other("/admin/settings"))
 }
 
-async fn parse_icon(mut payload: Multipart) -> Result<IconUpload, AppError> {
+async fn parse_icon(mut payload: Multipart, max_bytes: usize) -> Result<IconUpload, AppError> {
     let mut icon = None;
-    while let Some(mut field) = payload.try_next().await.map_err(invalid_payload)? {
+    while let Some(field) = payload
+        .next_field()
+        .await
+        .map_err(|error| invalid(&format!("invalid multipart payload: {error}")))?
+    {
         if field.name() == Some("icon") {
-            icon = Some(read_icon(&mut field).await?);
+            icon = Some(read_icon(field, max_bytes).await?);
         } else {
-            let _ = field.bytes(1024).await;
+            let _ = field
+                .bytes()
+                .await
+                .map_err(|error| invalid(&format!("could not read field: {error}")))?;
         }
     }
     icon.ok_or_else(|| invalid("icon image is required"))
 }
 
-async fn read_icon(field: &mut Field) -> Result<IconUpload, AppError> {
+async fn read_icon(field: Field<'_>, max_bytes: usize) -> Result<IconUpload, AppError> {
+    let filename = field
+        .file_name()
+        .map(str::to_string)
+        .unwrap_or_else(|| "site-icon".to_string());
+    let content_type = field
+        .content_type()
+        .map(str::to_string)
+        .unwrap_or_else(|| "application/octet-stream".to_string());
     let bytes = field
-        .bytes(MAX_ICON_BYTES)
+        .bytes()
         .await
-        .map_err(|_| invalid("icon image exceeds upload limit"))?
         .map_err(|error| invalid(&format!("could not read icon image: {error}")))?;
+    if bytes.len() > max_bytes {
+        return Err(AppError::PayloadTooLarge(
+            "icon image exceeds upload limit".to_string(),
+        ));
+    }
     if bytes.is_empty() {
         return Err(invalid("icon image is required"));
     }
     Ok(IconUpload {
         bytes: bytes.to_vec(),
-        filename: field
-            .content_disposition()
-            .and_then(|item| item.get_filename())
-            .unwrap_or("site-icon")
-            .to_string(),
-        content_type: field
-            .content_type()
-            .map(|value| value.to_string())
-            .unwrap_or_else(|| "application/octet-stream".to_string()),
+        filename,
+        content_type,
     })
 }
 
@@ -113,10 +123,6 @@ fn extension(filename: &str) -> Option<&str> {
     Path::new(filename)
         .extension()
         .and_then(|value| value.to_str())
-}
-
-fn invalid_payload(error: actix_multipart::MultipartError) -> AppError {
-    invalid(&format!("invalid multipart payload: {error}"))
 }
 
 fn invalid(message: &str) -> AppError {

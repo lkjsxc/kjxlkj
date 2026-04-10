@@ -1,32 +1,36 @@
 //! Resource history HTML handlers
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool, ListDirection};
+use crate::web::db::{self, ListDirection};
+use crate::web::handlers::http;
 use crate::web::handlers::resource_history::HistoryParams;
 use crate::web::handlers::session;
+use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
-use actix_web::{get, web, HttpRequest, HttpResponse};
+use axum::extract::{Path, Query, State};
+use axum::http::{HeaderMap, StatusCode, Uri};
+use axum::response::Response;
 
-#[get("/{id}/history")]
 pub async fn history_page(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-    params: web::Query<HistoryParams>,
-) -> Result<HttpResponse, AppError> {
-    if !db::is_setup(&pool).await? {
-        return Ok(redirect("/setup"));
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+    Path(reference): Path<String>,
+    Query(params): Query<HistoryParams>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    if !db::is_setup(pool).await? {
+        return Ok(http::redirect("/setup"));
     }
-    let reference = path.into_inner();
-    let is_admin = session::check_session(&req, &pool).await?;
+    let is_admin = session::check_session(&headers, pool).await?;
     if !is_admin {
-        return Ok(redirect(&session::login_url(&req)));
+        return Ok(http::redirect(&session::login_url(&uri)));
     }
-    let settings = db::get_settings(&pool).await?;
+    let settings = db::get_settings(pool).await?;
     let site = SiteContext::from_settings(&settings);
-    let Some(resource) = db::get_resource_by_ref(&pool, &reference).await? else {
+    let Some(resource) = db::get_resource_by_ref(pool, &reference).await? else {
         return Ok(not_found(&site));
     };
     if resource
@@ -35,13 +39,13 @@ pub async fn history_page(
         .is_some_and(|alias| alias != reference)
         && reference == resource.id
     {
-        return Ok(redirect(&with_query(
+        return Ok(http::redirect(&with_query(
             &view::history_href(&resource),
-            req.query_string(),
+            uri.query().unwrap_or_default(),
         )));
     }
     let page = db::list_resource_snapshots(
-        &pool,
+        pool,
         &resource.id,
         true,
         params.limit.unwrap_or(settings.search_results_per_page),
@@ -49,9 +53,9 @@ pub async fn history_page(
         params.cursor.as_deref(),
     )
     .await?;
-    let chrome = view::resource_chrome(&pool, &resource, true).await?;
+    let chrome = view::resource_chrome(pool, &resource, true).await?;
     let history = view::history_links(&page.snapshots, params.cursor.is_none());
-    Ok(html(templates::history_page(
+    Ok(http::html(templates::history_page(
         &resource,
         &chrome,
         templates::HistoryPage {
@@ -65,12 +69,6 @@ pub async fn history_page(
     )))
 }
 
-fn redirect(location: &str) -> HttpResponse {
-    HttpResponse::Found()
-        .append_header(("Location", location))
-        .finish()
-}
-
 fn with_query(path: &str, query: &str) -> String {
     if query.is_empty() {
         path.to_string()
@@ -79,19 +77,14 @@ fn with_query(path: &str, query: &str) -> String {
     }
 }
 
-fn html(body: String) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(body)
-}
-
-fn not_found(site: &SiteContext) -> HttpResponse {
-    HttpResponse::NotFound()
-        .content_type("text/html; charset=utf-8")
-        .body(templates::not_found_page(&site.page_meta(
+fn not_found(site: &SiteContext) -> Response {
+    http::html_status(
+        StatusCode::NOT_FOUND,
+        templates::not_found_page(&site.page_meta(
             "Not Found",
             "The requested resource could not be found.",
             false,
             None,
-        )))
+        )),
+    )
 }

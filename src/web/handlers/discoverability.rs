@@ -2,30 +2,36 @@
 
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, SitemapResource};
+use crate::web::handlers::http;
+use crate::web::routes::AppState;
 use crate::web::site::normalize_public_base_url;
-use actix_web::{get, web, HttpResponse};
+use axum::extract::State;
+use axum::http::StatusCode;
+use axum::response::Response;
 
-#[get("/robots.txt")]
-pub async fn robots_txt(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
-    let Some(public_base_url) = public_base_url(&pool).await? else {
-        return Ok(HttpResponse::NotFound().finish());
+pub async fn robots_txt(State(state): State<AppState>) -> Result<Response, AppError> {
+    let Some(public_base_url) = public_base_url(&state.pool).await? else {
+        return Ok(http::empty(StatusCode::NOT_FOUND));
     };
-    Ok(HttpResponse::Ok()
-        .content_type("text/plain; charset=utf-8")
-        .body(robots_body(&public_base_url)))
+    Ok(http::text_with_type(
+        StatusCode::OK,
+        "text/plain; charset=utf-8",
+        robots_body(&public_base_url),
+    ))
 }
 
-#[get("/sitemap.xml")]
-pub async fn sitemap_xml(pool: web::Data<DbPool>) -> Result<HttpResponse, AppError> {
-    let Some(public_base_url) = public_base_url(&pool).await? else {
-        return Ok(HttpResponse::NotFound().finish());
+pub async fn sitemap_xml(State(state): State<AppState>) -> Result<Response, AppError> {
+    let Some(public_base_url) = public_base_url(&state.pool).await? else {
+        return Ok(http::empty(StatusCode::NOT_FOUND));
     };
-    Ok(HttpResponse::Ok()
-        .content_type("application/xml; charset=utf-8")
-        .body(sitemap_body(
+    Ok(http::text_with_type(
+        StatusCode::OK,
+        "application/xml; charset=utf-8",
+        sitemap_body(
             &public_base_url,
-            &db::list_public_sitemap_resources(&pool).await?,
-        )))
+            &db::list_public_sitemap_resources(&state.pool).await?,
+        ),
+    ))
 }
 
 async fn public_base_url(pool: &DbPool) -> Result<Option<String>, AppError> {

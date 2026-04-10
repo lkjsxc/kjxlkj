@@ -3,8 +3,12 @@
 use crate::core::validate_id;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, ListDirection};
+use crate::web::handlers::http;
 use crate::web::handlers::session;
-use actix_web::{get, web, HttpRequest, HttpResponse};
+use crate::web::routes::AppState;
+use axum::extract::{Path, Query, State};
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::Response;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize)]
@@ -19,22 +23,21 @@ pub struct NavResponse {
     pub id: Option<String>,
 }
 
-#[get("/resources/{id}/history")]
 pub async fn history(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-    params: web::Query<HistoryParams>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    let id = path.into_inner();
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Query(params): Query<HistoryParams>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    session::require_session(&headers, pool).await?;
     validate_id(&id)?;
-    if db::get_resource(&pool, &id).await?.is_none() {
+    if db::get_resource(pool, &id).await?.is_none() {
         return Err(AppError::NotFound(format!("resource '{id}' not found")));
     }
-    let settings = db::get_settings(&pool).await?;
+    let settings = db::get_settings(pool).await?;
     let page = db::list_resource_snapshots(
-        &pool,
+        pool,
         &id,
         true,
         params.limit.unwrap_or(settings.search_results_per_page),
@@ -42,46 +45,47 @@ pub async fn history(
         params.cursor.as_deref(),
     )
     .await?;
-    Ok(HttpResponse::Ok().json(page))
+    Ok(http::json_status(StatusCode::OK, page))
 }
 
-#[get("/resources/{id}/prev")]
 pub async fn previous(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    nav_response(pool, req, path.into_inner(), true).await
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+) -> Result<Response, AppError> {
+    nav_response(&state.pool, &headers, id, true).await
 }
 
-#[get("/resources/{id}/next")]
 pub async fn next(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    nav_response(pool, req, path.into_inner(), false).await
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+) -> Result<Response, AppError> {
+    nav_response(&state.pool, &headers, id, false).await
 }
 
 async fn nav_response(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
+    pool: &DbPool,
+    headers: &HeaderMap,
     id: String,
     older: bool,
-) -> Result<HttpResponse, AppError> {
+) -> Result<Response, AppError> {
     validate_id(&id)?;
-    let is_admin = session::check_session(&req, &pool).await?;
-    let resource = db::get_resource(&pool, &id).await?;
+    let is_admin = session::check_session(headers, pool).await?;
+    let resource = db::get_resource(pool, &id).await?;
     match resource {
         Some(resource) if is_admin || !resource.is_private => {
             let neighbor = if older {
-                db::get_previous_resource(&pool, &id, is_admin).await?
+                db::get_previous_resource(pool, &id, is_admin).await?
             } else {
-                db::get_next_resource(&pool, &id, is_admin).await?
+                db::get_next_resource(pool, &id, is_admin).await?
             };
-            Ok(HttpResponse::Ok().json(NavResponse {
-                id: neighbor.map(|note| note.id),
-            }))
+            Ok(http::json_status(
+                StatusCode::OK,
+                NavResponse {
+                    id: neighbor.map(|note| note.id),
+                },
+            ))
         }
         _ => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }

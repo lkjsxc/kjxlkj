@@ -1,6 +1,8 @@
 //! Application error types
 
-use actix_web::{http::StatusCode, HttpResponse, ResponseError};
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+use axum::Json;
 use serde::Serialize;
 use std::fmt;
 
@@ -9,6 +11,7 @@ use std::fmt;
 pub enum AppError {
     Unauthorized(String),
     InvalidRequest(String),
+    PayloadTooLarge(String),
     NotFound(String),
     StorageError(String),
     DatabaseError(String),
@@ -26,6 +29,7 @@ impl fmt::Display for AppError {
         match self {
             AppError::Unauthorized(msg) => write!(f, "unauthorized: {msg}"),
             AppError::InvalidRequest(msg) => write!(f, "invalid_request: {msg}"),
+            AppError::PayloadTooLarge(msg) => write!(f, "payload_too_large: {msg}"),
             AppError::NotFound(msg) => write!(f, "not_found: {msg}"),
             AppError::StorageError(msg) => write!(f, "storage_error: {msg}"),
             AppError::DatabaseError(msg) => write!(f, "database_error: {msg}"),
@@ -35,13 +39,18 @@ impl fmt::Display for AppError {
 
 impl std::error::Error for AppError {}
 
-impl ResponseError for AppError {
-    fn error_response(&self) -> HttpResponse {
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
         let (status, error, message) = match self {
             AppError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, "unauthorized", msg.clone()),
             AppError::InvalidRequest(msg) => {
                 (StatusCode::BAD_REQUEST, "invalid_request", msg.clone())
             }
+            AppError::PayloadTooLarge(msg) => (
+                StatusCode::PAYLOAD_TOO_LARGE,
+                "payload_too_large",
+                msg.clone(),
+            ),
             AppError::NotFound(msg) => (StatusCode::NOT_FOUND, "not_found", msg.clone()),
             AppError::StorageError(msg) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -50,12 +59,12 @@ impl ResponseError for AppError {
             ),
             AppError::DatabaseError(msg) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "storage_error",
+                "database_error",
                 msg.clone(),
             ),
         };
 
-        HttpResponse::build(status).json(ErrorResponse { error, message })
+        (status, Json(ErrorResponse { error, message })).into_response()
     }
 }
 

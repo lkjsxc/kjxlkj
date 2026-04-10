@@ -1,9 +1,9 @@
 //! Health endpoint handler
 
-use actix_web::{get, HttpResponse};
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
 
 /// Health check endpoint
-#[get("/healthz")]
-pub async fn healthz() -> HttpResponse {
-    HttpResponse::Ok().content_type("text/plain").body("ok")
+pub async fn healthz() -> Response {
+    (StatusCode::OK, [("Content-Type", "text/plain")], "ok").into_response()
 }

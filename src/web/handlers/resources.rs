@@ -2,9 +2,13 @@
 
 use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
-use crate::web::db::{self, DbPool};
+use crate::web::db;
+use crate::web::handlers::http;
 use crate::web::handlers::{resource_payload::ResourcePayload, session};
-use actix_web::{delete, post, put, web, HttpRequest, HttpResponse};
+use crate::web::routes::AppState;
+use axum::extract::{Json, Path, State};
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::Response;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -23,44 +27,46 @@ pub struct UpdateInput {
     pub is_private: bool,
 }
 
-#[post("/resources/notes")]
 pub async fn create(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    body: web::Json<CreateInput>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(body): Json<CreateInput>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    session::require_session(&headers, pool).await?;
     let Some(content) = body.body.clone() else {
         return Err(AppError::InvalidRequest("body is required".to_string()));
     };
     let resource = db::create_resource(
-        &pool,
-        &db::generate_resource_id(&pool).await?,
+        pool,
+        &db::generate_resource_id(pool).await?,
         normalize_alias(body.alias.as_deref())?.as_deref(),
         &content,
         body.is_favorite.unwrap_or(false),
         body.is_private.unwrap_or(
-            db::get_settings(&pool)
+            db::get_settings(pool)
                 .await?
                 .default_new_resource_is_private,
         ),
     )
     .await?;
-    Ok(HttpResponse::Created().json(ResourcePayload::from_resource(resource)))
+    Ok(http::json_status(
+        StatusCode::CREATED,
+        ResourcePayload::from_resource(resource),
+    ))
 }
 
-#[put("/resources/{id}")]
 pub async fn update(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-    body: web::Json<UpdateInput>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    let id = path.into_inner();
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+    Json(body): Json<UpdateInput>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    session::require_session(&headers, pool).await?;
     validate_id(&id)?;
     match db::update_resource(
-        &pool,
+        pool,
         &id,
         normalize_alias(body.alias.as_deref())?.as_deref(),
         &body.body,
@@ -69,22 +75,24 @@ pub async fn update(
     )
     .await?
     {
-        Some(resource) => Ok(HttpResponse::Ok().json(ResourcePayload::from_resource(resource))),
+        Some(resource) => Ok(http::json_status(
+            StatusCode::OK,
+            ResourcePayload::from_resource(resource),
+        )),
         None => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }
 }
 
-#[delete("/resources/{id}")]
 pub async fn remove(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    let id = path.into_inner();
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    session::require_session(&headers, pool).await?;
     validate_id(&id)?;
-    if db::delete_resource(&pool, &id).await? {
-        Ok(HttpResponse::NoContent().finish())
+    if db::delete_resource(pool, &id).await? {
+        Ok(http::empty(StatusCode::NO_CONTENT))
     } else {
         Err(AppError::NotFound(format!("resource '{id}' not found")))
     }

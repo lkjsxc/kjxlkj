@@ -8,9 +8,12 @@ use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
 use crate::storage::Storage;
 use crate::web::db::{self, AttachmentCreate, NoteAttachmentUpdate, ResourceKind};
+use crate::web::handlers::http;
+use crate::web::routes::AppState;
 use crate::web::view;
-use actix_multipart::Multipart;
-use actix_web::{post, web, HttpRequest, HttpResponse};
+use axum::extract::{Multipart, Path, State};
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::Response;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -29,22 +32,20 @@ struct AttachmentResponse {
     created_media: Vec<AttachmentRefPayload>,
 }
 
-#[post("/resources/{id}/media-attachments")]
 pub async fn attach_media(
-    pool: web::Data<db::DbPool>,
-    storage: web::Data<Storage>,
-    req: HttpRequest,
-    path: web::Path<String>,
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<String>,
     payload: Multipart,
-) -> Result<HttpResponse, AppError> {
-    super::session::require_session(&req, &pool).await?;
-    let id = path.into_inner();
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    let storage = &state.storage;
+    super::session::require_session(&headers, pool).await?;
     validate_id(&id)?;
     let form = parse_note_media_form(payload).await?;
     let alias = normalize_alias(form.alias.as_deref())?;
-    let settings = db::get_settings(&pool).await?;
-    let mut attachments =
-        build_attachments(&pool, &form.files, settings.media_webp_quality).await?;
+    let settings = db::get_settings(pool).await?;
+    let mut attachments = build_attachments(pool, &form.files, settings.media_webp_quality).await?;
     let inserted_markdown = inserted_markdown(&attachments);
     let insertion = apply_insert(
         &form.body,
@@ -52,9 +53,9 @@ pub async fn attach_media(
         form.insert_end,
         &inserted_markdown,
     );
-    let keys = store_uploads(&storage, &mut attachments).await?;
+    let keys = store_uploads(storage, &mut attachments).await?;
     let result = db::attach_media_to_note(
-        &pool,
+        pool,
         &id,
         &NoteAttachmentUpdate {
             body: &insertion.body,
@@ -66,23 +67,26 @@ pub async fn attach_media(
     )
     .await;
     match result {
-        Ok(result) => Ok(HttpResponse::Ok().json(AttachmentResponse {
-            current_resource: ResourcePayload::from_resource(result.current_resource),
-            inserted_markdown,
-            selection_fallback: insertion.selection_fallback,
-            created_media: result
-                .created_media
-                .into_iter()
-                .map(|resource| AttachmentRefPayload {
-                    file_href: Some(view::file_href(&resource)),
-                    id: resource.id,
-                    kind: resource.kind,
-                    alias: resource.alias,
-                })
-                .collect(),
-        })),
+        Ok(result) => Ok(http::json_status(
+            StatusCode::OK,
+            AttachmentResponse {
+                current_resource: ResourcePayload::from_resource(result.current_resource),
+                inserted_markdown,
+                selection_fallback: insertion.selection_fallback,
+                created_media: result
+                    .created_media
+                    .into_iter()
+                    .map(|resource| AttachmentRefPayload {
+                        file_href: Some(view::file_href(&resource)),
+                        id: resource.id,
+                        kind: resource.kind,
+                        alias: resource.alias,
+                    })
+                    .collect(),
+            },
+        )),
         Err(error) => {
-            cleanup_objects(&storage, &keys).await;
+            cleanup_objects(storage, &keys).await;
             Err(error)
         }
     }

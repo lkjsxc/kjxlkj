@@ -1,13 +1,16 @@
 //! Admin settings handler
 
 use crate::error::AppError;
-use crate::web::db::{self, DbPool};
+use crate::web::db;
+use crate::web::handlers::http;
 use crate::web::handlers::session;
 use crate::web::handlers::settings_input::{validate_settings_form, SettingsForm};
+use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
-use actix_web::cookie::{Cookie, SameSite};
-use actix_web::{get, post, web, HttpRequest, HttpResponse};
+use axum::extract::{Form, State};
+use axum::http::{HeaderMap, Uri};
+use axum::response::Response;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -17,74 +20,54 @@ pub struct PasswordForm {
     pub confirm_password: String,
 }
 
-#[get("/admin/settings")]
 pub async fn settings_page(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-) -> Result<HttpResponse, AppError> {
-    if !db::is_setup(&pool).await? {
-        return Ok(redirect("/setup"));
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    if !db::is_setup(pool).await? {
+        return Ok(http::redirect("/setup"));
     }
-    if !session::check_session(&req, &pool).await? {
-        return Ok(redirect(&session::login_url(&req)));
+    if !session::check_session(&headers, pool).await? {
+        return Ok(http::redirect(&session::login_url(&uri)));
     }
-    let settings = db::get_settings(&pool).await?;
+    let settings = db::get_settings(pool).await?;
     let site = SiteContext::from_settings(&settings);
-    Ok(html(templates::settings_page(&settings, &site)))
+    Ok(http::html(templates::settings_page(&settings, &site)))
 }
 
-#[post("/admin/settings")]
 pub async fn settings_submit(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    form: web::Form<SettingsForm>,
-) -> Result<HttpResponse, AppError> {
-    session::require_session(&req, &pool).await?;
-    let current = db::get_settings(&pool).await?;
-    db::update_settings(&pool, &validate_settings_form(&form, &current)?).await?;
-    Ok(HttpResponse::SeeOther()
-        .append_header(("Location", "/admin/settings"))
-        .finish())
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Form(form): Form<SettingsForm>,
+) -> Result<Response, AppError> {
+    session::require_session(&headers, &state.pool).await?;
+    let pool = &state.pool;
+    let current = db::get_settings(pool).await?;
+    db::update_settings(pool, &validate_settings_form(&form, &current)?).await?;
+    Ok(http::see_other("/admin/settings"))
 }
 
-#[post("/admin/password")]
 pub async fn password_submit(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    form: web::Form<PasswordForm>,
-) -> Result<HttpResponse, AppError> {
-    let user_id = session::require_session(&req, &pool).await?;
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Form(form): Form<PasswordForm>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    let user_id = session::require_session(&headers, pool).await?;
     if form.password.len() < 8 || form.password != form.confirm_password {
         return Err(AppError::InvalidRequest(
             "password must be at least 8 characters and match confirmation".to_string(),
         ));
     }
-    if !db::verify_admin_password(&pool, user_id, &form.current_password).await? {
+    if !db::verify_admin_password(pool, user_id, &form.current_password).await? {
         return Err(AppError::Unauthorized(
             "current password is invalid".to_string(),
         ));
     }
-    db::update_admin_password(&pool, user_id, &form.password).await?;
-    let clear_cookie = Cookie::build("session_id", "")
-        .path("/")
-        .http_only(true)
-        .same_site(SameSite::Strict)
-        .max_age(actix_web::cookie::time::Duration::ZERO)
-        .finish();
-    Ok(HttpResponse::SeeOther()
-        .cookie(clear_cookie)
-        .append_header(("Location", "/login"))
-        .finish())
-}
-
-fn redirect(location: &str) -> HttpResponse {
-    HttpResponse::Found()
-        .append_header(("Location", location))
-        .finish()
-}
-
-fn html(body: String) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(body)
+    db::update_admin_password(pool, user_id, &form.password).await?;
+    let mut response = http::see_other("/login");
+    http::set_cookie(&mut response, http::clear_session_cookie());
+    Ok(response)
 }

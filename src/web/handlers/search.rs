@@ -2,13 +2,17 @@
 
 use crate::error::AppError;
 use crate::web::db::{
-    self, DbPool, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow,
+    self, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow,
 };
+use crate::web::handlers::http;
 use crate::web::handlers::session;
+use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
-use actix_web::{get, web, HttpRequest, HttpResponse};
+use axum::extract::{Query, State};
+use axum::http::HeaderMap;
+use axum::response::Response;
 use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -23,19 +27,18 @@ pub struct SearchParams {
     pub limit: Option<i64>,
 }
 
-#[get("/search")]
 pub async fn search_page(
-    pool: web::Data<DbPool>,
-    req: HttpRequest,
-    params: web::Query<SearchParams>,
-) -> Result<HttpResponse, AppError> {
-    if !db::is_setup(&pool).await? {
-        return Ok(redirect("/setup"));
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Query(params): Query<SearchParams>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    if !db::is_setup(pool).await? {
+        return Ok(http::redirect("/setup"));
     }
-    let is_admin = session::check_session(&req, &pool).await?;
-    let settings = db::get_settings(&pool).await?;
+    let is_admin = session::check_session(&headers, pool).await?;
+    let settings = db::get_settings(pool).await?;
     let site = SiteContext::from_settings(&settings);
-    let params = params.into_inner();
     let query = params
         .q
         .as_deref()
@@ -49,7 +52,7 @@ pub async fn search_page(
     let popular_window = PopularWindow::resolve(params.popular_window.as_deref());
     let sort = ListSort::resolve(params.sort.as_deref(), query.is_some(), &scope);
     let page = db::list_resources(
-        &pool,
+        pool,
         &ListRequest {
             include_private: is_admin,
             limit,
@@ -63,7 +66,7 @@ pub async fn search_page(
         },
     )
     .await?;
-    Ok(html(templates::search_page(templates::SearchView {
+    Ok(http::html(templates::search_page(templates::SearchView {
         notes: &page
             .resources
             .iter()
@@ -80,16 +83,4 @@ pub async fn search_page(
         is_admin,
         site: &site,
     })))
-}
-
-fn redirect(location: &str) -> HttpResponse {
-    HttpResponse::Found()
-        .append_header(("Location", location))
-        .finish()
-}
-
-fn html(body: String) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(body)
 }

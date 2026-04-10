@@ -5,20 +5,23 @@ use crate::core::normalize_alias;
 use crate::error::AppError;
 use crate::storage::Storage;
 use crate::web::db::{self, MediaBlob};
-use actix_multipart::Multipart;
-use actix_web::{post, web, HttpRequest, HttpResponse};
+use crate::web::handlers::http;
+use crate::web::routes::AppState;
+use axum::extract::{Multipart, State};
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::Response;
 
-#[post("/resources/media")]
 pub async fn create(
-    pool: web::Data<db::DbPool>,
-    storage: web::Data<Storage>,
-    req: HttpRequest,
+    State(state): State<AppState>,
+    headers: HeaderMap,
     payload: Multipart,
-) -> Result<HttpResponse, AppError> {
-    super::session::require_session(&req, &pool).await?;
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    let storage = &state.storage;
+    super::session::require_session(&headers, pool).await?;
     let form = parse_media_form(payload).await?;
-    let settings = db::get_settings(&pool).await?;
-    let id = db::generate_resource_id(&pool).await?;
+    let settings = db::get_settings(pool).await?;
+    let id = db::generate_resource_id(pool).await?;
     let file_key = object_key(&id, &form.file.original_filename);
     let body = initial_body(&form.file.original_filename);
     let media_family = detect_media_family(&form.file.content_type, &form.file.original_filename)?;
@@ -33,7 +36,7 @@ pub async fn create(
         .put_object(&file_key, form.file.bytes.clone(), &form.file.content_type)
         .await?;
     let (media_variants, stored_variant_keys) =
-        super::media_derivatives::store_variants(&storage, &generated_variants).await;
+        super::media_derivatives::store_variants(storage, &generated_variants).await;
     let sha256_hex = sha256_hex(&form.file.bytes);
     let blob = MediaBlob {
         media_family,
@@ -49,7 +52,7 @@ pub async fn create(
     };
     let stored_keys = stored_keys(file_key.clone(), stored_variant_keys);
     let result = db::create_media(
-        &pool,
+        pool,
         &id,
         normalize_alias(form.alias.as_deref())?.as_deref(),
         &body,
@@ -60,9 +63,12 @@ pub async fn create(
     )
     .await;
     match result {
-        Ok(resource) => Ok(HttpResponse::Created().json(ResourcePayload::from_resource(resource))),
+        Ok(resource) => Ok(http::json_status(
+            StatusCode::CREATED,
+            ResourcePayload::from_resource(resource),
+        )),
         Err(error) => {
-            cleanup_objects(&storage, &stored_keys).await;
+            cleanup_objects(storage, &stored_keys).await;
             Err(error)
         }
     }
