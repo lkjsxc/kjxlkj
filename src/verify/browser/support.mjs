@@ -14,6 +14,7 @@ export const appUrl = process.env.APP_URL ?? 'http://app:8080';
 const databaseUrl =
     process.env.DATABASE_URL ?? 'postgres://kjxlkj:kjxlkj@postgres:5432/kjxlkj';
 const artifactDir = process.env.ARTIFACT_DIR ?? '/artifacts';
+const setupCode = process.env.SETUP_CODE ?? 'visual-setup-code';
 const adminUsername = 'visual-admin';
 const adminPassword = 'visual-pass-123';
 const timezoneId = 'Asia/Tokyo';
@@ -117,6 +118,7 @@ async function setupAdmin(page) {
     await page.getByLabel('Username').fill(adminUsername);
     await page.getByLabel('Password', { exact: true }).fill(adminPassword);
     await page.getByLabel('Confirm Password').fill(adminPassword);
+    await page.getByLabel('Setup code').fill(setupCode);
     await Promise.all([
         page.waitForURL('**/login'),
         page.getByRole('button', { name: 'Create Account' }).click(),

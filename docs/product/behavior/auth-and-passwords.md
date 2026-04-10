@@ -5,7 +5,7 @@
 - First setup requires username, password, confirmation, and a one-time setup code.
 - The setup code is generated at server startup when no admin exists.
 - The setup code is written to the server console only.
-- Verification may set a deterministic setup code through environment configuration.
+- Verification may set a deterministic setup code through `SETUP_CODE`.
 - A consumed setup code cannot be reused.
 
 ## Login Return Path
@@ -28,6 +28,6 @@
 - `POST /reset-password/request` creates a one-time reset token and writes it to the server console.
 - Only a hash of the token is stored.
 - Tokens expire after a short fixed lifetime.
-- `GET /reset-password?token=...` renders the reset form when the token has a valid shape.
+- `GET /reset-password` renders the reset form.
 - `POST /reset-password` sets a new password only for a valid unused token.
 - Successful reset consumes the token and invalidates existing sessions.

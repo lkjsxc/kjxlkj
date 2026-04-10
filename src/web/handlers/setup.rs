@@ -25,7 +25,7 @@ impl SetupCode {
     }
 
     fn matches(&self, candidate: &str) -> bool {
-        self.value == candidate.trim()
+        constant_time_eq(self.value.as_bytes(), candidate.trim().as_bytes())
     }
 }
 
@@ -76,6 +76,10 @@ pub async fn setup_submit(
 
 fn validate_setup_form(form: &SetupForm, setup_code: &SetupCode) -> Vec<&'static str> {
     let mut errors = Vec::new();
+    if !setup_code.matches(&form.setup_code) {
+        errors.push("Setup failed");
+        return errors;
+    }
     if form.username.len() < 3 {
         errors.push("Username must be at least 3 characters");
     }
@@ -85,10 +89,17 @@ fn validate_setup_form(form: &SetupForm, setup_code: &SetupCode) -> Vec<&'static
     if form.password != form.confirm_password {
         errors.push("Passwords do not match");
     }
-    if !setup_code.matches(&form.setup_code) {
-        errors.push("Setup code is invalid");
-    }
     errors
+}
+
+fn constant_time_eq(left: &[u8], right: &[u8]) -> bool {
+    let mut diff = left.len() ^ right.len();
+    let max = left.len().max(right.len());
+    for index in 0..max {
+        diff |= left.get(index).copied().unwrap_or(0) as usize
+            ^ right.get(index).copied().unwrap_or(0) as usize;
+    }
+    diff == 0
 }
 
 fn redirect(location: &str) -> HttpResponse {

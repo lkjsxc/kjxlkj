@@ -10,6 +10,10 @@ pub fn security_section(settings: &AppSettings) -> String {
 <div class="surface settings-panel">
 <form class="settings-section-grid" method="POST" action="/admin/password">
 <label class="form-group">
+<span>Current password</span>
+<input type="password" name="current_password" required>
+</label>
+<label class="form-group">
 <span>New password</span>
 <input type="password" name="password" minlength="8" required>
 </label>

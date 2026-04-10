@@ -45,7 +45,7 @@ let valid = bcrypt::verify(password, &stored_hash)?;
 
 - Initial setup requires a one-time setup code when no admin user exists.
 - The server generates the setup code at startup and logs it to the console.
-- Verification may provide a deterministic setup code through environment configuration.
+- Verification may provide a deterministic setup code through `SETUP_CODE`.
 - Setup code comparison must not leak which submitted field failed.
 
 ## Password Reset Token

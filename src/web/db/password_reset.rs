@@ -66,6 +66,26 @@ pub async fn update_admin_password(
     tx.commit().await.map_err(db_error)
 }
 
+pub async fn verify_admin_password(
+    pool: &DbPool,
+    user_id: Uuid,
+    password: &str,
+) -> Result<bool, AppError> {
+    let Some(row) = client(pool)
+        .await?
+        .query_opt(
+            "SELECT password_hash FROM admin_user WHERE id = $1",
+            &[&user_id],
+        )
+        .await
+        .map_err(db_error)?
+    else {
+        return Ok(false);
+    };
+    let hash: String = row.get("password_hash");
+    Ok(bcrypt::verify(password, &hash).unwrap_or(false))
+}
+
 async fn update_password_in_tx(
     tx: &tokio_postgres::Transaction<'_>,
     user_id: Uuid,

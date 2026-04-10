@@ -22,6 +22,7 @@ services:
       APP_URL: http://app:${BIND_PORT}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       ARTIFACT_DIR: /artifacts
+      SETUP_CODE: ${SETUP_CODE:-visual-setup-code}
     volumes:
       - ./tmp/visual-artifacts:/artifacts
     depends_on:

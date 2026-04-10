@@ -12,6 +12,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct PasswordForm {
+    pub current_password: String,
     pub password: String,
     pub confirm_password: String,
 }
@@ -56,6 +57,11 @@ pub async fn password_submit(
     if form.password.len() < 8 || form.password != form.confirm_password {
         return Err(AppError::InvalidRequest(
             "password must be at least 8 characters and match confirmation".to_string(),
+        ));
+    }
+    if !db::verify_admin_password(&pool, user_id, &form.current_password).await? {
+        return Err(AppError::Unauthorized(
+            "current password is invalid".to_string(),
         ));
     }
     db::update_admin_password(&pool, user_id, &form.password).await?;

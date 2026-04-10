@@ -3,7 +3,7 @@ FROM rust:1.91-alpine AS builder
 
 WORKDIR /build
 
-RUN apk add --no-cache musl-dev
+RUN apk add --no-cache build-base musl-dev
 
 COPY Cargo.toml Cargo.lock ./
 RUN mkdir src && echo 'fn main() {}' > src/main.rs
