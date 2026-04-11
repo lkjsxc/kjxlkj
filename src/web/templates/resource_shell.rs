@@ -140,7 +140,7 @@ fn actions(chrome: &ResourceChrome, is_admin: bool, active_href: &str) -> String
     if is_admin {
         format!(
             r#"<div class="rail-actions">
-<button type="button" class="btn btn-danger" onclick="deleteResource('{}')">{}</button>
+<button type="button" class="btn btn-danger" onclick="deleteResource(this, '{}')">{}</button>
 <form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>
 </div>"#,
             chrome.id,

@@ -7,7 +7,7 @@ mod dashboard_favorites;
 mod history;
 #[cfg(test)]
 mod history_tests;
-mod home;
+pub(crate) mod home;
 mod index;
 #[cfg(test)]
 mod index_tests;

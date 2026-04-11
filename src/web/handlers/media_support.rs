@@ -11,7 +11,9 @@ pub fn detect_media_family(content_type: &str, filename: &str) -> Result<MediaFa
         return Ok(MediaFamily::Video);
     }
     match extension(filename).as_deref() {
-        Some("png" | "jpg" | "jpeg" | "gif" | "webp" | "svg") => Ok(MediaFamily::Image),
+        Some("png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" | "heic" | "heif") => {
+            Ok(MediaFamily::Image)
+        }
         Some(
             "mp4" | "webm" | "mov" | "m4v" | "ogg" | "ogv" | "mkv" | "avi" | "wmv" | "mpeg" | "mpg"
             | "3gp",

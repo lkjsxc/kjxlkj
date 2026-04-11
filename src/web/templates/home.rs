@@ -1,7 +1,7 @@
 //! Homepage template
 
 use super::index::{admin_create_actions, list_rail};
-use super::layout::{base, shell_page};
+use super::layout::{base, html_escape, shell_page};
 use super::list_sections::{
     favorite_browse_card, note_grid_section, quick_search_section, recent_browse_card,
 };
@@ -14,42 +14,57 @@ use crate::web::site::SiteContext;
 const ACTIONS_JS: &str = include_str!("resource_actions.js");
 const POPULAR_JS: &str = include_str!("popular_window.js");
 
-pub fn home_page(
-    settings: &AppSettings,
-    popular: &[IndexItem],
-    recent: &[IndexItem],
-    favorites: &[IndexItem],
-    window: PopularWindow,
-    is_admin: bool,
-    site: &SiteContext,
-) -> String {
-    let admin_script = if is_admin {
+pub struct HomeView<'a> {
+    pub settings: &'a AppSettings,
+    pub popular: &'a [IndexItem],
+    pub recent: &'a [IndexItem],
+    pub favorites: &'a [IndexItem],
+    pub window: PopularWindow,
+    pub is_admin: bool,
+    pub guest_login_href: &'a str,
+    pub site: &'a SiteContext,
+}
+
+pub fn home_page(view: HomeView<'_>) -> String {
+    let admin_script = if view.is_admin {
         format!(r#"<script>{ACTIONS_JS}</script>"#)
     } else {
         String::new()
     };
+    let rail_actions = rail_actions(view.is_admin, view.guest_login_href);
     let content = format!(
         "{}{}{}",
-        intro_block(&settings.home_intro_markdown),
+        intro_block(&view.settings.home_intro_markdown),
         quick_search_section(),
-        home_sections(settings, popular, recent, favorites, window),
+        home_sections(
+            view.settings,
+            view.popular,
+            view.recent,
+            view.favorites,
+            view.window
+        ),
     );
-    let admin_actions = is_admin.then(admin_create_actions);
+    let admin_actions = view.is_admin.then(admin_create_actions);
     base(
-        &site.page_meta("Home", site.site_description.clone(), !is_admin, Some("/")),
+        &view.site.page_meta(
+            "Home",
+            view.site.site_description.clone(),
+            !view.is_admin,
+            Some("/"),
+        ),
         &shell_page(
-            if is_admin { "Admin" } else { "Guest" },
+            if view.is_admin { "Admin" } else { "Guest" },
             &list_rail(
                 "home",
                 admin_actions
                     .as_deref()
-                    .unwrap_or_else(|| rail_primary_action(is_admin)),
-                rail_actions(is_admin),
-                is_admin,
+                    .unwrap_or_else(|| rail_primary_action(view.is_admin)),
+                &rail_actions,
+                view.is_admin,
             ),
             &content,
             "home-page",
-            &site.site_name,
+            &view.site.site_name,
         ),
         "",
         &format!(r#"<script>{POPULAR_JS}</script>{admin_script}"#),
@@ -122,10 +137,14 @@ fn rail_primary_action(is_admin: bool) -> &'static str {
     }
 }
 
-fn rail_actions(is_admin: bool) -> &'static str {
+fn rail_actions(is_admin: bool, guest_login_href: &str) -> String {
     if is_admin {
         r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
+            .to_string()
     } else {
-        r#"<a href="/login" class="btn">Admin sign in</a>"#
+        format!(
+            r#"<a href="{}" class="btn">Admin sign in</a>"#,
+            html_escape(guest_login_href),
+        )
     }
 }

@@ -4,6 +4,7 @@ use image::{imageops::FilterType, DynamicImage};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::path::Path;
+use tokio::fs;
 use tokio::process::Command;
 
 const WEBP_CONTENT_TYPE: &str = "image/webp";
@@ -62,17 +63,53 @@ pub fn image_variants(id: &str, bytes: &[u8], quality: i64) -> Vec<GeneratedVari
     let Ok(image) = image::load_from_memory(bytes) else {
         return Vec::new();
     };
-    [("card", 640u32), ("display", 1400u32)]
-        .into_iter()
-        .filter_map(|(name, max_edge)| encode_resized(id, name, &image, max_edge, quality))
-        .collect()
+    encode_image_variants(id, &image, quality)
 }
 
-pub async fn video_poster_from_path(
+pub async fn image_variants_from_path(
     id: &str,
     path: &Path,
     quality: i64,
-) -> Option<GeneratedVariant> {
+) -> Vec<GeneratedVariant> {
+    let Some(image) = decode_image_from_path(path).await else {
+        return Vec::new();
+    };
+    encode_image_variants(id, &image, quality)
+}
+
+pub async fn video_stills_from_path(id: &str, path: &Path, quality: i64) -> Vec<GeneratedVariant> {
+    let Some(image) = decode_frame_from_path(path).await else {
+        return Vec::new();
+    };
+    [
+        encode_resized(id, "card", &image, 640, quality),
+        encode_webp(id, "poster", image, quality),
+    ]
+    .into_iter()
+    .flatten()
+    .collect()
+}
+
+fn encode_image_variants(id: &str, image: &DynamicImage, quality: i64) -> Vec<GeneratedVariant> {
+    [("card", 640u32), ("display", 1400u32)]
+        .into_iter()
+        .filter_map(|(name, max_edge)| encode_resized(id, name, image, max_edge, quality))
+        .collect()
+}
+
+async fn decode_image_from_path(path: &Path) -> Option<DynamicImage> {
+    if let Ok(bytes) = fs::read(path).await {
+        if let Ok(image) = image::load_from_memory(&bytes) {
+            return Some(image);
+        }
+        if let Some(image) = crate::media_svg::decode_svg(&bytes, path) {
+            return Some(image);
+        }
+    }
+    decode_frame_from_path(path).await
+}
+
+async fn decode_frame_from_path(path: &Path) -> Option<DynamicImage> {
     let output = Command::new("ffmpeg")
         .args([
             "-hide_banner",
@@ -94,8 +131,7 @@ pub async fn video_poster_from_path(
     if !output.status.success() || output.stdout.is_empty() {
         return None;
     }
-    let image = image::load_from_memory(&output.stdout).ok()?;
-    encode_webp(id, "poster", image, quality)
+    image::load_from_memory(&output.stdout).ok()
 }
 
 fn encode_resized(

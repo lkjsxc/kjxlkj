@@ -40,6 +40,7 @@ aws-credential-types = "1"
 futures-util = "0.3"
 sha2 = "0.10"
 image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp"] }
+resvg = "0.47"
 webp = "0.3"
 
 # Password hashing

@@ -10,7 +10,7 @@ export function resetDatabase(databaseUrl) {
             "home_recent_position, home_favorite_position, home_popular_position, " +
             "search_results_per_page, session_timeout_minutes, default_new_resource_is_private, site_name, site_description, public_base_url) " +
             "VALUES (1, 5, 5, 5, $$# Home\n\nWelcome to **kjxlkj**. Use Home as the landing space for search, popular resources, and curated favorites.$$," +
-            " TRUE, TRUE, TRUE, 2, 3, 1, 20, 1440, FALSE, 'kjxlkj', 'Markdown-first resource system for LLM-operated workflows.', '')"
+            " TRUE, TRUE, TRUE, 1, 2, 3, 20, 1440, FALSE, 'kjxlkj', 'Markdown-first resource system for LLM-operated workflows.', '')"
     );
 }
 

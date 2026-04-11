@@ -1,24 +1,17 @@
 //! Media href helpers for HTML view models
 
+use crate::media::MediaVariants;
 use crate::web::db::{MediaFamily, Resource, ResourceSnapshot};
 use crate::web::view::file_href;
 
 pub fn card_file_href(resource: &Resource) -> String {
-    match resource.media_family {
-        Some(MediaFamily::Image) if has_variant(resource, "card") => {
-            format!("{}?variant=card", file_href(resource))
-        }
-        Some(MediaFamily::Video) if has_variant(resource, "poster") => {
-            format!("{}?variant=poster", file_href(resource))
-        }
-        _ => file_href(resource),
-    }
+    current_variant_href(resource, &["card"]).unwrap_or_else(|| file_href(resource))
 }
 
 pub fn display_file_href(resource: &Resource) -> String {
-    if matches!(resource.media_family, Some(MediaFamily::Image)) && has_variant(resource, "display")
-    {
-        return format!("{}?variant=display", file_href(resource));
+    if matches!(resource.media_family, Some(MediaFamily::Image)) {
+        return current_variant_href(resource, &["display", "card"])
+            .unwrap_or_else(|| file_href(resource));
     }
     file_href(resource)
 }
@@ -26,34 +19,53 @@ pub fn display_file_href(resource: &Resource) -> String {
 pub fn snapshot_display_file_href(snapshot: &ResourceSnapshot) -> String {
     let href = format!("/{}/file", snapshot.id);
     if matches!(snapshot.media_family, Some(MediaFamily::Image))
-        && snapshot_has_variant(snapshot, "display")
+        && snapshot_variant_href(snapshot, &["display", "card"]).is_some()
     {
-        return format!("{href}?variant=display");
+        return snapshot_variant_href(snapshot, &["display", "card"]).unwrap_or(href);
     }
     href
 }
 
+pub fn social_card_href(resource: &Resource) -> Option<String> {
+    match resource.media_family {
+        Some(MediaFamily::Image) => current_variant_href(resource, &["display", "card"]),
+        Some(MediaFamily::Video) => current_variant_href(resource, &["card"]),
+        None => None,
+    }
+}
+
 pub fn snapshot_poster_href(snapshot: &ResourceSnapshot) -> Option<String> {
-    snapshot_has_variant(snapshot, "poster")
-        .then(|| format!("/{}/file?variant=poster", snapshot.id))
+    snapshot_variant_href(snapshot, &["poster"])
 }
 
 pub fn poster_href(resource: &Resource) -> Option<String> {
-    has_variant(resource, "poster").then(|| format!("{}?variant=poster", file_href(resource)))
+    current_variant_href(resource, &["poster"])
 }
 
-fn has_variant(resource: &Resource, variant: &str) -> bool {
-    resource
-        .media_variants
-        .as_ref()
-        .and_then(|variants| variants.get(variant))
-        .is_some()
+fn current_variant_href(resource: &Resource, variants: &[&str]) -> Option<String> {
+    variant_href(
+        &file_href(resource),
+        resource.media_variants.as_ref(),
+        variants,
+    )
 }
 
-fn snapshot_has_variant(snapshot: &ResourceSnapshot, variant: &str) -> bool {
-    snapshot
-        .media_variants
-        .as_ref()
-        .and_then(|variants| variants.get(variant))
-        .is_some()
+fn snapshot_variant_href(snapshot: &ResourceSnapshot, variants: &[&str]) -> Option<String> {
+    variant_href(
+        &format!("/{}/file", snapshot.id),
+        snapshot.media_variants.as_ref(),
+        variants,
+    )
+}
+
+fn variant_href(
+    base_href: &str,
+    variants: Option<&MediaVariants>,
+    names: &[&str],
+) -> Option<String> {
+    names.iter().find_map(|name| {
+        variants
+            .and_then(|variants| variants.get(name))
+            .map(|_| format!("{base_href}?variant={name}"))
+    })
 }

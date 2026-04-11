@@ -60,6 +60,6 @@ export async function assertMediaCardGeometry(page, videoTitle) {
                 naturalHeight: image.naturalHeight,
             };
         });
-    assert.match(videoPosterPaint.src, /variant=poster/);
+    assert.match(videoPosterPaint.src, /variant=card/);
     assert.ok(videoPosterPaint.naturalWidth > 0 && videoPosterPaint.naturalHeight > 0, 'video poster should load');
 }

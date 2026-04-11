@@ -42,6 +42,7 @@ fn search_page_browses_without_query() {
         sort: "updated_desc",
         popular_window: "30d",
         is_admin: false,
+        guest_login_href: "/login?return_to=%2Fsearch".to_string(),
         site: &sample_site(),
     });
     assert!(html.contains(">Resources<"));
@@ -70,6 +71,7 @@ fn search_page_keeps_query_and_sort_in_form() {
         sort: "relevance",
         popular_window: "30d",
         is_admin: true,
+        guest_login_href: "/login?return_to=%2Fsearch".to_string(),
         site: &sample_site(),
     });
     assert!(html.contains("name=\"q\" value=\"orbit\""));

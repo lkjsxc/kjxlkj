@@ -17,5 +17,6 @@
 
 - Public image media pages emit `og:image` and `twitter:image` pointing to an absolute WebP derivative URL.
 - Public image media pages prefer `variant=display` for the social-card image.
+- Vector image notes still emit rasterized WebP social-card images instead of pointing crawlers at raw `SVG`.
 - Public video media pages may emit a still-image card URL derived from `variant=card`.
 - If no browser-friendly derivative image exists, the page omits social-card image fields instead of pointing crawlers at a browser-unfriendly original binary.

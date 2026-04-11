@@ -5,5 +5,6 @@ pub mod config;
 pub mod core;
 pub mod error;
 pub mod media;
+mod media_svg;
 pub mod storage;
 pub mod web;

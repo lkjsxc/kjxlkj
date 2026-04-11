@@ -1,7 +1,7 @@
 //! Dedicated search page template
 
 use super::index::{admin_create_actions, list_rail, note_row, pager};
-use super::layout::{base, shell_page};
+use super::layout::{base, html_escape, shell_page};
 use super::model::IndexItem;
 use super::search_form::search_section;
 use super::sections::{page_header, section};
@@ -20,6 +20,7 @@ pub struct SearchView<'a> {
     pub sort: &'a str,
     pub popular_window: &'a str,
     pub is_admin: bool,
+    pub guest_login_href: String,
     pub site: &'a SiteContext,
 }
 
@@ -31,6 +32,7 @@ pub fn search_page(view: SearchView<'_>) -> String {
     } else {
         String::new()
     };
+    let rail_actions = rail_actions(&view);
     let content = format!(
         "{}{}{}",
         page_header("Search", None, "search-head"),
@@ -56,7 +58,7 @@ pub fn search_page(view: SearchView<'_>) -> String {
                 admin_actions
                     .as_deref()
                     .unwrap_or_else(|| rail_primary_action(view.is_admin)),
-                rail_actions(view.is_admin),
+                &rail_actions,
                 view.is_admin,
             ),
             &content,
@@ -112,10 +114,14 @@ fn rail_primary_action(is_admin: bool) -> &'static str {
     }
 }
 
-fn rail_actions(is_admin: bool) -> &'static str {
-    if is_admin {
+fn rail_actions(view: &SearchView<'_>) -> String {
+    if view.is_admin {
         r#"<form method="POST" action="/logout"><button type="submit" class="btn">Logout</button></form>"#
+            .to_string()
     } else {
-        r#"<a href="/login" class="btn">Admin sign in</a>"#
+        format!(
+            r#"<a href="{}" class="btn">Admin sign in</a>"#,
+            html_escape(&view.guest_login_href),
+        )
     }
 }

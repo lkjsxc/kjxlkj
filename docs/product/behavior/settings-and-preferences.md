@@ -12,7 +12,8 @@
 
 ## Dirty Settings State
 
-- Dragging home sections changes only the in-form pending state until `Save settings`.
+- Reordering home sections changes only the in-form pending state until `Save settings`.
+- The settings form exposes explicit move controls so reordering is deterministic even when drag-and-drop is unavailable.
 - Dirty settings block same-origin shell navigation, browser back/forward, and full-page unload until the user explicitly discards the pending edits.
 - Choosing to stay keeps both the visible page and the browser URL on `/admin/settings`.
 

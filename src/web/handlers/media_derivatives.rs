@@ -1,4 +1,6 @@
-use crate::media::{image_variants, video_poster_from_path, GeneratedVariant, MediaVariants};
+use crate::media::{
+    image_variants_from_path, video_stills_from_path, GeneratedVariant, MediaVariants,
+};
 use crate::storage::Storage;
 use crate::web::db::MediaFamily;
 use std::path::Path;
@@ -11,14 +13,8 @@ pub async fn build_variants(
     quality: i64,
 ) -> Vec<GeneratedVariant> {
     match family {
-        MediaFamily::Image => tokio::fs::read(path)
-            .await
-            .map(|bytes| image_variants(id, &bytes, quality))
-            .unwrap_or_default(),
-        MediaFamily::Video => video_poster_from_path(id, path, quality)
-            .await
-            .into_iter()
-            .collect(),
+        MediaFamily::Image => image_variants_from_path(id, path, quality).await,
+        MediaFamily::Video => video_stills_from_path(id, path, quality).await,
     }
 }
 

@@ -10,6 +10,7 @@
 
 - Image uploads may create WebP derivatives for card and display contexts.
 - Image derivative generation should still be attempted for browser-unfriendly originals such as `HEIC` and `HEIF` when any server decoder path can read them.
+- Vector images such as `SVG` should rasterize into WebP derivatives when the server can safely render them.
 - Card variants target repeated list thumbnails.
 - Display variants target primary media-page and Markdown display.
 - Variant quality uses the persisted `media_webp_quality` setting at upload time.

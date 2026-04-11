@@ -11,7 +11,7 @@ use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
 use axum::extract::{Query, State};
-use axum::http::HeaderMap;
+use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 use serde::Deserialize;
 
@@ -30,6 +30,7 @@ pub struct SearchParams {
 pub async fn search_page(
     State(state): State<AppState>,
     headers: HeaderMap,
+    uri: Uri,
     Query(params): Query<SearchParams>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
@@ -81,6 +82,7 @@ pub async fn search_page(
         sort: sort.as_str(),
         popular_window: popular_window.as_str(),
         is_admin,
+        guest_login_href: session::login_url(&uri),
         site: &site,
     })))
 }

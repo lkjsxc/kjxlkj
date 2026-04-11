@@ -44,6 +44,7 @@ export async function applySettingsScenario(page) {
     assert.equal(await page.getByLabel('New resources start private').isChecked(), false);
     assert.equal(await page.getByText('Order', { exact: true }).count(), 0);
     assert.equal(await page.locator('.settings-order-pill').count(), 0);
+    assert.deepEqual(await settingsOrder(page), ['Recently updated', 'Favorites', 'Popular']);
     await page.getByLabel('Site name').fill('Launchpad');
     await page.getByLabel('Site description').fill('Launchpad search surface for public resources.');
     await page.getByLabel('Public base URL').fill(appUrl);
@@ -72,10 +73,35 @@ export async function applySettingsScenario(page) {
     assert.deepEqual(await settingsOrder(page), ['Favorites', 'Popular', 'Recently updated']);
 }
 
+export async function verifySettingsLeaveGuard(page) {
+    await page.getByLabel('Site name').fill('Unsaved Launchpad');
+    const linkDialog = page.waitForEvent('dialog', { timeout: 1500 }).catch(() => null);
+    const linkClick = page.getByRole('link', { name: 'Home', exact: true }).click();
+    const leaveLinkDialog = await linkDialog;
+    if (leaveLinkDialog) {
+        assert.match(leaveLinkDialog.message(), /Leave settings without saving/i);
+        await leaveLinkDialog.dismiss();
+    }
+    await linkClick;
+    await page.waitForTimeout(300);
+    assert.equal(new URL(page.url()).pathname, '/admin/settings');
+    const backDialog = page.waitForEvent('dialog', { timeout: 1500 }).catch(() => null);
+    const backAttempt = page.goBack();
+    const leaveBackDialog = await backDialog;
+    if (leaveBackDialog) {
+        assert.match(leaveBackDialog.message(), /Leave settings without saving/i);
+        await leaveBackDialog.dismiss();
+    }
+    await backAttempt;
+    await page.waitForTimeout(300);
+    assert.equal(new URL(page.url()).pathname, '/admin/settings');
+    await page.getByLabel('Site name').fill('kjxlkj');
+}
+
 async function reorderHomeSections(page) {
-    const rows = page.locator('[data-settings-order-item]');
-    assert.deepEqual(await settingsOrder(page), ['Popular', 'Recently updated', 'Favorites']);
-    await rows.nth(2).dragTo(rows.nth(0));
+    assert.deepEqual(await settingsOrder(page), ['Recently updated', 'Favorites', 'Popular']);
+    await page.getByRole('button', { name: 'Move Recently updated down', exact: true }).click();
+    await page.getByRole('button', { name: 'Move Recently updated down', exact: true }).click();
 }
 
 async function settingsOrder(page) {

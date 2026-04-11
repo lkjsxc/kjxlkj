@@ -5,7 +5,7 @@ use crate::web::view_media;
 
 pub fn current_media_block(resource: &Resource) -> String {
     media_surface(
-        "Current file",
+        None,
         resource.media_family,
         &view_media::display_file_href(resource),
         view_media::poster_href(resource).as_deref(),
@@ -41,7 +41,7 @@ pub fn admin_media_panel(resource: &Resource) -> String {
 
 pub fn snapshot_media_block(snapshot: &ResourceSnapshot) -> String {
     media_surface(
-        "Saved file",
+        Some("Saved file"),
         snapshot.media_family,
         &view_media::snapshot_display_file_href(snapshot),
         view_media::snapshot_poster_href(snapshot).as_deref(),
@@ -50,14 +50,18 @@ pub fn snapshot_media_block(snapshot: &ResourceSnapshot) -> String {
 }
 
 fn media_surface(
-    label: &str,
+    label: Option<&str>,
     media_family: Option<MediaFamily>,
     href: &str,
     poster_href: Option<&str>,
     title: &str,
 ) -> String {
+    let label = label
+        .map(|value| format!("<small>{value}</small>"))
+        .unwrap_or_default();
     format!(
-        r#"<section class="surface resource-surface media-surface"><small>{label}</small>{}</section>"#,
+        r#"<section class="surface resource-surface media-surface">{}{}</section>"#,
+        label,
         media_markup(media_family, href, poster_href, title)
     )
 }

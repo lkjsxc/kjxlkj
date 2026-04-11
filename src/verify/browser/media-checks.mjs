@@ -20,6 +20,7 @@ export async function assertPublicMediaPage(page, media) {
     await page.goto(`${appUrl}/${media.ref}`, { waitUntil: 'networkidle' });
     await assertVisibleText(page, media.title);
     await page.locator(media.selector).waitFor({ state: 'visible' });
+    assert.equal(await page.getByText('Current file', { exact: true }).count(), 0);
     const response = await page.evaluate(async (href) => {
         const file = await fetch(href);
         return { status: file.status, contentType: file.headers.get('content-type') };
@@ -30,6 +31,15 @@ export async function assertPublicMediaPage(page, media) {
         true,
         'media file should keep its content type'
     );
+    const robots = await page.locator('meta[name="robots"]').getAttribute('content');
+    if (robots === 'index,follow' && media.contentType?.startsWith('image/')) {
+        const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
+        assert.match(ogImage ?? '', /variant=(display|card)/);
+        assert.equal(
+            await page.locator('meta[name="twitter:card"]').getAttribute('content'),
+            'summary_large_image'
+        );
+    }
 }
 
 export async function verifyUiCreatedMedia(page, note) {

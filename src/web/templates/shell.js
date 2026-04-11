@@ -13,7 +13,17 @@
         delete app.beforeNavigate;
     };
     app.formatLocalTimes = formatLocalTimes;
+    app.runPageScripts = runPageScripts;
     app.setupDrawer = setupDrawer;
+    app.syncHeadDocument = syncHeadDocument;
+
+    var headSelectors = [
+        'meta[name="description"]', 'meta[name="robots"]', "link[rel='canonical']",
+        'meta[property="og:title"]', 'meta[property="og:description"]', 'meta[property="og:type"]',
+        'meta[property="og:url"]', 'meta[property="og:image"]', 'meta[property="og:image:type"]',
+        'meta[name="twitter:card"]', 'meta[name="twitter:title"]', 'meta[name="twitter:description"]',
+        'meta[name="twitter:image"]'
+    ];
 
     formatLocalTimes();
     setupDrawer();
@@ -110,5 +120,31 @@
             media.removeEventListener('change', onMediaChange);
         };
         sync();
+    }
+
+    function syncHeadDocument(nextDocument) {
+        document.title = nextDocument.title;
+        headSelectors.forEach(function (selector) {
+            syncHeadNode(nextDocument, selector);
+        });
+    }
+
+    function syncHeadNode(nextDocument, selector) {
+        var current = document.head.querySelector(selector);
+        var next = nextDocument.head.querySelector(selector);
+        if (!next) return current?.remove();
+        var clone = next.cloneNode(true);
+        if (current) current.replaceWith(clone);
+        else document.head.appendChild(clone);
+    }
+
+    function runPageScripts(nextDocument) {
+        Array.from(nextDocument.body.querySelectorAll('script')).slice(1).forEach(function (script) {
+            var clone = document.createElement('script');
+            Array.from(script.attributes).forEach(function (attr) { clone.setAttribute(attr.name, attr.value); });
+            clone.textContent = script.textContent;
+            document.body.appendChild(clone);
+            clone.remove();
+        });
     }
 })();

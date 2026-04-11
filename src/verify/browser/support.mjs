@@ -91,10 +91,14 @@ export async function newContext(browser, viewport, options = {}) {
 
 export async function login(page) {
     await page.goto(`${appUrl}/login`, { waitUntil: 'networkidle' });
+    await submitLogin(page);
+}
+
+export async function submitLogin(page, expectedPathAndQuery = '/admin') {
     await page.getByLabel('Username').fill(adminUsername);
     await page.getByLabel('Password', { exact: true }).fill(adminPassword);
     await Promise.all([
-        page.waitForURL('**/admin'),
+        page.waitForURL((url) => `${new URL(url).pathname}${new URL(url).search}` === expectedPathAndQuery),
         page.getByRole('button', { name: 'Sign In' }).click(),
     ]);
 }

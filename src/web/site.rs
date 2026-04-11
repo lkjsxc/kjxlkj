@@ -55,6 +55,7 @@ impl SiteContext {
             } else {
                 None
             },
+            social_card: None,
         }
     }
 }
@@ -88,11 +89,26 @@ pub struct PageMeta {
     description: String,
     robots_content: &'static str,
     canonical_url: Option<String>,
+    social_card: Option<SocialCardMeta>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct SocialCardMeta {
+    page_url: String,
+    image_url: Option<String>,
 }
 
 impl PageMeta {
     pub fn full_title(&self) -> String {
         format!("{} | {}", self.page_title, self.site_name)
+    }
+
+    pub fn with_social_card(mut self, image_url: Option<String>) -> Self {
+        self.social_card = self.canonical_url.clone().map(|page_url| SocialCardMeta {
+            page_url,
+            image_url,
+        });
+        self
     }
 
     pub fn head_tags(&self) -> String {
@@ -101,10 +117,47 @@ impl PageMeta {
         });
         format!(
             r#"<meta name="description" content="{}">
-<meta name="robots" content="{}">{}"#,
+<meta name="robots" content="{}">{}{}"#,
             escape_html_attr(&self.description),
             self.robots_content,
             canonical,
+            self.social_card_tags(),
+        )
+    }
+
+    fn social_card_tags(&self) -> String {
+        let Some(card) = self.social_card.as_ref() else {
+            return String::new();
+        };
+        let title = escape_html_attr(&self.full_title());
+        let description = escape_html_attr(&self.description);
+        let url = escape_html_attr(&card.page_url);
+        let twitter_card = if card.image_url.is_some() {
+            "summary_large_image"
+        } else {
+            "summary"
+        };
+        let image_tags = card
+            .image_url
+            .as_ref()
+            .map_or_else(String::new, |image_url| {
+                let image = escape_html_attr(image_url);
+                format!(
+                    r#"
+<meta property="og:image" content="{image}">
+<meta property="og:image:type" content="image/webp">
+<meta name="twitter:image" content="{image}">"#
+                )
+            });
+        format!(
+            r#"
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{description}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{url}">
+<meta name="twitter:card" content="{twitter_card}">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{description}">{image_tags}"#
         )
     }
 }
@@ -115,45 +168,4 @@ fn escape_html_attr(value: &str) -> String {
         .replace('<', "&lt;")
         .replace('>', "&gt;")
         .replace('"', "&quot;")
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn page_meta_uses_safe_noindex_without_public_origin() {
-        let meta = SiteContext::from_settings(&settings("")).page_meta("Home", "", true, Some("/"));
-        assert!(meta.head_tags().contains("noindex,nofollow"));
-        assert!(!meta.head_tags().contains("rel=\"canonical\""));
-    }
-
-    #[test]
-    fn page_meta_uses_page_then_site_titles() {
-        let meta = SiteContext::from_settings(&settings("https://example.com")).page_meta(
-            "Home",
-            "",
-            true,
-            Some("/"),
-        );
-        assert_eq!(meta.full_title(), "Home | Launchpad");
-        assert!(meta.head_tags().contains("https://example.com/"));
-    }
-
-    #[test]
-    fn invalid_persisted_public_origin_falls_back_to_safe_mode() {
-        assert_eq!(
-            SiteContext::from_settings(&settings("https://example.com/path")).public_base_url,
-            None
-        );
-    }
-
-    fn settings(public_base_url: &str) -> AppSettings {
-        AppSettings {
-            site_name: "Launchpad".to_string(),
-            site_description: "Search-friendly notes.".to_string(),
-            public_base_url: public_base_url.to_string(),
-            ..AppSettings::default()
-        }
-    }
 }

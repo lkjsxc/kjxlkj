@@ -7,14 +7,16 @@ use crate::web::handlers::session;
 use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
+use crate::web::templates::home::HomeView;
 use crate::web::view;
 use axum::extract::State;
-use axum::http::HeaderMap;
+use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 
 pub async fn home_page(
     State(state): State<AppState>,
     headers: HeaderMap,
+    uri: Uri,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
     if !db::is_setup(pool).await? {
@@ -29,22 +31,27 @@ pub async fn home_page(
     let recent = db::list_recent_resources(pool, is_admin, settings.home_recent_limit).await?;
     let favorites =
         db::list_favorite_resources(pool, is_admin, settings.home_favorite_limit).await?;
-    Ok(http::html(templates::home_page(
-        &settings,
-        &popular
-            .iter()
-            .map(|resource| view::popular_index_item(resource, is_admin, window))
-            .collect::<Vec<_>>(),
-        &recent
-            .iter()
-            .map(|resource| view::index_item(resource, is_admin))
-            .collect::<Vec<_>>(),
-        &favorites
-            .iter()
-            .map(|resource| view::index_item(resource, is_admin))
-            .collect::<Vec<_>>(),
+    let popular_items = popular
+        .iter()
+        .map(|resource| view::popular_index_item(resource, is_admin, window))
+        .collect::<Vec<_>>();
+    let recent_items = recent
+        .iter()
+        .map(|resource| view::index_item(resource, is_admin))
+        .collect::<Vec<_>>();
+    let favorite_items = favorites
+        .iter()
+        .map(|resource| view::index_item(resource, is_admin))
+        .collect::<Vec<_>>();
+    let guest_login_href = session::login_url(&uri);
+    Ok(http::html(templates::home_page(HomeView {
+        settings: &settings,
+        popular: &popular_items,
+        recent: &recent_items,
+        favorites: &favorite_items,
         window,
         is_admin,
-        &site,
-    )))
+        guest_login_href: &guest_login_href,
+        site: &site,
+    })))
 }

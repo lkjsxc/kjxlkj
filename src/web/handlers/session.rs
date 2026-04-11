@@ -32,6 +32,10 @@ pub fn login_url(uri: &Uri) -> String {
     format!("/login?return_to={}", encode(&return_path(uri)))
 }
 
+pub fn login_url_for_path(path: &str) -> String {
+    format!("/login?return_to={}", encode(path))
+}
+
 pub fn valid_return_to(value: Option<&str>) -> String {
     value
         .filter(|value| value.starts_with('/') && !value.starts_with("//"))

@@ -4,7 +4,7 @@ import { assertBrandName, assertDiscoveryDisabled, assertHead } from './discover
 import { assertHomeBrowseLinks, assertPopularWindowSwitch, popularTitles } from './home-checks.mjs';
 import { assertIconAssets } from './icon-checks.mjs';
 import { assertMediaSearchFilter, assertPublicMediaPage } from './media-checks.mjs';
-import { appUrl, capture, newContext } from './support.mjs';
+import { appUrl, capture, newContext, submitLogin } from './support.mjs';
 
 export async function capturePublicScreens(browser, notes) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
@@ -97,6 +97,14 @@ export async function capturePublicScreens(browser, notes) {
     assert.equal(privateSnapshotResponse?.status(), 404, 'private snapshot should return 404');
     await assertHead(page, { title: 'Not Found | kjxlkj', descriptionIncludes: 'could not be found', robots: 'noindex,nofollow', canonical: null });
     await assertVisibleText(page, 'Resource not found');
+    await page.goto(`${appUrl}/search?q=orbit`, { waitUntil: 'networkidle' });
+    const signInLink = page.getByRole('link', { name: 'Admin sign in', exact: true });
+    assert.match(await signInLink.getAttribute('href'), /return_to=%2Fsearch%3Fq%3Dorbit/);
+    await Promise.all([
+        page.waitForURL(/\/login\?/),
+        signInLink.click(),
+    ]);
+    await submitLogin(page, '/search?q=orbit');
     const fontFamily = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     await context.close();
     return fontFamily;

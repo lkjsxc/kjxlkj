@@ -7,6 +7,7 @@ use super::resource_shell::resource_rail;
 use crate::core::render_markdown;
 use crate::web::db::{Resource, ResourceKind};
 use crate::web::site::SiteContext;
+use crate::web::view_media;
 
 const EDITOR_CORE_JS: &str = include_str!("editor.js");
 const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
@@ -54,13 +55,22 @@ pub fn resource_page(
             )
         }
     );
-    base(
-        &site.page_meta(
+    let page_meta = site
+        .page_meta(
             &chrome.title,
             resource.summary.clone(),
             !is_admin && !resource.is_private,
             (!is_admin && !resource.is_private).then_some(chrome.current_href.as_str()),
-        ),
+        )
+        .with_social_card(
+            (!is_admin && !resource.is_private)
+                .then(|| {
+                    view_media::social_card_href(resource).and_then(|href| site.absolute_url(&href))
+                })
+                .flatten(),
+        );
+    base(
+        &page_meta,
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
             &resource_rail(chrome, is_admin, &chrome.current_href),
@@ -144,7 +154,7 @@ fn editor_surface(resource: &Resource, chrome: &ResourceChrome) -> String {
     let body = html_escape(&resource.body);
     let upload_controls = if resource.kind == ResourceKind::Note {
         r#"<button type="button" id="upload-media-trigger" class="btn">Upload media</button>
-<input id="upload-media-input" type="file" accept="image/*,video/*,.mkv,.ogv,.avi,.wmv,.mpeg,.mpg,.3gp" multiple hidden>"#
+<input id="upload-media-input" type="file" accept="image/*,video/*,.heic,.heif,.mkv,.ogv,.avi,.wmv,.mpeg,.mpg,.3gp" multiple hidden>"#
     } else {
         ""
     };

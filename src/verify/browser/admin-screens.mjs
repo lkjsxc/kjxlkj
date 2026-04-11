@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText, expectAdminDashboard, expectAdminNote, expectSettingsPage } from './assertions.mjs';
-import { applySettingsScenario, verifyFavoriteReorder } from './dashboard-checks.mjs';
+import { applySettingsScenario, verifyFavoriteReorder, verifySettingsLeaveGuard } from './dashboard-checks.mjs';
+import { verifyDeleteArming } from './delete-checks.mjs';
 import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
-import { verifyUiCreatedMedia } from './media-checks.mjs';
+import { assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
 import { verifyPartialResourceNavigation } from './navigation-checks.mjs';
 import { appUrl, capture, login, newContext } from './support.mjs';
 
@@ -28,6 +29,7 @@ export async function captureAdminScreens(browser, fixtures) {
     ]);
     await expectSettingsPage(page);
     await assertHead(page, { title: 'Settings | kjxlkj', descriptionIncludes: 'Admin settings for kjxlkj.', robots: 'noindex,nofollow', canonical: null });
+    await verifySettingsLeaveGuard(page);
     await applySettingsScenario(page);
     await assertBrandName(page, 'Launchpad');
 
@@ -35,6 +37,7 @@ export async function captureAdminScreens(browser, fixtures) {
     await assertAdminHomeConfiguration(page);
     await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public resources.', robots: 'noindex,nofollow', canonical: null });
     await verifyUiCreatedDraft(page, false);
+    await verifyDeleteArming(page);
 
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
@@ -93,6 +96,7 @@ export async function captureAdminScreens(browser, fixtures) {
     await assertVisibleText(page, 'Home');
     await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public resources.', robots: 'index,follow', canonical: `${appUrl}/` });
     await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`, `${appUrl}/${fixtures.image.ref}</loc>`] });
+    await assertPublicMediaPage(page, fixtures.image);
     await capture(page, 'desktop-login.png');
     await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
     await assertHead(page, {

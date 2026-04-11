@@ -30,4 +30,22 @@ export async function verifyPartialResourceNavigation(page, note, previous) {
     ]);
     const body = await page.locator('#editor-body').inputValue();
     assert.ok(body.includes('Partial navigation save check.'), 'dirty note should flush before navigation');
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).pathname === `/${previous.ref}`),
+        page.goBack(),
+    ]);
+    assert.equal(
+        await page.evaluate(() => performance.getEntriesByType('navigation').length),
+        navigationCount,
+        'browser back should stay inside the current document'
+    );
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).pathname === `/${note.ref}`),
+        page.goForward(),
+    ]);
+    assert.equal(
+        await page.evaluate(() => performance.getEntriesByType('navigation').length),
+        navigationCount,
+        'browser forward should stay inside the current document'
+    );
 }

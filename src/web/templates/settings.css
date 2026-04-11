@@ -72,6 +72,12 @@
     min-width: 0;
 }
 
+.settings-order-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .settings-row-label {
     font-weight: 600;
 }
@@ -98,6 +104,19 @@
 .settings-order-item.dragging {
     opacity: 0.6;
     border-style: dashed;
+}
+
+.settings-move-button {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg-2);
+    color: var(--text-soft);
+}
+
+.settings-move-button[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 .settings-row-check {
@@ -128,10 +147,11 @@
 @media (max-width: 640px) {
     .settings-row,
     .settings-row-head {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .settings-row-label-group,
+    .settings-order-controls,
     .settings-row-label {
         grid-column: 1 / -1;
     }

@@ -12,7 +12,7 @@ import {
 
 export async function expectPublicRoot(
     page,
-    { title = 'Home', intro = 'Welcome to', sections = ['Popular', 'Recently updated', 'Favorites'] } = {}
+    { title = 'Home', intro = 'Welcome to', sections = ['Recently updated', 'Favorites', 'Popular'] } = {}
 ) {
     await expectFlatShell(page);
     await assertVisibleText(page, 'Open GitHub');

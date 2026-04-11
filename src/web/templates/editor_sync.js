@@ -141,9 +141,15 @@ function syncCanonicalLinks() {
         node.href = currentHref;
         node.textContent = currentHref;
     });
-    if (window.location.pathname !== currentHref) {
-        window.history.replaceState({}, '', currentHref);
+    if (shouldReplaceCurrentUrl()) {
+        window.kjxlkj?.replaceCurrentUrl?.(currentHref);
     }
+}
+
+function shouldReplaceCurrentUrl() {
+    if (window.location.pathname === currentHref) return false;
+    if (window.kjxlkj?.navigating || window.kjxlkj?.navigationUrl) return false;
+    return true;
 }
 
 function updateLiveText(selector, value, key) {

@@ -5,6 +5,8 @@ pub mod handlers;
 mod history_summary;
 mod routes;
 mod site;
+#[cfg(test)]
+mod site_tests;
 mod templates;
 mod view;
 mod view_media;
