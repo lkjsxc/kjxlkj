@@ -103,10 +103,10 @@ async fn build_attachments(
         let generated_variants = super::media_derivatives::build_variants(
             &media_id,
             media_family,
-            &media_body,
-            &variant_source(file, media_family).await?,
+            file.path(),
             webp_quality,
-        );
+        )
+        .await;
         attachments.push(AttachmentCreate {
             media_id: media_id.clone(),
             media_body,
@@ -121,17 +121,6 @@ async fn build_attachments(
         });
     }
     Ok(attachments)
-}
-
-async fn variant_source(
-    file: &super::media_input::UploadedFile,
-    media_family: db::MediaFamily,
-) -> Result<Vec<u8>, AppError> {
-    if media_family == db::MediaFamily::Image {
-        file.read_bytes().await
-    } else {
-        Ok(Vec::new())
-    }
 }
 
 async fn store_uploads(

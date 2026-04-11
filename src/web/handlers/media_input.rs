@@ -20,12 +20,6 @@ impl UploadedFile {
     pub fn path(&self) -> &Path {
         self.temp_file.path()
     }
-
-    pub async fn read_bytes(&self) -> Result<Vec<u8>, AppError> {
-        tokio::fs::read(self.path())
-            .await
-            .map_err(|e| AppError::StorageError(format!("upload temp file read failed: {e}")))
-    }
 }
 
 pub struct MediaFormInput {

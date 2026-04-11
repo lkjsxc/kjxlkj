@@ -13,11 +13,13 @@ export const imageUpload = {
     ),
 };
 
-export const videoUpload = {
-    name: 'launch-clip.mp4',
-    mimeType: 'video/mp4',
-    bytes: Buffer.from('fake-mp4-visual-fixture', 'utf8'),
-};
+export async function buildVideoUpload(page, name = 'launch-clip.webm') {
+    return {
+        name,
+        mimeType: 'video/webm',
+        bytes: Buffer.from(await recordVideoBytes(page)),
+    };
+}
 
 export async function createHistoryNote(page, media) {
     const note = await createNote(page, '# Orbit Ledger\n\nPrivate draft.', {
@@ -140,4 +142,45 @@ Current shared snapshot stretches across the list card with enough words to stre
 
 Follow-up detail keeps the summary ellipsis active.`,
     ];
+}
+
+async function recordVideoBytes(page) {
+    return page.evaluate(async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 160;
+        canvas.height = 90;
+        const context = canvas.getContext('2d');
+        const stream = canvas.captureStream(8);
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8' });
+        const chunks = [];
+
+        function drawFrame(primary, accent) {
+            context.fillStyle = '#10161f';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = primary;
+            context.fillRect(18, 18, 56, 56);
+            context.fillStyle = accent;
+            context.beginPath();
+            context.arc(112, 45, 20, 0, Math.PI * 2);
+            context.fill();
+        }
+
+        recorder.ondataavailable = (event) => {
+            if (event.data.size > 0) chunks.push(event.data);
+        };
+        const stopped = new Promise((resolve) => {
+            recorder.onstop = resolve;
+        });
+
+        recorder.start();
+        drawFrame('#6fb3ff', '#f4c266');
+        await new Promise((resolve) => setTimeout(resolve, 180));
+        drawFrame('#7dd3a7', '#f27f73');
+        await new Promise((resolve) => setTimeout(resolve, 180));
+        recorder.stop();
+        await stopped;
+
+        const blob = new Blob(chunks, { type: recorder.mimeType });
+        return Array.from(new Uint8Array(await blob.arrayBuffer()));
+    });
 }

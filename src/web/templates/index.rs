@@ -150,7 +150,7 @@ fn card_cover(note: &IndexItem) -> String {
             html_escape(href),
         ),
         (Some(MediaFamily::Video), Some(href)) => format!(
-            r#"<div class="card-cover"><video class="card-cover-media" preload="metadata" muted playsinline src="{}"></video></div>"#,
+            r#"<div class="card-cover"><img class="card-cover-media" src="{}" alt=""></div>"#,
             html_escape(href),
         ),
         _ => String::new(),

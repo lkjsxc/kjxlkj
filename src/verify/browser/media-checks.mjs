@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText } from './assertions.mjs';
+import { buildVideoUpload } from './fixture-api.mjs';
 import { appUrl } from './support.mjs';
 
 export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
@@ -11,7 +12,7 @@ export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
     assert.ok(titles.includes(media.image.title));
     assert.ok(titles.includes(media.video.title));
     assert.ok(!titles.includes(hiddenNoteTitle));
-    await assertMediaCardGeometry(page);
+    await assertMediaCardGeometry(page, media.video.title);
 }
 
 export async function assertPublicMediaPage(page, media) {
@@ -39,6 +40,7 @@ export async function verifyUiCreatedMedia(page, note) {
         field.setSelectionRange(field.value.length, field.value.length);
         field.dispatchEvent(new Event('input', { bubbles: true }));
     });
+    const videoUpload = await buildVideoUpload(page, 'engine-room.webm');
     const uploadPromise = page.waitForResponse((response) => {
         const url = new URL(response.url());
         return url.pathname === `/resources/${note.id}/media-attachments` && response.request().method() === 'POST';
@@ -53,9 +55,9 @@ export async function verifyUiCreatedMedia(page, note) {
             ),
         },
         {
-            name: 'engine-room.mp4',
-            mimeType: 'video/mp4',
-            buffer: Buffer.from('engine-room-video-fixture', 'utf8'),
+            name: videoUpload.name,
+            mimeType: videoUpload.mimeType,
+            buffer: videoUpload.bytes,
         },
     ]);
     const uploadResponse = await uploadPromise;
@@ -109,7 +111,7 @@ export async function verifyUiCreatedMedia(page, note) {
     );
 }
 
-async function assertMediaCardGeometry(page) {
+async function assertMediaCardGeometry(page, videoTitle) {
     await page.locator('.resource-row-media .card-cover').first().waitFor({ state: 'visible' });
     const metrics = await page.locator('.resource-row-media').evaluateAll((cards) =>
         cards.map((card) => {
@@ -153,4 +155,22 @@ async function assertMediaCardGeometry(page) {
     );
     assert.ok(imagePaint.naturalWidth > 0 && imagePaint.naturalHeight > 0, 'image card should load');
     assert.ok(imagePaint.painted, 'image card should render visible pixels');
+    const videoPosterPaint = await page
+        .locator(`.resource-row-media[data-card-title="${videoTitle}"] img.card-cover-media`)
+        .first()
+        .evaluate(async (image) => {
+            if (!image.complete) {
+                await new Promise((resolve, reject) => {
+                    image.addEventListener('load', resolve, { once: true });
+                    image.addEventListener('error', reject, { once: true });
+                });
+            }
+            return {
+                src: image.currentSrc,
+                naturalWidth: image.naturalWidth,
+                naturalHeight: image.naturalHeight,
+            };
+        });
+    assert.match(videoPosterPaint.src, /variant=poster/);
+    assert.ok(videoPosterPaint.naturalWidth > 0 && videoPosterPaint.naturalHeight > 0, 'video poster should load');
 }

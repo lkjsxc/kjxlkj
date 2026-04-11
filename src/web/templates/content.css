@@ -54,6 +54,13 @@
     color: var(--accent);
 }
 
+.prose video {
+    display: block;
+    max-width: min(100%, 720px);
+    height: auto;
+    background: var(--bg-1);
+}
+
 .prose :is(p, li, blockquote, td, th, code, strong, em) {
     overflow-wrap: anywhere;
 }

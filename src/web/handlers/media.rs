@@ -25,18 +25,13 @@ pub async fn create(
     let file_key = object_key(&id, &form.file.original_filename);
     let body = initial_body(&form.file.original_filename);
     let media_family = detect_media_family(&form.file.content_type, &form.file.original_filename)?;
-    let source_bytes = if media_family == db::MediaFamily::Image {
-        form.file.read_bytes().await?
-    } else {
-        Vec::new()
-    };
     let generated_variants = super::media_derivatives::build_variants(
         &id,
         media_family,
-        &body,
-        &source_bytes,
+        form.file.path(),
         settings.media_webp_quality,
-    );
+    )
+    .await;
     storage
         .put_file(&file_key, form.file.path(), &form.file.content_type)
         .await?;

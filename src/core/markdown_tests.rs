@@ -7,6 +7,7 @@ fn render_markdown_keeps_safe_media_embeds() {
     assert!(html.contains("src=\"/demo/file\""));
     assert!(html.contains("<video"));
     assert!(html.contains("src=\"/clip/file\""));
+    assert!(html.contains("poster=\"/clip/file?variant=poster\""));
 }
 
 #[test]

@@ -1,8 +1,10 @@
 //! Media derivative metadata and generation helpers
 
-use image::{imageops::FilterType, DynamicImage, ImageBuffer, Rgba};
+use image::{imageops::FilterType, DynamicImage};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::path::Path;
+use tokio::process::Command;
 
 const WEBP_CONTENT_TYPE: &str = "image/webp";
 
@@ -66,18 +68,34 @@ pub fn image_variants(id: &str, bytes: &[u8], quality: i64) -> Vec<GeneratedVari
         .collect()
 }
 
-pub fn video_poster(id: &str, title: &str, quality: i64) -> Option<GeneratedVariant> {
-    let width = 640u32;
-    let height = 360u32;
-    let seed = title.bytes().fold(0u8, |acc, byte| acc.wrapping_add(byte));
-    let mut image = ImageBuffer::from_pixel(width, height, Rgba([18, 24, 31, 255]));
-    for (x, y, pixel) in image.enumerate_pixels_mut() {
-        let band = ((x / 80 + y / 60) as u8).wrapping_add(seed);
-        let blue = 90u8.saturating_add(band % 70);
-        *pixel = Rgba([24 + band % 24, 38 + band % 32, blue, 255]);
+pub async fn video_poster_from_path(
+    id: &str,
+    path: &Path,
+    quality: i64,
+) -> Option<GeneratedVariant> {
+    let output = Command::new("ffmpeg")
+        .args([
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-i",
+            path.to_str()?,
+            "-frames:v",
+            "1",
+            "-f",
+            "image2pipe",
+            "-vcodec",
+            "png",
+            "pipe:1",
+        ])
+        .output()
+        .await
+        .ok()?;
+    if !output.status.success() || output.stdout.is_empty() {
+        return None;
     }
-    let dynamic = DynamicImage::ImageRgba8(image);
-    encode_webp(id, "poster", dynamic, quality)
+    let image = image::load_from_memory(&output.stdout).ok()?;
+    encode_webp(id, "poster", image, quality)
 }
 
 fn encode_resized(

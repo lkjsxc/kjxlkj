@@ -15,7 +15,7 @@ RUN touch src/main.rs && cargo build --release
 # Runtime stage
 FROM alpine:3.19
 
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl ffmpeg
 
 RUN addgroup -S app && adduser -S app -G app
 

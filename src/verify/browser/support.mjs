@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {
+    buildVideoUpload,
     createHistoryNote,
     createMedia,
     createNote,
     imageUpload,
     updateResource,
-    videoUpload,
 } from './fixture-api.mjs';
 import { resetDatabase, seedViewAnalytics } from './seed-state.mjs';
 
@@ -42,7 +42,7 @@ export async function prepareState(browser) {
         '# Orbital Chart\n\nPublic image fixture for media pages and markdown embeds.',
         { alias: 'orbital-chart', isPrivate: false, favorite: false }
     );
-    const video = await createMedia(page, videoUpload, {
+    const video = await createMedia(page, await buildVideoUpload(page), {
         alias: 'launch-clip',
         isPrivate: false,
         favorite: false,
