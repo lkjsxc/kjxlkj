@@ -2,8 +2,10 @@
 
 ## Original First
 
-- Every media upload keeps the original binary, content type, byte size, checksum, and filename.
+- Every media upload keeps the exact original binary, content type, byte size, checksum, and filename.
 - Original file URLs stay at `/{ref}/file` and `/{snapshot_id}/file` without query parameters.
+- Original file URLs are the canonical raw-download surface for both current media and saved snapshots.
+- Browser-hostile originals such as `HEIC` and `HEIF` still remain preserved and downloadable at those raw URLs.
 - Derivatives are optional accelerators and never replace the original stored binary.
 
 ## Image Variants
@@ -30,7 +32,14 @@
 - Media pages and Markdown output prefer `variant=display` for images when present.
 - Video players use the original video as `src` and the WebP poster as `poster` when present.
 - Public share cards prefer absolute WebP derivative URLs when present.
-- Missing variants fall back to the original file only when browsers can reasonably render that original inline.
+- Missing image variants may fall back to the original file only when browsers can reasonably render that original inline.
+- Inline display should prefer stored WebP over raw `HEIC` or `HEIF` whenever a display or card derivative exists.
+
+## Original Downloads
+
+- Live media pages expose `Download original` for the current raw file.
+- Saved-snapshot media pages expose `Download original` for the snapshot raw file.
+- The visible download control points at the unchanged raw file URL rather than at a separate export route.
 
 ## Settings
 

@@ -5,6 +5,9 @@
 - Favorite state is shared resource state across notes and media.
 - `PUT /resources/favorites/order` is admin-only.
 - Favorite ordering uses one persistent sequence across mixed resources.
+- The canonical reorder UI lives on `GET /admin/settings`.
+- The dashboard Favorites block is read-only and reflects the persisted order.
+- Homepage, dashboard, and `/search?scope=favorites` all reflect the same persisted order.
 - Home and dashboard favorites may therefore contain both notes and media.
 
 ## History Pagination

@@ -14,7 +14,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Desktop admin note page.
 - Desktop guest media page.
 - Desktop history index page.
-- Desktop settings page with uploaded site icon controls.
+- Desktop settings page with settings search, site icon controls, and favorite ordering.
 - Compact homepage shell closed and opened.
 - Compact admin note page.
 - Compact admin note page with preview overlay opened.
@@ -32,6 +32,12 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Admin note pages expose `Upload media` beside `Show preview`.
 - Uploading media from a note creates direct embeds plus media resources.
 - Uploading media from a multibyte cursor position restores the caret at the server-confirmed insertion end.
+- Dashboard Favorites remain read-only while settings owns favorite reordering.
+- Settings search can filter visible settings items without leaving the page.
+- Home-section ordering on settings uses drag-only controls.
+- Site icon upload and reset work from `/admin/settings` without leaving the page.
+- Guest media pages expose `Download original` while inline image display may still prefer WebP.
+- Authenticated admin resource-page opens do not increment counted view totals.
 - Resource-to-resource shell transitions preserve rail scroll state.
 - Private file URLs do not leak to guest verification flows.
 - History list pages are admin-only, while known public snapshot URLs remain guest-readable.

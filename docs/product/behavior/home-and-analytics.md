@@ -15,12 +15,13 @@
 
 - Dashboard totals count live resources rather than only notes.
 - Public/private split, favorites, and recent-update counts also count live resources.
-- View totals count successful live-resource page views.
+- View totals expose counted opens from [view-counting.md](view-counting.md).
 
 ## Popularity
 
 - Popularity windows are `7d`, `30d`, `90d`, and `all`.
 - Popularity ranking applies to live note pages and live media pages.
+- Popularity ranking uses counted opens from [view-counting.md](view-counting.md).
 - Guest cards do not expose popularity totals.
 - Admin Popular cards may expose the active popularity total only.
 - When the active window is `all`, the visible card metric label is `Views`.

@@ -16,17 +16,18 @@
 
 ## Media-Specific Fields
 
-- Media keeps `file_href`, `content_type`, `byte_size`, `sha256_hex`, and `original_filename`.
+- Media keeps the preserved raw-original `file_href`, plus `content_type`, `byte_size`, `sha256_hex`, and `original_filename`.
 - Images may also keep `width` and `height`.
 - Videos may also keep `width`, `height`, and `duration_ms`.
 - Media may keep WebP derivative metadata for card, display, and poster contexts.
 - `card` variants serve repeated cards, URL cards, and share previews for both image and video media.
 - `display` variants serve inline image display on media pages and Markdown output.
 - `poster` variants serve video player posters rather than list cards.
-- `/{ref}/file` returns the current media binary.
-- `/{snapshot_id}/file` returns the immutable media binary stored on that snapshot.
+- `/{ref}/file` returns the preserved current raw-original binary.
+- `/{snapshot_id}/file` returns the immutable raw-original binary stored on that snapshot.
 - `/{ref}/file?variant=card|display|poster` returns the requested derivative when present.
 - `/{snapshot_id}/file?variant=card|display|poster` returns the saved derivative when present.
+- Derivatives accelerate inline delivery but do not replace the raw-original file routes.
 
 ## Shared Display Rules
 

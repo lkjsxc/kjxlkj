@@ -47,10 +47,12 @@ curl -sS -X POST http://127.0.0.1:8080/resources/media \
 - Admin rails show `New note`, then `Open GitHub`.
 - Guest image media pages show the image plus rendered Markdown body.
 - Image media pages may serve WebP display variants while preserving the original file URL.
+- Live and saved-snapshot media pages expose `Download original`.
 - Guest note pages render inline images from `![](/demo-image/file)`.
 - Guest or admin video media pages expose a playable `<video>` element.
 - `/demo-image/file` returns the binary and respects visibility.
 - `/demo-image/file?variant=card` returns WebP when a card variant exists.
+- Signed-in admin opens of live resource pages do not increment view totals.
 
 ## Verify History + Immutability
 

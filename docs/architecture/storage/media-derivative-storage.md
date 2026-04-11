@@ -17,4 +17,6 @@
 
 - Saved snapshots keep derivative metadata from the post-save resource state.
 - Object cleanup may delete derivative objects only when no live resource or saved snapshot references them.
-- Missing derivative objects must degrade to original media or no poster without breaking the page.
+- Missing image derivatives may degrade to the raw original only when that original is browser-safe for inline display.
+- Missing posters may degrade to no poster without breaking the page.
+- Browser-hostile originals such as `HEIC` and `HEIF` still remain preserved even when inline delivery prefers WebP.

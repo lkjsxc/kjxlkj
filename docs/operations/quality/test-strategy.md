@@ -34,4 +34,5 @@
 - Browser checks cover note-editor upload against multibyte cursor positions.
 - Browser checks cover first-frame video posters, video card thumbnails, browser-unfriendly image derivatives, and prose-contained video embeds.
 - Browser checks cover partial shell navigation, browser back/forward, and rail scroll preservation.
-- Browser checks cover uploaded site icon delivery, login return paths, settings unsaved prompts, local media URL cards, delete arming, and password flows.
+- Browser checks cover uploaded site icon delivery, icon reset, settings search, settings unsaved prompts, favorite reordering from settings, login return paths, local media URL cards, delete arming, and password flows.
+- Browser checks cover guest-counted views versus non-counted authenticated admin opens.

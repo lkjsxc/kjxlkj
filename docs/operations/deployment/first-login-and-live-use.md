@@ -14,10 +14,11 @@
 2. Set `Site name`, `Site description`, and `Public base URL`.
 3. Set homepage intro, section visibility, section order, and item counts.
 4. Set `Search page size`.
-5. Set `New resources start private` based on deployment policy.
-6. Set `Media WebP quality`.
+5. Set `Media WebP quality`.
+6. Set `New resources start private` based on deployment policy.
 7. Set `Session timeout (minutes)`.
-8. Upload or reset the site icon.
+8. Reorder favorites when desired.
+9. Upload or reset the site icon.
 
 ## Create the First Real Resources
 

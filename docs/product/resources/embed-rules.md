@@ -6,6 +6,8 @@
 - The canonical current-file pattern is `![](/{ref}/file)`.
 - Snapshot-stable image embeds use `![](/{snapshot_id}/file)`.
 - Rendering may serve a smaller WebP display derivative through generated HTML while preserving the authored Markdown URL.
+- Generated HTML should prefer `variant=display` and then `variant=card` for local image embeds before using the raw original.
+- Raw originals such as `HEIC` and `HEIF` should not be preferred for inline rendering when a stored WebP derivative exists.
 - Admin preview and guest rendering must display the same image output for the same Markdown.
 
 ## Videos

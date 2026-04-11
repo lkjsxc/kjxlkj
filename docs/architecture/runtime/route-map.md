@@ -3,7 +3,7 @@
 - `/setup`, `/login`, `/logout`, and `/reset-password` -> setup, session, and password recovery handlers.
 - `/` -> auth-aware homepage handler.
 - `/admin` and `/admin/` -> admin dashboard handler.
-- `/admin/settings`, `/admin/password`, and `/admin/site-icon` -> admin settings, password, and icon handlers.
+- `/admin/settings`, `/admin/password`, `/admin/site-icon`, and `/admin/site-icon/reset` -> admin settings, password, and icon handlers.
 - `/search` -> auth-aware browse/search handler.
 - `/favicon.ico`, `/assets/icon.svg`, and `/assets/site-icon` -> site asset handlers.
 - `/robots.txt` and `/sitemap.xml` -> conditional discovery handlers.

@@ -30,10 +30,11 @@
 - `GET /favicon.ico` returns the canonical favicon.
 - `GET /assets/icon.svg` returns the authored icon source.
 - `GET /assets/site-icon` returns the uploaded site icon or the fallback icon.
+- `POST /admin/site-icon` stores one uploaded image as the effective site icon and returns icon-state JSON.
+- `POST /admin/site-icon/reset` clears the uploaded site icon and returns icon-state JSON.
 - `GET /robots.txt` and `GET /sitemap.xml` still depend on persisted `public_base_url`.
 - `POST /admin/markdown-preview` renders sanitized Markdown preview HTML for admins only.
 - `POST /admin/password` changes the signed-in admin password.
-- `POST /admin/site-icon` stores an uploaded image as the effective site icon.
 
 ## Resource Management
 

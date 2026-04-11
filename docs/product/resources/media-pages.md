@@ -15,17 +15,26 @@
 
 - Media pages render the primary image or video player above the Markdown body.
 - Image media pages prefer a derived WebP display image when one exists, especially for originals that browsers tend to download instead of paint inline.
+- Image media pages should prefer stored WebP display over raw `HEIC` and `HEIF` when a derivative exists.
 - Guest media pages render the same body HTML path used by note pages and admin preview.
+- Guest media pages expose `Download original` for the current raw file when the resource is public.
 - Public media pages are indexable under the same discovery rules as public live notes.
 
 ## Admin View
 
 - Admin media pages keep the shared shell rail and current-resource chrome.
 - The page shows the current image or video preview, file metadata, Markdown body editor, alias, favorite, and visibility controls.
+- The page shows `Download original` for the current raw file.
 - The primary preview surface does not prepend `Current file` copy.
 - Markdown body edits autosave like note edits.
 - Existing media binaries do not change from the media edit page.
 - Existing derivative metadata does not change from the media edit page.
+
+## Snapshot View
+
+- Saved-snapshot media pages keep the saved raw file immutable.
+- Saved-snapshot media pages prefer saved display derivatives for inline image rendering when present.
+- Saved-snapshot media pages expose `Download original` for the saved raw file.
 
 ## Immutability
 

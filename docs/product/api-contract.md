@@ -90,7 +90,22 @@
 ```
 
 - `media_webp_quality` is an integer from `1` through `100`.
-- Site icon upload is multipart on the settings form rather than JSON.
+- Site icon upload requests use `multipart/form-data` rather than JSON.
+
+## Site Icon Response
+
+```json
+{
+  "configured": true,
+  "href": "/assets/site-icon",
+  "content_type": "image/png"
+}
+```
+
+- `POST /admin/site-icon` is admin-only `multipart/form-data` with required part `icon`.
+- `POST /admin/site-icon/reset` is admin-only and clears the uploaded icon state.
+- Both routes return the same icon-state JSON shape.
+- `configured=false` means the bundled fallback icon is active.
 
 ## Note Create Payload
 
@@ -170,11 +185,12 @@
 
 ## File Variant Query
 
-- `GET /{ref}/file` returns the original current file.
+- `GET /{ref}/file` returns the preserved original current file.
 - `GET /{ref}/file?variant=card` returns a current card WebP when present for image or video media.
 - `GET /{ref}/file?variant=display` returns a current display WebP when present.
 - `GET /{ref}/file?variant=poster` returns a current video poster WebP when present.
 - Snapshot file routes accept the same variant names and use saved derivative metadata.
+- `variant=display` and `variant=card` may fall back to the raw original only when that original is reasonably browser-renderable inline.
 
 ## Preview API
 
