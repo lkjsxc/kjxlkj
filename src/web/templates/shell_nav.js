@@ -42,17 +42,13 @@
             if (typeof app.cleanupPage === 'function') app.cleanupPage();
             currentShell.replaceWith(nextShell);
             syncHead(nextDocument);
-            if (historyMode === 'push' && url !== window.location.href) {
-                window.history.pushState({}, '', url);
-            } else if (historyMode === 'replace') {
-                window.history.replaceState({}, '', url);
-            }
             app.setupDrawer?.();
             document.body.classList.toggle('rail-open', drawerOpen);
             app.formatLocalTimes?.();
             runPageScripts(nextDocument);
-            restoreRailScroll(railScroll);
+            await restoreRailScroll(railScroll);
             window.scrollTo(0, 0);
+            syncHistory(url, historyMode);
         } catch (_) {
             fullNavigate(url);
         } finally {
@@ -107,9 +103,30 @@
         });
     }
 
-    function restoreRailScroll(scrollTop) {
+    function syncHistory(url, historyMode) {
+        if (historyMode === 'push' && url !== window.location.href) {
+            window.history.pushState({}, '', url);
+        } else if (historyMode === 'replace') {
+            window.history.replaceState({}, '', url);
+        }
+    }
+
+    async function restoreRailScroll(scrollTop) {
+        await nextFrame();
+        setRailScroll(scrollTop);
+        await nextFrame();
+        setRailScroll(scrollTop);
+    }
+
+    function setRailScroll(scrollTop) {
         var railBody = document.querySelector('.rail-body');
         if (railBody) railBody.scrollTop = scrollTop;
+    }
+
+    function nextFrame() {
+        return new Promise(function (resolve) {
+            requestAnimationFrame(function () { resolve(); });
+        });
     }
 
     function fullNavigate(url) {
