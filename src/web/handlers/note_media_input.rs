@@ -75,7 +75,9 @@ async fn raw_text(field: axum::extract::multipart::Field<'_>) -> Result<String, 
 }
 
 fn decode_text(bytes: Vec<u8>) -> Result<String, AppError> {
-    String::from_utf8(bytes).map_err(|_| invalid("text fields must be utf-8"))
+    String::from_utf8(bytes)
+        .map(|value| value.replace("\r\n", "\n").replace('\r', "\n"))
+        .map_err(|_| invalid("text fields must be utf-8"))
 }
 
 fn trimmed_text(value: String) -> Option<String> {
@@ -107,9 +109,9 @@ mod tests {
     use super::{decode_text, trimmed_text};
 
     #[test]
-    fn decode_text_preserves_raw_body_whitespace() {
+    fn decode_text_normalizes_crlf_and_preserves_body_whitespace() {
         assert_eq!(
-            decode_text(b"# Title\n\n  ".to_vec()).unwrap(),
+            decode_text(b"# Title\r\n\r\n  ".to_vec()).unwrap(),
             "# Title\n\n  "
         );
     }
