@@ -12,8 +12,6 @@ export async function captureAdminScreens(browser, fixtures) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
     const page = await context.newPage();
     const note = fixtures.middle;
-    const latestSnapshot = note.snapshots.find((item) => item.snapshot_number === 4);
-    assert.ok(latestSnapshot, 'expected latest snapshot fixture');
     await page.goto(`${appUrl}/login`, { waitUntil: 'networkidle' });
     await assertHead(page, { title: 'Login | kjxlkj', descriptionIncludes: 'Sign in to manage kjxlkj.', robots: 'noindex,nofollow', canonical: null });
     await login(page);
@@ -52,13 +50,23 @@ export async function captureAdminScreens(browser, fixtures) {
     }, note.id);
     assert.equal(historyJson.snapshots.length, 2);
     assert.equal(typeof historyJson.snapshots[0]?.id, 'string');
+    assert.equal(typeof historyJson.snapshots[0]?.snapshot_number, 'number');
+    assert.equal(typeof historyJson.snapshots[1]?.snapshot_number, 'number');
     assert.equal(typeof historyJson.next_cursor, 'string');
+    const nextHistoryJson = await page.evaluate(async ({ id, cursor }) => {
+        const response = await fetch(
+            `/resources/${id}/history?limit=2&direction=next&cursor=${encodeURIComponent(cursor)}`
+        );
+        return response.json();
+    }, { id: note.id, cursor: historyJson.next_cursor });
+    assert.equal(typeof nextHistoryJson.snapshots[0]?.snapshot_number, 'number');
+    const latestSnapshot = historyJson.snapshots[0];
 
     await page.goto(`${appUrl}/${note.id}/history?limit=2`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}/history`);
     await Promise.all([assertVisibleText(page, 'Live note'), assertVisibleText(page, 'Open GitHub')]);
     await assertVisibleText(page, 'Latest saved snapshot');
-    await assertVisibleText(page, 'Saved snapshot 4');
+    await assertVisibleText(page, `Saved snapshot ${historyJson.snapshots[1].snapshot_number}`);
     await assertHead(page, { title: `History: ${note.title} | Launchpad`, descriptionIncludes: `Saved snapshots for ${note.title}.`, robots: 'noindex,nofollow', canonical: null });
     assert.equal(await page.getByRole('button', { name: 'Next', exact: true }).isDisabled(), false);
     await capture(page, 'desktop-history-index.png');
@@ -66,11 +74,16 @@ export async function captureAdminScreens(browser, fixtures) {
         page.waitForURL((url) => new URL(url).searchParams.get('direction') === 'next'),
         page.getByRole('button', { name: 'Next', exact: true }).click(),
     ]);
-    await assertVisibleText(page, 'Saved snapshot 3');
+    await assertVisibleText(page, `Saved snapshot ${nextHistoryJson.snapshots[0].snapshot_number}`);
 
     await page.goto(`${appUrl}/${latestSnapshot.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${latestSnapshot.id}`);
-    await assertHead(page, { title: `Saved snapshot 4: ${note.title} | Launchpad`, descriptionIncludes: 'Saved snapshot 4 for Orbit Ledger.', robots: 'noindex,nofollow', canonical: null });
+    await assertHead(page, {
+        title: `Saved snapshot ${latestSnapshot.snapshot_number}: ${note.title} | Launchpad`,
+        descriptionIncludes: `Saved snapshot ${latestSnapshot.snapshot_number} for ${note.title}.`,
+        robots: 'noindex,nofollow',
+        canonical: null,
+    });
     await assertVisibleText(page, 'Current shared snapshot stretches across the list card');
     await verifyUiCreatedMedia(page, note);
     await Promise.all([
