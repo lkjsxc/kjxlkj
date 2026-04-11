@@ -22,6 +22,7 @@ pub mod popular_sections;
 pub mod preview;
 pub mod resource;
 pub mod resource_file;
+mod resource_file_support;
 pub mod resource_history;
 mod resource_payload;
 pub mod resources;

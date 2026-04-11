@@ -81,7 +81,9 @@ async fn render_current_resource(
     {
         return Ok(http::redirect(&view::resource_href(resource)));
     }
-    db::count_resource_view(pool, &resource.id).await?;
+    if !is_admin {
+        db::count_resource_view(pool, &resource.id).await?;
+    }
     let chrome = view::resource_chrome(pool, resource, is_admin).await?;
     let analytics = if is_admin {
         Some(view::resource_analytics(

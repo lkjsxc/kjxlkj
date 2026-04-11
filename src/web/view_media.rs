@@ -5,23 +5,20 @@ use crate::web::db::{MediaFamily, Resource, ResourceSnapshot};
 use crate::web::view::file_href;
 
 pub fn card_file_href(resource: &Resource) -> String {
-    current_variant_href(resource, &["card"]).unwrap_or_else(|| file_href(resource))
+    variant_route(&file_href(resource), "card")
 }
 
 pub fn display_file_href(resource: &Resource) -> String {
     if matches!(resource.media_family, Some(MediaFamily::Image)) {
-        return current_variant_href(resource, &["display", "card"])
-            .unwrap_or_else(|| file_href(resource));
+        return variant_route(&file_href(resource), "display");
     }
     file_href(resource)
 }
 
 pub fn snapshot_display_file_href(snapshot: &ResourceSnapshot) -> String {
     let href = format!("/{}/file", snapshot.id);
-    if matches!(snapshot.media_family, Some(MediaFamily::Image))
-        && snapshot_variant_href(snapshot, &["display", "card"]).is_some()
-    {
-        return snapshot_variant_href(snapshot, &["display", "card"]).unwrap_or(href);
+    if matches!(snapshot.media_family, Some(MediaFamily::Image)) {
+        return variant_route(&href, "display");
     }
     href
 }
@@ -68,4 +65,8 @@ fn variant_href(
             .and_then(|variants| variants.get(name))
             .map(|_| format!("{base_href}?variant={name}"))
     })
+}
+
+fn variant_route(base_href: &str, name: &str) -> String {
+    format!("{base_href}?variant={name}")
 }

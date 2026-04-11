@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 
-export const imageUpload = {
-    name: 'orbital-chart.svg',
-    mimeType: 'image/svg+xml',
-    bytes: Buffer.from(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 90">
+const syntheticHeicSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 90" data-fixture="synthetic-heic">
 <rect width="160" height="90" fill="#10161f"/>
 <circle cx="50" cy="45" r="24" fill="#6fb3ff"/>
 <circle cx="102" cy="45" r="18" fill="#f4c266"/>
-</svg>`,
-        'utf8'
-    ),
+</svg>`;
+
+export const imageUpload = {
+    name: 'orbital-chart.heic',
+    mimeType: 'image/heic',
+    bytes: Buffer.from(syntheticHeicSvg, 'utf8'),
+    text: syntheticHeicSvg,
 };
 
 export async function buildVideoUpload(page, name = 'launch-clip.webm') {

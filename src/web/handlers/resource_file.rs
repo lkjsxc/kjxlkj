@@ -4,6 +4,7 @@ use crate::media::MediaVariants;
 use crate::storage::Storage;
 use crate::web::db::{self, DbPool, ResourceKind};
 use crate::web::handlers::http;
+use crate::web::handlers::resource_file_support::inline_image_fallback_allowed;
 use crate::web::handlers::session;
 use crate::web::routes::AppState;
 use axum::extract::{Path, Query, State};
@@ -113,7 +114,13 @@ fn file_from_resource(
         return Ok(None);
     }
     if let Some(variant) = variant {
-        return variant_file(resource.media_variants, variant);
+        return variant_file(
+            resource.file_key,
+            resource.content_type,
+            resource.original_filename,
+            resource.media_variants,
+            variant,
+        );
     }
     Ok(Some(ResourceFileRef {
         file_key: resource.file_key,
@@ -131,7 +138,13 @@ fn file_from_snapshot(
         return Ok(None);
     }
     if let Some(variant) = variant {
-        return variant_file(resource.snapshot.media_variants, variant);
+        return variant_file(
+            resource.snapshot.file_key,
+            resource.snapshot.content_type,
+            resource.snapshot.original_filename,
+            resource.snapshot.media_variants,
+            variant,
+        );
     }
     Ok(Some(ResourceFileRef {
         file_key: resource.snapshot.file_key,
@@ -140,6 +153,9 @@ fn file_from_snapshot(
 }
 
 fn variant_file(
+    file_key: Option<String>,
+    content_type: Option<String>,
+    original_filename: Option<String>,
     variants: Option<MediaVariants>,
     variant: &str,
 ) -> Result<Option<ResourceFileRef>, AppError> {
@@ -148,10 +164,19 @@ fn variant_file(
             "unknown media variant".to_string(),
         ));
     }
-    Ok(variants.and_then(|variants| {
-        variants.get(variant).map(|item| ResourceFileRef {
+    if let Some(item) = variants.as_ref().and_then(|variants| variants.get(variant)) {
+        return Ok(Some(ResourceFileRef {
             file_key: Some(item.key.clone()),
             content_type: Some(item.content_type.clone()),
-        })
-    }))
+        }));
+    }
+    if matches!(variant, "card" | "display")
+        && inline_image_fallback_allowed(content_type.as_deref(), original_filename.as_deref())
+    {
+        return Ok(file_key.map(|key| ResourceFileRef {
+            file_key: Some(key),
+            content_type,
+        }));
+    }
+    Ok(None)
 }

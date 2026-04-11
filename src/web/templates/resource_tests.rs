@@ -1,5 +1,5 @@
 use super::{resource::resource_page, ResourceAnalytics, ResourceChrome};
-use crate::web::db::{Resource, ResourceKind};
+use crate::web::db::{MediaFamily, Resource, ResourceKind};
 use crate::web::site::SiteContext;
 use chrono::Utc;
 
@@ -57,6 +57,34 @@ fn sample_site() -> SiteContext {
     }
 }
 
+fn sample_media_resource() -> Resource {
+    Resource {
+        id: "bcdefghijklmnopqrstuvwxy27".to_string(),
+        kind: ResourceKind::Media,
+        alias: Some("demo-image".to_string()),
+        title: "Demo image".to_string(),
+        summary: "Image body".to_string(),
+        body: "# Demo image\n\nBody".to_string(),
+        media_family: Some(MediaFamily::Image),
+        file_key: Some("media/demo/original.heic".to_string()),
+        content_type: Some("image/heic".to_string()),
+        byte_size: Some(1234),
+        sha256_hex: Some("abc".to_string()),
+        original_filename: Some("demo.heic".to_string()),
+        width: None,
+        height: None,
+        duration_ms: None,
+        media_variants: None,
+        is_favorite: false,
+        favorite_position: None,
+        is_private: false,
+        view_count_total: 0,
+        last_viewed_at: None,
+        created_at: Utc::now(),
+        updated_at: Utc::now(),
+    }
+}
+
 #[test]
 fn guest_resource_page_hides_editor() {
     let html = resource_page(
@@ -103,4 +131,24 @@ fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
     assert!(!html.contains("toastui"));
     assert!(html.contains("content=\"noindex,nofollow\""));
     assert!(!html.contains("rel=\"canonical\""));
+}
+
+#[test]
+fn guest_media_page_exposes_original_download_and_display_route() {
+    let html = resource_page(
+        &sample_media_resource(),
+        &ResourceChrome {
+            current_href: "/demo-image".to_string(),
+            history_href: "/demo-image/history".to_string(),
+            kind: ResourceKind::Media,
+            ..sample_chrome()
+        },
+        None,
+        false,
+        &sample_site(),
+    );
+    assert!(html.contains("Download original"));
+    assert!(html.contains("href=\"/demo-image/file\""));
+    assert!(html.contains("download=\"demo.heic\""));
+    assert!(html.contains("src=\"/demo-image/file?variant=display\""));
 }

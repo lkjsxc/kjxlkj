@@ -4,7 +4,7 @@ use super::render_markdown;
 fn render_markdown_keeps_safe_media_embeds() {
     let html = render_markdown("![](/demo/file)\n\n<video controls src=\"/clip/file\"></video>");
     assert!(html.contains("<img"));
-    assert!(html.contains("src=\"/demo/file\""));
+    assert!(html.contains("src=\"/demo/file?variant=display\""));
     assert!(html.contains("<video"));
     assert!(html.contains("src=\"/clip/file\""));
     assert!(html.contains("poster=\"/clip/file?variant=poster\""));

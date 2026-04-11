@@ -21,16 +21,7 @@ export async function assertPublicMediaPage(page, media) {
     await assertVisibleText(page, media.title);
     await page.locator(media.selector).waitFor({ state: 'visible' });
     assert.equal(await page.getByText('Current file', { exact: true }).count(), 0);
-    const response = await page.evaluate(async (href) => {
-        const file = await fetch(href);
-        return { status: file.status, contentType: file.headers.get('content-type') };
-    }, media.fileHref);
-    assert.equal(response.status, 200, 'media file should stream publicly');
-    assert.equal(
-        response.contentType?.startsWith(media.contentType),
-        true,
-        'media file should keep its content type'
-    );
+    await assertDownloadAndDelivery(page, media, media.fileHref);
     const robots = await page.locator('meta[name="robots"]').getAttribute('content');
     if (robots === 'index,follow' && media.contentType?.startsWith('image/')) {
         const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
@@ -40,6 +31,13 @@ export async function assertPublicMediaPage(page, media) {
             'summary_large_image'
         );
     }
+    const snapshot = media.snapshots?.[0];
+    if (!snapshot) return;
+    await page.goto(`${appUrl}/${snapshot.id}`, { waitUntil: 'networkidle' });
+    await assertVisibleText(page, media.title);
+    await assertVisibleText(page, 'Saved file');
+    await page.locator(media.selector).waitFor({ state: 'visible' });
+    await assertDownloadAndDelivery(page, media, `/${snapshot.id}/file`);
 }
 
 export async function verifyUiCreatedMedia(page, note) {
@@ -157,5 +155,46 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.ok(
         staleRangeResponse.payload.current_resource.body.endsWith(staleRangeResponse.payload.inserted_markdown),
         'stale upload selection should append embeds to the submitted draft'
+    );
+}
+
+async function assertDownloadAndDelivery(page, media, rawHref) {
+    const download = page.getByRole('link', { name: 'Download original', exact: true });
+    await download.waitFor({ state: 'visible' });
+    assert.equal(await download.getAttribute('href'), rawHref);
+    assert.equal(await download.getAttribute('download'), media.originalFilename);
+    const rawResponse = await fetchResource(page, rawHref, !!media.rawText);
+    assert.equal(rawResponse.status, 200, 'media file should stream publicly');
+    assert.equal(
+        rawResponse.contentType?.startsWith(media.contentType),
+        true,
+        'media file should keep its raw content type'
+    );
+    if (media.rawText) {
+        assert.equal(rawResponse.body, media.rawText, 'raw media download should preserve the uploaded bytes');
+    }
+    if (!media.contentType?.startsWith('image/')) return;
+    const displayHref = await page.locator('.media-surface img').getAttribute('src');
+    assert.match(displayHref ?? '', /variant=display/);
+    const displayResponse = await fetchResource(page, displayHref, false);
+    assert.equal(displayResponse.status, 200, 'display variant should stream publicly');
+    assert.equal(
+        displayResponse.contentType?.startsWith('image/webp'),
+        true,
+        'display delivery should use a WebP derivative'
+    );
+}
+
+async function fetchResource(page, href, includeBody) {
+    return page.evaluate(
+        async ({ requestHref, readBody }) => {
+            const response = await fetch(requestHref);
+            return {
+                status: response.status,
+                contentType: response.headers.get('content-type'),
+                body: readBody ? await response.text() : null,
+            };
+        },
+        { requestHref: href, readBody: includeBody }
     );
 }

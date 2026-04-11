@@ -8,6 +8,8 @@ pub fn current_media_block(resource: &Resource) -> String {
         None,
         resource.media_family,
         &view_media::display_file_href(resource),
+        &view::file_href(resource),
+        resource.original_filename.as_deref(),
         view_media::poster_href(resource).as_deref(),
         &resource.title,
     )
@@ -44,6 +46,8 @@ pub fn snapshot_media_block(snapshot: &ResourceSnapshot) -> String {
         Some("Saved file"),
         snapshot.media_family,
         &view_media::snapshot_display_file_href(snapshot),
+        &format!("/{}/file", snapshot.id),
+        snapshot.original_filename.as_deref(),
         view_media::snapshot_poster_href(snapshot).as_deref(),
         &snapshot.title,
     )
@@ -53,6 +57,8 @@ fn media_surface(
     label: Option<&str>,
     media_family: Option<MediaFamily>,
     href: &str,
+    raw_href: &str,
+    download_name: Option<&str>,
     poster_href: Option<&str>,
     title: &str,
 ) -> String {
@@ -60,9 +66,11 @@ fn media_surface(
         .map(|value| format!("<small>{value}</small>"))
         .unwrap_or_default();
     format!(
-        r#"<section class="surface resource-surface media-surface">{}{}</section>"#,
+        r#"<section class="surface resource-surface media-surface">{}{}<div class="media-surface-actions"><a href="{}" class="btn" download="{}">Download original</a></div></section>"#,
         label,
-        media_markup(media_family, href, poster_href, title)
+        media_markup(media_family, href, poster_href, title),
+        html_escape(raw_href),
+        html_escape(download_name.unwrap_or("download.bin")),
     )
 }
 

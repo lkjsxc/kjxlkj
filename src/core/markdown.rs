@@ -17,7 +17,7 @@ pub fn render_markdown(body: &str) -> String {
 }
 
 fn post_process_html(html: &str) -> String {
-    local_file_cards(&decorate_local_videos(html))
+    local_file_cards(&decorate_local_images(&decorate_local_videos(html)))
 }
 
 fn local_file_cards(html: &str) -> String {
@@ -67,6 +67,24 @@ fn decorate_local_videos(html: &str) -> String {
     output
 }
 
+fn decorate_local_images(html: &str) -> String {
+    let mut rest = html;
+    let mut output = String::new();
+    let marker = "<img";
+    while let Some(start) = rest.find(marker) {
+        output.push_str(&rest[..start]);
+        let after_marker = &rest[start..];
+        let Some(end) = after_marker.find('>') else {
+            output.push_str(after_marker);
+            return output;
+        };
+        output.push_str(&decorate_image_tag(&after_marker[..=end]));
+        rest = &after_marker[end + 1..];
+    }
+    output.push_str(rest);
+    output
+}
+
 fn decorate_video_tag(tag: &str) -> String {
     if tag.contains(" poster=") {
         return tag.to_string();
@@ -84,27 +102,33 @@ fn decorate_video_tag(tag: &str) -> String {
     )
 }
 
+fn decorate_image_tag(tag: &str) -> String {
+    let Some(src) = attribute_value(tag, "src") else {
+        return tag.to_string();
+    };
+    if !is_local_file_href(src) || src.contains("variant=") {
+        return tag.to_string();
+    }
+    replace_attribute(tag, "src", &variant_href(src, "display"))
+}
+
 fn local_file_card(href: &str) -> String {
     format!(
         r#"<div class="local-url-card"><a href="{0}"><img src="{1}" alt="" loading="lazy"><span>{0}</span></a></div>"#,
         escape_attr(href),
-        escape_attr(&thumbnail_href(href)),
+        escape_attr(&variant_href(href, "card")),
     )
 }
 
-fn thumbnail_href(href: &str) -> String {
-    if href.contains('?') {
-        format!("{href}&variant=card")
-    } else {
-        format!("{href}?variant=card")
-    }
+fn poster_href(href: &str) -> String {
+    variant_href(href, "poster")
 }
 
-fn poster_href(href: &str) -> String {
+fn variant_href(href: &str, variant: &str) -> String {
     if href.contains('?') {
-        format!("{href}&variant=poster")
+        format!("{href}&variant={variant}")
     } else {
-        format!("{href}?variant=poster")
+        format!("{href}?variant={variant}")
     }
 }
 
@@ -119,6 +143,22 @@ fn attribute_value<'a>(tag: &'a str, name: &str) -> Option<&'a str> {
     let start = tag.find(&marker)? + marker.len();
     let end = tag[start..].find('"')?;
     Some(&tag[start..start + end])
+}
+
+fn replace_attribute(tag: &str, name: &str, value: &str) -> String {
+    let marker = format!(r#"{name}=""#);
+    let Some(start) = tag.find(&marker).map(|index| index + marker.len()) else {
+        return tag.to_string();
+    };
+    let Some(end) = tag[start..].find('"') else {
+        return tag.to_string();
+    };
+    format!(
+        "{}{}{}",
+        &tag[..start],
+        escape_attr(value),
+        &tag[start + end..]
+    )
 }
 
 fn escape_attr(value: &str) -> String {

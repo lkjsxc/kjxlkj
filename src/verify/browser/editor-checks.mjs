@@ -27,6 +27,7 @@ export async function verifyUiCreatedDraft(page, expectedPrivate = false) {
 }
 
 export async function verifyEditorFormatting(browser, page, note, media) {
+    const previewImageSrc = `${media.image.fileHref}?variant=display`;
     const saveRequests = [];
     page.on('requestfinished', (request) => {
         if (request.method() === 'PUT' && new URL(request.url()).pathname === `/resources/${note.id}`) {
@@ -40,7 +41,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
     await appendMarkdown(page);
     await openPreview(page);
     await waitForPreviewStructures(page);
-    await waitForPreviewMedia(page, media);
+    await waitForPreviewMedia(page, previewImageSrc, media.video.fileHref);
     await assertContainedVideo(page, '#editor-preview video');
     await assertEditorLayout(page, false);
     await assertAccentLink(page, '#editor-preview a');
@@ -53,7 +54,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false', 'preview should reset closed after reload');
     await openPreview(page);
     await waitForPreviewStructures(page);
-    await waitForPreviewMedia(page, media);
+    await waitForPreviewMedia(page, previewImageSrc, media.video.fileHref);
     const guest = await newContext(browser, { width: 1440, height: 1100 });
     const guestPage = await guest.newPage();
     await guestPage.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
@@ -67,7 +68,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
             !!document.querySelector('.prose a') &&
             !!document.querySelector(`.prose img[src="${imageSrc}"]`) &&
             !!document.querySelector(`.prose video[src="${videoSrc}"]`),
-        { imageSrc: media.image.fileHref, videoSrc: media.video.fileHref }
+        { imageSrc: previewImageSrc, videoSrc: media.video.fileHref }
     );
     await assertNoHorizontalOverflow(guestPage);
     await assertContainedVideo(guestPage, '.prose video');
@@ -149,12 +150,12 @@ async function waitForPreviewStructures(page) {
     );
 }
 
-async function waitForPreviewMedia(page, media) {
+async function waitForPreviewMedia(page, imageSrc, videoSrc) {
     await page.waitForFunction(
         ({ imageSrc, videoSrc }) =>
             !!document.querySelector(`#editor-preview img[src="${imageSrc}"]`) &&
             !!document.querySelector(`#editor-preview video[src="${videoSrc}"]`),
-        { imageSrc: media.image.fileHref, videoSrc: media.video.fileHref }
+        { imageSrc, videoSrc }
     );
 }
 

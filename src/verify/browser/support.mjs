@@ -6,6 +6,7 @@ import {
     createMedia,
     createNote,
     imageUpload,
+    listSnapshots,
     updateResource,
 } from './fixture-api.mjs';
 import { resetDatabase, seedViewAnalytics } from './seed-state.mjs';
@@ -42,6 +43,7 @@ export async function prepareState(browser) {
         '# Orbital Chart\n\nPublic image fixture for media pages and markdown embeds.',
         { alias: 'orbital-chart', isPrivate: false, favorite: false }
     );
+    const imageSnapshots = await listSnapshots(page, image.id);
     const video = await createMedia(page, await buildVideoUpload(page), {
         alias: 'launch-clip',
         isPrivate: false,
@@ -53,6 +55,7 @@ export async function prepareState(browser) {
         '# Launch Clip\n\nPublic video fixture for media pages and markdown embeds.',
         { alias: 'launch-clip', isPrivate: false, favorite: false }
     );
+    const videoSnapshots = await listSnapshots(page, video.id);
 
     const oldest = await createNote(page, '# Atlas Entry\n\nOldest public note.', {
         isPrivate: false,
@@ -72,8 +75,8 @@ export async function prepareState(browser) {
     seedViewAnalytics(databaseUrl, { oldest, middle, newest });
     await context.close();
     return {
-        image: mediaFixture(image, 'Orbital Chart', '.media-surface img'),
-        video: mediaFixture(video, 'Launch Clip', '.media-surface video'),
+        image: mediaFixture(image, 'Orbital Chart', '.media-surface img', imageUpload.text, imageSnapshots),
+        video: mediaFixture(video, 'Launch Clip', '.media-surface video', null, videoSnapshots),
         oldest: { id: oldest.id, ref: oldest.alias ?? oldest.id, title: 'Atlas Entry' },
         middle: {
             id: middle.id,
@@ -129,7 +132,7 @@ async function setupAdmin(page) {
     ]);
 }
 
-function mediaFixture(payload, title, selector) {
+function mediaFixture(payload, title, selector, rawText, snapshots) {
     const ref = payload.alias ?? payload.id;
     return {
         id: payload.id,
@@ -137,6 +140,9 @@ function mediaFixture(payload, title, selector) {
         title,
         fileHref: payload.file_href ?? `/${ref}/file`,
         contentType: payload.content_type,
+        originalFilename: payload.original_filename,
+        rawText,
+        snapshots,
         selector,
     };
 }

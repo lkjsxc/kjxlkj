@@ -64,6 +64,11 @@
     line-height: 1.35;
 }
 
+.media-surface-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
