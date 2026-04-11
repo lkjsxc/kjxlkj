@@ -29,8 +29,8 @@
             }
         }
         app.navigating = true;
-        var railBody = document.querySelector('.rail-body');
-        var railScroll = railBody ? railBody.scrollTop : 0;
+        var rail = document.querySelector('.shell-rail');
+        var railScroll = rail ? rail.scrollTop : 0;
         var drawerOpen = document.body.classList.contains('rail-open');
         try {
             var response = await fetch(url, { headers: { 'X-Requested-With': 'fetch' } });
@@ -119,8 +119,8 @@
     }
 
     function setRailScroll(scrollTop) {
-        var railBody = document.querySelector('.rail-body');
-        if (railBody) railBody.scrollTop = scrollTop;
+        var rail = document.querySelector('.shell-rail');
+        if (rail) rail.scrollTop = scrollTop;
     }
 
     function nextFrame() {

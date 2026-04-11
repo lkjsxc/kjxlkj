@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 
 export async function verifyPartialResourceNavigation(page, note, previous) {
     const navigationCount = await page.evaluate(() => performance.getEntriesByType('navigation').length);
-    await page.locator('.rail-body').evaluate((node) => {
+    await page.locator('.shell-rail').evaluate((node) => {
         node.scrollTop = 180;
     });
     await page.locator('#editor-body').evaluate((field) => {
@@ -21,7 +21,7 @@ export async function verifyPartialResourceNavigation(page, note, previous) {
         'resource transition should stay inside the current document'
     );
     assert.ok(
-        await page.locator('.rail-body').evaluate((node) => node.scrollTop >= 160),
+        await page.locator('.shell-rail').evaluate((node) => node.scrollTop >= 160),
         'rail scroll position should survive the transition'
     );
     await Promise.all([
