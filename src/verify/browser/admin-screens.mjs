@@ -5,6 +5,7 @@ import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverab
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
 import { verifyUiCreatedMedia } from './media-checks.mjs';
+import { verifyPartialResourceNavigation } from './navigation-checks.mjs';
 import { appUrl, capture, login, newContext } from './support.mjs';
 
 export async function captureAdminScreens(browser, fixtures) {
@@ -42,6 +43,7 @@ export async function captureAdminScreens(browser, fixtures) {
     await expectAdminNote(page);
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await verifyEditorFormatting(browser, page, note, fixtures);
+    await verifyPartialResourceNavigation(page, note, fixtures.oldest);
     await capture(page, 'desktop-admin-note.png');
 
     const historyJson = await page.evaluate(async (id) => {

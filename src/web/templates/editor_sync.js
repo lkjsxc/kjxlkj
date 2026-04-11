@@ -1,7 +1,11 @@
-function queueSave() {
+function queueSave(delay) {
     clearTimeout(editorState.saveTimer);
-    if (!isDirty(currentBody(), draftAliasValue(), isFavorite, isPrivate)) return;
-    editorState.saveTimer = setTimeout(saveNote, 500);
+    if (editorState.composing || !isDirty(currentBody(), draftAliasValue(), isFavorite, isPrivate)) return;
+    editorState.pendingSave = true;
+    if (editorState.saveInFlight) return;
+    editorState.saveTimer = setTimeout(function () {
+        saveNote().catch(function () {});
+    }, typeof delay === 'number' ? delay : 500);
 }
 
 function isDirty(body, alias, favorite, nextPrivate) {
@@ -12,31 +16,65 @@ function isDirty(body, alias, favorite, nextPrivate) {
 }
 
 function saveNote() {
-    if (!editorState.bodyField || typeof currentId === 'undefined') return;
-    var body = currentBody();
-    var alias = draftAliasValue();
-    var selection = currentSelection();
-    var requestId = ++editorState.latestRequest;
-    fetch('/resources/' + currentId, {
+    if (!editorState.bodyField || typeof currentId === 'undefined') return Promise.resolve(null);
+    if (editorState.saveInFlight) return editorState.savePromise || Promise.resolve(null);
+    if (editorState.composing || !isDirty(currentBody(), draftAliasValue(), isFavorite, isPrivate)) {
+        return Promise.resolve(null);
+    }
+    var request = draftSnapshot();
+    editorState.pendingSave = false;
+    editorState.saveInFlight = true;
+    editorState.savePromise = fetch('/resources/' + currentId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            body: body,
-            alias: alias,
-            is_favorite: isFavorite,
-            is_private: isPrivate
+            body: request.body,
+            alias: request.alias,
+            is_favorite: request.isFavorite,
+            is_private: request.isPrivate
         })
     })
         .then(readSaveResponse)
         .then(function (note) {
-            if (requestId !== editorState.latestRequest) return;
-            applySavedResource(note, selection);
+            applySavedResource(note, request);
             setSaveError('');
+            return note;
         })
         .catch(function (error) {
-            if (requestId !== editorState.latestRequest) return;
             setSaveError(error.message || 'Save failed. Retry on the next change.');
+            throw error;
+        })
+        .finally(function () {
+            editorState.saveInFlight = false;
+            editorState.savePromise = null;
+            if (editorState.pendingSave || (!editorState.composing &&
+                isDirty(currentBody(), draftAliasValue(), isFavorite, isPrivate))) {
+                queueSave(0);
+            }
         });
+    return editorState.savePromise;
+}
+
+async function flushPendingSave() {
+    clearTimeout(editorState.saveTimer);
+    if (editorState.composing) return false;
+    while (true) {
+        if (editorState.saveInFlight) {
+            try {
+                await editorState.savePromise;
+            } catch {
+                return false;
+            }
+            continue;
+        }
+        if (editorState.composing) return false;
+        if (!isDirty(currentBody(), draftAliasValue(), isFavorite, isPrivate)) return true;
+        try {
+            await saveNote();
+        } catch {
+            return false;
+        }
+    }
 }
 
 function readSaveResponse(response) {
@@ -58,23 +96,31 @@ function setSaveError(message) {
     node.hidden = !message;
 }
 
-function applySavedResource(note, selection) {
+function applySavedResource(note, request, selection) {
     currentAlias = note.alias || null;
     currentHref = currentAlias ? '/' + currentAlias : '/' + note.id;
-    isFavorite = !!note.is_favorite;
-    isPrivate = !!note.is_private;
     editorState.lastSavedBody = note.body;
     editorState.lastSavedAlias = currentAlias;
-    editorState.lastSavedFavorite = isFavorite;
-    editorState.lastSavedPrivate = isPrivate;
-    if (editorState.bodyField && editorState.bodyField.value !== note.body) {
+    editorState.lastSavedFavorite = !!note.is_favorite;
+    editorState.lastSavedPrivate = !!note.is_private;
+    var bodyStale = currentBody() !== request.body;
+    var aliasStale = draftAliasValue() !== request.alias;
+    var favoriteStale = isFavorite !== request.isFavorite;
+    var privateStale = isPrivate !== request.isPrivate;
+    if (!bodyStale && !editorState.composing && editorState.bodyField && editorState.bodyField.value !== note.body) {
         editorState.bodyField.value = note.body;
     }
-    if (editorState.aliasField) editorState.aliasField.value = currentAlias || '';
-    if (editorState.publicToggle) editorState.publicToggle.checked = !isPrivate;
-    if (editorState.favoriteToggle) editorState.favoriteToggle.checked = isFavorite;
+    if (!aliasStale && editorState.aliasField) editorState.aliasField.value = currentAlias || '';
+    if (!favoriteStale) {
+        isFavorite = !!note.is_favorite;
+        if (editorState.favoriteToggle) editorState.favoriteToggle.checked = isFavorite;
+    }
+    if (!privateStale) {
+        isPrivate = !!note.is_private;
+        if (editorState.publicToggle) editorState.publicToggle.checked = !isPrivate;
+    }
     syncResourceChrome();
-    restoreSelection(selection);
+    if (!bodyStale) restoreSelection(selection || request.selection);
 }
 
 function syncResourceChrome() {
@@ -112,12 +158,13 @@ function currentSelection() {
     if (!editorState.bodyField) return null;
     return {
         selectionStart: editorState.bodyField.selectionStart,
-        selectionEnd: editorState.bodyField.selectionEnd
+        selectionEnd: editorState.bodyField.selectionEnd,
+        activeBody: document.activeElement === editorState.bodyField
     };
 }
 
 function restoreSelection(selection) {
-    if (!selection || !editorState.bodyField) return;
+    if (!selection || !selection.activeBody || !editorState.bodyField) return;
     editorState.bodyField.focus();
     editorState.bodyField.setSelectionRange(selection.selectionStart, selection.selectionEnd);
 }

@@ -27,6 +27,7 @@ struct AttachmentResponse {
     current_resource: ResourcePayload,
     inserted_markdown: String,
     selection_fallback: bool,
+    cursor_utf8: usize,
     created_media: Vec<AttachmentRefPayload>,
 }
 
@@ -71,6 +72,7 @@ pub async fn attach_media(
                 current_resource: ResourcePayload::from_resource(result.current_resource),
                 inserted_markdown,
                 selection_fallback: insertion.selection_fallback,
+                cursor_utf8: insertion.cursor_utf8,
                 created_media: result
                     .created_media
                     .into_iter()

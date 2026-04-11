@@ -14,12 +14,15 @@ var editorState = {
     previewOpen: false,
     saveTimer: null,
     previewTimer: null,
-    latestRequest: 0,
     latestPreview: 0,
     lastSavedBody: '',
     lastSavedAlias: null,
     lastSavedFavorite: false,
     lastSavedPrivate: null,
+    saveInFlight: false,
+    savePromise: null,
+    pendingSave: false,
+    composing: false,
     uploading: false,
     lastPreviewBody: null,
     renderedTitle: '',
@@ -29,6 +32,7 @@ var editorState = {
 };
 
 function initEditor() {
+    disposeEditor();
     cacheEditorNodes();
     if (!editorState.bodyField || !editorState.shell) return;
     bindEditorInputs();
@@ -40,6 +44,7 @@ function initEditor() {
     editorState.lastSavedPrivate = isPrivate;
     syncResourceChrome();
     syncPreviewMode();
+    registerEditorCleanup();
     focusEditor();
 }
 
@@ -59,6 +64,8 @@ function cacheEditorNodes() {
 
 function bindEditorInputs() {
     editorState.bodyField.addEventListener('input', onEditorInput);
+    editorState.bodyField.addEventListener('compositionstart', onCompositionStart);
+    editorState.bodyField.addEventListener('compositionend', onCompositionEnd);
     editorState.aliasField.addEventListener('input', onAliasInput);
     editorState.publicToggle.addEventListener('change', onPublicToggle);
     editorState.favoriteToggle.addEventListener('change', onFavoriteToggle);
@@ -66,12 +73,22 @@ function bindEditorInputs() {
 
 function onEditorInput() {
     syncResourceChrome();
+    if (editorState.composing) return;
     queueSave();
     queuePreviewRender(false);
 }
 
+function onCompositionStart() {
+    editorState.composing = true;
+}
+
+function onCompositionEnd() {
+    editorState.composing = false;
+    queueSave();
+    queuePreviewRender(true);
+}
+
 function onAliasInput() {
-    setSaveError('');
     queueSave();
 }
 
@@ -95,4 +112,46 @@ function draftAliasValue() {
     if (!editorState.aliasField) return null;
     var value = editorState.aliasField.value.trim();
     return value ? value : null;
+}
+
+function draftSnapshot() {
+    return {
+        body: currentBody(),
+        alias: draftAliasValue(),
+        isFavorite: isFavorite,
+        isPrivate: isPrivate,
+        selection: currentSelection()
+    };
+}
+
+function registerEditorCleanup() {
+    editorState.dispose = function () {
+        clearTimeout(editorState.saveTimer);
+        clearTimeout(editorState.previewTimer);
+        if (editorState.bodyField) {
+            editorState.bodyField.removeEventListener('input', onEditorInput);
+            editorState.bodyField.removeEventListener('compositionstart', onCompositionStart);
+            editorState.bodyField.removeEventListener('compositionend', onCompositionEnd);
+        }
+        if (editorState.aliasField) editorState.aliasField.removeEventListener('input', onAliasInput);
+        if (editorState.publicToggle) editorState.publicToggle.removeEventListener('change', onPublicToggle);
+        if (editorState.favoriteToggle) editorState.favoriteToggle.removeEventListener('change', onFavoriteToggle);
+        if (typeof unbindPreviewEvents === 'function') unbindPreviewEvents();
+        if (window.kjxlkj) delete window.kjxlkj.beforeNavigate;
+        editorState.dispose = null;
+    };
+    if (window.kjxlkj?.registerCleanup) window.kjxlkj.registerCleanup(editorState.dispose);
+    if (window.kjxlkj) window.kjxlkj.beforeNavigate = beforeEditorNavigate;
+}
+
+function disposeEditor() {
+    if (typeof editorState.dispose === 'function') editorState.dispose();
+}
+
+async function beforeEditorNavigate() {
+    if (editorState.uploading) {
+        setUploadStatus('Wait for the media upload to finish.', 'error');
+        return false;
+    }
+    return flushPendingSave();
 }

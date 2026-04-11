@@ -1,8 +1,22 @@
 (function () {
+    var app = window.kjxlkj = window.kjxlkj || {};
+    app.cleanups = app.cleanups || [];
+    app.registerCleanup = function (cleanup) {
+        if (typeof cleanup === 'function') app.cleanups.push(cleanup);
+    };
+    app.cleanupPage = function () {
+        while (app.cleanups.length) {
+            try {
+                app.cleanups.pop()();
+            } catch (_) {}
+        }
+        delete app.beforeNavigate;
+    };
+    app.formatLocalTimes = formatLocalTimes;
+    app.setupDrawer = setupDrawer;
+
     formatLocalTimes();
     setupDrawer();
-    window.kjxlkj = window.kjxlkj || {};
-    window.kjxlkj.formatLocalTimes = formatLocalTimes;
 
     function formatLocalTimes(root) {
         var formatter = new Intl.DateTimeFormat(undefined, {
@@ -28,10 +42,14 @@
     }
 
     function setupDrawer() {
+        if (typeof app.disposeDrawer === 'function') app.disposeDrawer();
         var toggle = document.querySelector('[data-menu-toggle]');
         var panel = document.querySelector('[data-menu-panel]');
         var backdrop = document.querySelector('[data-menu-backdrop]');
-        if (!toggle || !panel || !backdrop) return;
+        if (!toggle || !panel || !backdrop) {
+            app.disposeDrawer = null;
+            return;
+        }
         var media = window.matchMedia('(max-width: 900px)');
 
         function sync() {
@@ -63,20 +81,34 @@
             if (restoreFocus) toggle.focus();
         }
 
-        toggle.addEventListener('click', function () {
+        function onToggle() {
             if (document.body.classList.contains('rail-open')) {
                 closeMenu(false);
             } else {
                 openMenu();
             }
-        });
-        backdrop.addEventListener('click', function () { closeMenu(true); });
-        document.addEventListener('keydown', function (event) {
+        }
+
+        function onBackdrop() { closeMenu(true); }
+
+        function onKeydown(event) {
             if (event.key === 'Escape' && document.body.classList.contains('rail-open')) {
                 closeMenu(true);
             }
-        });
-        media.addEventListener('change', function () { closeMenu(false); });
+        }
+
+        function onMediaChange() { closeMenu(false); }
+
+        toggle.addEventListener('click', onToggle);
+        backdrop.addEventListener('click', onBackdrop);
+        document.addEventListener('keydown', onKeydown);
+        media.addEventListener('change', onMediaChange);
+        app.disposeDrawer = function () {
+            toggle.removeEventListener('click', onToggle);
+            backdrop.removeEventListener('click', onBackdrop);
+            document.removeEventListener('keydown', onKeydown);
+            media.removeEventListener('change', onMediaChange);
+        };
         sync();
     }
 })();

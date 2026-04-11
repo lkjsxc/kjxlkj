@@ -1,6 +1,7 @@
 pub(super) struct InsertResult {
     pub body: String,
     pub selection_fallback: bool,
+    pub cursor_utf8: usize,
 }
 
 pub(super) fn apply_insert(
@@ -13,11 +14,13 @@ pub(super) fn apply_insert(
         return InsertResult {
             body: format!("{}{}{}", &body[..start], inserted_markdown, &body[end..]),
             selection_fallback: false,
+            cursor_utf8: start + inserted_markdown.len(),
         };
     }
     InsertResult {
         body: format!("{body}{inserted_markdown}"),
         selection_fallback: true,
+        cursor_utf8: body.len() + inserted_markdown.len(),
     }
 }
 
@@ -36,6 +39,7 @@ mod tests {
 
         assert_eq!(result.body, "# Title\n\n![image](/files/id)");
         assert!(!result.selection_fallback);
+        assert_eq!(result.cursor_utf8, body.len() + "![image](/files/id)".len());
     }
 
     #[test]
@@ -44,6 +48,7 @@ mod tests {
 
         assert_eq!(result.body, "before new after");
         assert!(!result.selection_fallback);
+        assert_eq!(result.cursor_utf8, 10);
     }
 
     #[test]
@@ -55,6 +60,10 @@ mod tests {
 
             assert_eq!(result.body, format!("{body}\n![image](/files/id)"));
             assert!(result.selection_fallback);
+            assert_eq!(
+                result.cursor_utf8,
+                body.len() + "\n![image](/files/id)".len()
+            );
         }
     }
 }

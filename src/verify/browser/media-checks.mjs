@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText } from './assertions.mjs';
+import { assertMediaCardGeometry } from './media-card-checks.mjs';
 import { buildVideoUpload } from './fixture-api.mjs';
 import { appUrl } from './support.mjs';
 
@@ -71,6 +72,44 @@ export async function verifyUiCreatedMedia(page, note) {
     }
     await assertVisibleText(page, 'Uploaded 2 media items.');
 
+    await page.locator('#editor-body').evaluate((field) => {
+        field.value = '# Upload Cursor\n\n漢🙂B';
+        const cursor = field.value.lastIndexOf('B');
+        field.focus();
+        field.setSelectionRange(cursor, cursor);
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    const cursorUploadPromise = page.waitForResponse((response) => {
+        const url = new URL(response.url());
+        return url.pathname === `/resources/${note.id}/media-attachments` && response.request().method() === 'POST';
+    });
+    await page.getByRole('button', { name: 'Upload media', exact: true }).click();
+    await page.locator('#upload-media-input').setInputFiles([{
+        name: 'cursor-target.svg',
+        mimeType: 'image/svg+xml',
+        buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><rect width="12" height="12" fill="#7ec8ff"/></svg>', 'utf8'),
+    }]);
+    const cursorPayload = await (await cursorUploadPromise).json();
+    assert.ok(cursorPayload.current_resource.body.includes(cursorPayload.inserted_markdown + 'B'));
+    const editorCursor = await page.locator('#editor-body').evaluate((field) => ({
+        body: field.value,
+        selectionStart: field.selectionStart,
+    }));
+    const expectedCursor = await page.evaluate(({ body, cursorUtf8 }) => {
+        let total = 0;
+        for (let index = 0; index < body.length; index += 1) {
+            const codePoint = body.codePointAt(index);
+            const segment = String.fromCodePoint(codePoint);
+            const bytes = new TextEncoder().encode(segment).length;
+            if (total + bytes > cursorUtf8) return index;
+            total += bytes;
+            if (codePoint > 0xFFFF) index += 1;
+        }
+        return body.length;
+    }, { body: cursorPayload.current_resource.body, cursorUtf8: cursorPayload.cursor_utf8 });
+    assert.equal(editorCursor.body, cursorPayload.current_resource.body);
+    assert.equal(editorCursor.selectionStart, expectedCursor);
+
     const staleRangeResponse = await page.evaluate(async (noteId) => {
         const body = document.querySelector('#editor-body').value;
         const formData = new FormData();
@@ -109,68 +148,4 @@ export async function verifyUiCreatedMedia(page, note) {
         staleRangeResponse.payload.current_resource.body.endsWith(staleRangeResponse.payload.inserted_markdown),
         'stale upload selection should append embeds to the submitted draft'
     );
-}
-
-async function assertMediaCardGeometry(page, videoTitle) {
-    await page.locator('.resource-row-media .card-cover').first().waitFor({ state: 'visible' });
-    const metrics = await page.locator('.resource-row-media').evaluateAll((cards) =>
-        cards.map((card) => {
-            const cover = card.querySelector('.card-cover').getBoundingClientRect();
-            const badges = card.querySelector('.card-badges').getBoundingClientRect();
-            const media = card.querySelector('.card-cover-media').getBoundingClientRect();
-            return {
-                coverBottom: cover.bottom,
-                coverHeight: Math.round(cover.height),
-                badgesTop: badges.top,
-                mediaHeight: Math.round(media.height),
-            };
-        })
-    );
-    assert.ok(metrics.length >= 2, 'media search should render media cards');
-    for (const item of metrics) {
-        assert.equal(item.coverHeight, 128, 'media thumbnail height should be fixed');
-        assert.ok(item.mediaHeight >= item.coverHeight - 1, 'media should fill the cover height');
-        assert.ok(item.badgesTop >= item.coverBottom, 'badges should sit below the thumbnail');
-    }
-    const imagePaint = await page.locator('.resource-row-media img.card-cover-media').first().evaluate(
-        async (image) => {
-            if (!image.complete) {
-                await new Promise((resolve, reject) => {
-                    image.addEventListener('load', resolve, { once: true });
-                    image.addEventListener('error', reject, { once: true });
-                });
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = 16;
-            canvas.height = 16;
-            const context = canvas.getContext('2d');
-            context.drawImage(image, 0, 0, 16, 16);
-            const data = context.getImageData(0, 0, 16, 16).data;
-            return {
-                naturalHeight: image.naturalHeight,
-                naturalWidth: image.naturalWidth,
-                painted: Array.from(data).some((value, index) => index % 4 !== 3 && value > 0),
-            };
-        }
-    );
-    assert.ok(imagePaint.naturalWidth > 0 && imagePaint.naturalHeight > 0, 'image card should load');
-    assert.ok(imagePaint.painted, 'image card should render visible pixels');
-    const videoPosterPaint = await page
-        .locator(`.resource-row-media[data-card-title="${videoTitle}"] img.card-cover-media`)
-        .first()
-        .evaluate(async (image) => {
-            if (!image.complete) {
-                await new Promise((resolve, reject) => {
-                    image.addEventListener('load', resolve, { once: true });
-                    image.addEventListener('error', reject, { once: true });
-                });
-            }
-            return {
-                src: image.currentSrc,
-                naturalWidth: image.naturalWidth,
-                naturalHeight: image.naturalHeight,
-            };
-        });
-    assert.match(videoPosterPaint.src, /variant=poster/);
-    assert.ok(videoPosterPaint.naturalWidth > 0 && videoPosterPaint.naturalHeight > 0, 'video poster should load');
 }

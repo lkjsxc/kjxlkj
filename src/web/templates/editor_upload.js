@@ -19,25 +19,33 @@ function bindUploadEvents() {
 async function uploadSelectedMedia(files) {
     if (!files.length || typeof currentId === 'undefined') return;
     clearTimeout(editorState.saveTimer);
+    if (!await flushPendingSave()) {
+        setUploadStatus(
+            editorState.composing
+                ? 'Finish the current text composition before uploading media.'
+                : 'Save failed. Retry on the next change.',
+            'error'
+        );
+        return;
+    }
     editorState.uploading = true;
-    if (editorState.uploadButton) editorState.uploadButton.disabled = true;
+    setUploadBusy(true);
     setUploadStatus(
         files.length === 1 ? 'Uploading 1 media item...' : 'Uploading ' + files.length + ' media items...',
         ''
     );
     var selection = editorState.uploadSelection || currentSelectionRange();
     editorState.uploadSelection = null;
-    var body = currentBody();
+    var request = draftSnapshot();
+    var body = request.body;
     var formData = new FormData();
     for (const file of files) formData.append('file', file);
     formData.append('body', body);
-    formData.append('is_favorite', isFavorite ? 'true' : 'false');
-    formData.append('is_private', isPrivate ? 'true' : 'false');
+    formData.append('is_favorite', request.isFavorite ? 'true' : 'false');
+    formData.append('is_private', request.isPrivate ? 'true' : 'false');
     formData.append('insert_start', String(utf8Offset(body, selection.start)));
     formData.append('insert_end', String(utf8Offset(body, selection.end)));
-    var alias = draftAliasValue();
-    if (alias) formData.append('alias', alias);
-    var requestId = ++editorState.latestRequest;
+    if (request.alias) formData.append('alias', request.alias);
     try {
         var response = await fetch('/resources/' + currentId + '/media-attachments', {
             method: 'POST',
@@ -45,11 +53,17 @@ async function uploadSelectedMedia(files) {
         });
         var payload = await readUploadResponse(response);
         if (!response.ok) throw new Error(payload.message || 'Media upload failed.');
-        if (requestId !== editorState.latestRequest) return;
-        var cursor = payload.selection_fallback
-            ? body.length + payload.inserted_markdown.length
-            : selection.start + payload.inserted_markdown.length;
-        applySavedResource(payload.current_resource, { selectionStart: cursor, selectionEnd: cursor });
+        var cursor = codeUnitIndexFromUtf8(
+            payload.current_resource.body,
+            typeof payload.cursor_utf8 === 'number'
+                ? payload.cursor_utf8
+                : utf8Offset(payload.current_resource.body, payload.current_resource.body.length)
+        );
+        applySavedResource(payload.current_resource, request, {
+            selectionStart: cursor,
+            selectionEnd: cursor,
+            activeBody: true
+        });
         setSaveError('');
         queuePreviewRender(true);
         setUploadStatus(
@@ -61,12 +75,10 @@ async function uploadSelectedMedia(files) {
             ''
         );
     } catch (error) {
-        if (requestId === editorState.latestRequest) {
-            setUploadStatus(error.message || 'Media upload failed.', 'error');
-        }
+        setUploadStatus(error.message || 'Media upload failed.', 'error');
     } finally {
         editorState.uploading = false;
-        if (editorState.uploadButton) editorState.uploadButton.disabled = false;
+        setUploadBusy(false);
     }
 }
 
@@ -93,12 +105,26 @@ function currentSelectionRange() {
     var selection = currentSelection();
     return {
         start: selection?.selectionStart ?? 0,
-        end: selection?.selectionEnd ?? 0
+        end: selection?.selectionEnd ?? 0,
+        activeBody: selection?.activeBody ?? false
     };
 }
 
 function utf8Offset(value, codeUnitIndex) {
     return new TextEncoder().encode(value.slice(0, codeUnitIndex)).length;
+}
+
+function codeUnitIndexFromUtf8(value, utf8Index) {
+    var total = 0;
+    for (var index = 0; index < value.length; index += 1) {
+        var codePoint = value.codePointAt(index);
+        var segment = String.fromCodePoint(codePoint);
+        var bytes = new TextEncoder().encode(segment).length;
+        if (total + bytes > utf8Index) return index;
+        total += bytes;
+        if (codePoint > 0xFFFF) index += 1;
+    }
+    return value.length;
 }
 
 function setUploadStatus(message, tone) {
@@ -107,4 +133,12 @@ function setUploadStatus(message, tone) {
     node.textContent = message;
     node.dataset.tone = tone || '';
     node.hidden = !message;
+}
+
+function setUploadBusy(busy) {
+    if (editorState.uploadButton) editorState.uploadButton.disabled = busy;
+    if (editorState.bodyField) editorState.bodyField.readOnly = busy;
+    if (editorState.aliasField) editorState.aliasField.readOnly = busy;
+    if (editorState.publicToggle) editorState.publicToggle.disabled = busy;
+    if (editorState.favoriteToggle) editorState.favoriteToggle.disabled = busy;
 }

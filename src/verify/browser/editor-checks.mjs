@@ -41,6 +41,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
     await openPreview(page);
     await waitForPreviewStructures(page);
     await waitForPreviewMedia(page, media);
+    await assertContainedVideo(page, '#editor-preview video');
     await assertEditorLayout(page, false);
     await assertAccentLink(page, '#editor-preview a');
     await page.waitForTimeout(1800);
@@ -69,6 +70,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
         { imageSrc: media.image.fileHref, videoSrc: media.video.fileHref }
     );
     await assertNoHorizontalOverflow(guestPage);
+    await assertContainedVideo(guestPage, '.prose video');
     await assertAccentLink(guestPage, '.prose a');
     await assertVisibleText(guestPage, 'Alpha');
     await assertInvisibleText(guestPage, '* Alpha');
@@ -176,4 +178,13 @@ async function assertAccentLink(page, selector) {
     });
     assert.notEqual(style.color, 'rgb(242, 242, 239)');
     assert.ok(style.decoration.includes('underline'));
+}
+
+async function assertContainedVideo(page, selector) {
+    const metrics = await page.locator(selector).first().evaluate((node) => {
+        const video = node.getBoundingClientRect();
+        const parent = node.parentElement.getBoundingClientRect();
+        return { videoWidth: Math.round(video.width), parentWidth: Math.round(parent.width) };
+    });
+    assert.ok(metrics.videoWidth <= metrics.parentWidth, 'video should stay within its prose container');
 }

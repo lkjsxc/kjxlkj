@@ -8,6 +8,16 @@ function bindPreviewEvents() {
     window.addEventListener('resize', syncPreviewLayout);
 }
 
+function unbindPreviewEvents() {
+    if (editorState.media.removeEventListener) {
+        editorState.media.removeEventListener('change', syncPreviewMode);
+    } else if (editorState.media.removeListener) {
+        editorState.media.removeListener(syncPreviewMode);
+    }
+    document.removeEventListener('keydown', handlePreviewEscape);
+    window.removeEventListener('resize', syncPreviewLayout);
+}
+
 function togglePreview() {
     editorState.previewOpen = !editorState.previewOpen;
     syncPreviewMode();

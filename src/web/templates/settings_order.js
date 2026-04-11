@@ -55,12 +55,25 @@
         if (!form) return;
         var initial = formSnapshot(form);
         var submitted = false;
+        if (window.kjxlkj?.settingsBeforeUnload) {
+            window.removeEventListener('beforeunload', window.kjxlkj.settingsBeforeUnload);
+        }
         form.addEventListener('submit', function () { submitted = true; });
-        window.addEventListener('beforeunload', function (event) {
+        var handler = function (event) {
             if (submitted || formSnapshot(form) === initial) return;
             event.preventDefault();
             event.returnValue = '';
-        });
+        };
+        window.addEventListener('beforeunload', handler);
+        if (window.kjxlkj) {
+            window.kjxlkj.settingsBeforeUnload = handler;
+            window.kjxlkj.registerCleanup?.(function () {
+                window.removeEventListener('beforeunload', handler);
+                if (window.kjxlkj?.settingsBeforeUnload === handler) {
+                    delete window.kjxlkj.settingsBeforeUnload;
+                }
+            });
+        }
     }
 
     function formSnapshot(form) {

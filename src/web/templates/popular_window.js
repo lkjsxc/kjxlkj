@@ -1,4 +1,6 @@
 (function () {
+    if (window.kjxlkj?.popularWindowReady) return;
+    if (window.kjxlkj) window.kjxlkj.popularWindowReady = true;
     var controllers = {};
     var requestIds = {};
 
