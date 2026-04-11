@@ -18,6 +18,7 @@
 ## Client Rules
 
 - The app must ensure the target bucket exists before serving traffic.
+- Bucket initialization must tolerate SeaweedFS startup lag and retry until the S3 gateway is actually ready, without requiring a manual app restart.
 - Uploads must set canonical content type metadata.
 - Reads must support normal browser image delivery and video seeking.
 - Keys should be opaque and stable enough that snapshots can keep immutable references.

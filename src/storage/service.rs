@@ -8,6 +8,8 @@ use aws_sdk_s3::{
     Client,
 };
 use std::path::Path;
+use tokio::time::{sleep, Duration};
+use tracing::warn;
 
 #[derive(Clone)]
 pub struct Storage {
@@ -133,22 +135,43 @@ impl Storage {
     }
 
     async fn ensure_bucket(&self) -> Result<(), AppError> {
-        if self
-            .client
-            .head_bucket()
-            .bucket(&self.bucket)
-            .send()
-            .await
-            .is_ok()
-        {
-            return Ok(());
+        let mut last_error = None;
+        for attempt in 1..=10 {
+            if self
+                .client
+                .head_bucket()
+                .bucket(&self.bucket)
+                .send()
+                .await
+                .is_ok()
+            {
+                return Ok(());
+            }
+            match self
+                .client
+                .create_bucket()
+                .bucket(&self.bucket)
+                .send()
+                .await
+            {
+                Ok(_) => return Ok(()),
+                Err(error) => {
+                    last_error = Some(error.to_string());
+                    if attempt == 10 {
+                        break;
+                    }
+                    warn!(
+                        bucket = %self.bucket,
+                        attempt,
+                        "object storage bucket not ready yet; retrying initialization"
+                    );
+                    sleep(Duration::from_millis(500 * attempt as u64)).await;
+                }
+            }
         }
-        self.client
-            .create_bucket()
-            .bucket(&self.bucket)
-            .send()
-            .await
-            .map(|_| ())
-            .map_err(|e| AppError::StorageError(format!("bucket init failed: {e}")))
+        Err(AppError::StorageError(format!(
+            "bucket init failed after retries: {}",
+            last_error.unwrap_or_else(|| "unknown storage error".to_string())
+        )))
     }
 }
