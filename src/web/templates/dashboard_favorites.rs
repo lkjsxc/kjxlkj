@@ -1,20 +1,32 @@
-//! Dashboard favorite ordering section
+//! Favorite sections for dashboard and settings
 
 use super::layout::html_escape;
+use super::list_sections::{favorite_browse_card, note_grid_section};
 use super::model::IndexItem;
-use super::sections::section;
+use super::sections::section_with_actions_attrs;
 
-pub fn favorite_order_section(favorites: &[IndexItem], extra_card: &str) -> String {
+pub fn dashboard_favorites_section(favorites: &[IndexItem]) -> String {
+    note_grid_section(
+        "Favorites",
+        favorites,
+        "No favorites yet.",
+        "favorites-section",
+        Some(r#"<a href="/admin/settings#favorites-settings" class="btn">Manage order</a>"#),
+        Some(favorite_browse_card()),
+    )
+}
+
+pub fn settings_favorite_order_section(favorites: &[IndexItem]) -> String {
     let body = if favorites.is_empty() {
-        format!(
-            r#"<p class="surface-empty favorite-order-empty">No favorites yet.</p>{extra_card}"#
-        )
+        r#"<div class="surface settings-panel"><p class="surface-empty favorite-order-empty" data-settings-item>No favorites yet.</p></div>"#
+            .to_string()
     } else {
         format!(
-            r#"<div class="favorite-order-panel">
+            r#"<div class="surface settings-panel favorite-order-panel" data-settings-item>
+<p class="page-summary">Drag to reorder favorites. Changes save immediately.</p>
 <p class="favorite-order-error" data-favorite-order-error aria-live="polite"></p>
 <ol class="favorite-order-list" data-favorite-order>{}</ol>
-</div>{extra_card}"#,
+</div>"#,
             favorites
                 .iter()
                 .map(favorite_item)
@@ -22,7 +34,13 @@ pub fn favorite_order_section(favorites: &[IndexItem], extra_card: &str) -> Stri
                 .join("")
         )
     };
-    section("Favorites", &body, "favorites-section")
+    section_with_actions_attrs(
+        "Favorites",
+        None,
+        &body,
+        "settings-section favorites-section",
+        r#"id="favorites-settings""#,
+    )
 }
 
 fn favorite_item(note: &IndexItem) -> String {

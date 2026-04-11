@@ -31,6 +31,7 @@ mod search_form;
 mod search_tests;
 mod sections;
 mod settings_home;
+mod settings_icon;
 mod settings_page;
 mod settings_panel;
 mod settings_security;

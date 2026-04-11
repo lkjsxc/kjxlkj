@@ -1,13 +1,19 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText, expectAdminDashboard, expectAdminNote, expectSettingsPage } from './assertions.mjs';
-import { applySettingsScenario, verifyFavoriteReorder, verifySettingsLeaveGuard } from './dashboard-checks.mjs';
+import {
+    applySettingsScenario,
+    verifyFavoriteReorder,
+    verifySettingsLeaveGuard,
+    verifySettingsSearch,
+    verifySiteIconControls,
+} from './dashboard-checks.mjs';
 import { verifyDeleteArming } from './delete-checks.mjs';
 import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
 import { assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
 import { verifyPartialResourceNavigation } from './navigation-checks.mjs';
-import { appUrl, capture, login, newContext } from './support.mjs';
+import { appUrl, capture, login, newContext, submitLogin } from './support.mjs';
 
 export async function captureAdminScreens(browser, fixtures) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
@@ -21,7 +27,6 @@ export async function captureAdminScreens(browser, fixtures) {
     await expectAdminDashboard(page);
     await assertHead(page, { title: 'Dashboard | kjxlkj', descriptionIncludes: 'Admin dashboard for kjxlkj.', robots: 'noindex,nofollow', canonical: null });
     await assertPopularWindowSwitch(page, '/admin', 'admin');
-    await verifyFavoriteReorder(page);
     await capture(page, 'desktop-admin-dashboard.png');
     await Promise.all([
         page.waitForURL('**/admin/settings'),
@@ -30,6 +35,9 @@ export async function captureAdminScreens(browser, fixtures) {
     await expectSettingsPage(page);
     await assertHead(page, { title: 'Settings | kjxlkj', descriptionIncludes: 'Admin settings for kjxlkj.', robots: 'noindex,nofollow', canonical: null });
     await verifySettingsLeaveGuard(page);
+    await verifySettingsSearch(page);
+    await verifyFavoriteReorder(page);
+    await verifySiteIconControls(page);
     await applySettingsScenario(page);
     await assertBrandName(page, 'Launchpad');
 
@@ -43,6 +51,7 @@ export async function captureAdminScreens(browser, fixtures) {
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page);
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
+    await verifyAuthenticatedViewsStayFlat(page, note);
     await verifyEditorFormatting(browser, page, note, fixtures);
     await verifyPartialResourceNavigation(page, note, fixtures.oldest);
     await capture(page, 'desktop-admin-note.png');
@@ -106,4 +115,34 @@ export async function captureAdminScreens(browser, fixtures) {
         canonical: `${appUrl}/${note.ref}`,
     });
     await context.close();
+}
+
+async function verifyAuthenticatedViewsStayFlat(page, note) {
+    const totalBefore = await statValue(page, 'Views total');
+    await page.reload({ waitUntil: 'networkidle' });
+    assert.equal(await statValue(page, 'Views total'), totalBefore);
+    await Promise.all([
+        page.waitForURL('**/'),
+        page.getByRole('button', { name: 'Logout', exact: true }).first().click(),
+    ]);
+    await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
+    await page.getByRole('link', { name: 'Admin sign in', exact: true }).waitFor({ state: 'visible' });
+    await Promise.all([
+        page.waitForURL(/\/login\?/),
+        page.getByRole('link', { name: 'Admin sign in', exact: true }).click(),
+    ]);
+    await submitLogin(page, `/${note.ref}`);
+    assert.equal(await statValue(page, 'Views total'), totalBefore + 1);
+}
+
+async function statValue(page, label) {
+    const analyticsCard = page.locator('.resource-analytics-grid article', {
+        has: page.locator('small', { hasText: label }),
+    });
+    const dashboardCard = page.locator('.stat-card', {
+        has: page.locator('small', { hasText: label }),
+    });
+    const locator = (await analyticsCard.count()) > 0 ? analyticsCard : dashboardCard;
+    const text = await locator.locator('strong').first().textContent();
+    return Number.parseInt(text ?? '0', 10);
 }

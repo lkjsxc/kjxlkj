@@ -6,8 +6,9 @@ use crate::web::handlers::media_input::{discard_field, field_bytes_limited};
 use crate::web::routes::AppState;
 use axum::extract::multipart::Field;
 use axum::extract::{Multipart, State};
-use axum::http::HeaderMap;
+use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
+use serde::Serialize;
 use std::path::Path;
 use uuid::Uuid;
 
@@ -15,6 +16,13 @@ struct IconUpload {
     bytes: Vec<u8>,
     filename: String,
     content_type: String,
+}
+
+#[derive(Serialize)]
+struct IconState {
+    configured: bool,
+    href: &'static str,
+    content_type: Option<String>,
 }
 
 pub async fn upload(
@@ -45,7 +53,24 @@ pub async fn upload(
         let _ = storage.delete_object(&old_key).await;
     }
     result?;
-    Ok(http::see_other("/admin/settings"))
+    Ok(http::json_status(StatusCode::OK, icon_state(&settings)))
+}
+
+pub async fn reset(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    let storage = &state.storage;
+    session::require_session(&headers, pool).await?;
+    let mut settings = db::get_settings(pool).await?;
+    let old_key = settings.site_icon_key.take();
+    settings.site_icon_content_type = None;
+    db::update_settings(pool, &settings).await?;
+    if let Some(old_key) = old_key {
+        let _ = storage.delete_object(&old_key).await;
+    }
+    Ok(http::json_status(StatusCode::OK, icon_state(&settings)))
 }
 
 async fn parse_icon(mut payload: Multipart, max_bytes: usize) -> Result<IconUpload, AppError> {
@@ -113,6 +138,14 @@ fn extension(filename: &str) -> Option<&str> {
     Path::new(filename)
         .extension()
         .and_then(|value| value.to_str())
+}
+
+fn icon_state(settings: &db::AppSettings) -> IconState {
+    IconState {
+        configured: settings.site_icon_content_type.is_some(),
+        href: "/assets/site-icon",
+        content_type: settings.site_icon_content_type.clone(),
+    }
 }
 
 fn invalid(message: &str) -> AppError {

@@ -1,9 +1,9 @@
 //! Admin dashboard template
 
-use super::dashboard_favorites::favorite_order_section;
+use super::dashboard_favorites::dashboard_favorites_section;
 use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, shell_page};
-use super::list_sections::{favorite_browse_card, note_grid_section, recent_browse_card};
+use super::list_sections::{note_grid_section, recent_browse_card};
 use super::model::IndexItem;
 use super::popular_sections::admin_popular_section;
 use super::sections::{page_header, section};
@@ -11,7 +11,6 @@ use crate::web::db::{AppSettings, PopularWindow, ResourceStats};
 use crate::web::site::SiteContext;
 
 const ACTIONS_JS: &str = include_str!("resource_actions.js");
-const FAVORITE_ORDER_JS: &str = include_str!("favorite_order.js");
 const POPULAR_JS: &str = include_str!("popular_window.js");
 
 pub fn admin_page(
@@ -38,7 +37,7 @@ pub fn admin_page(
             None,
             Some(recent_browse_card()),
         ),
-    ) + &favorite_order_section(favorites, &favorite_browse_card());
+    ) + &dashboard_favorites_section(favorites);
     base(
         &site.page_meta(
             "Dashboard",
@@ -59,9 +58,7 @@ pub fn admin_page(
             &site.site_name,
         ),
         "",
-        &format!(
-            r#"<script>{ACTIONS_JS}</script><script>{FAVORITE_ORDER_JS}</script><script>{POPULAR_JS}</script>"#
-        ),
+        &format!(r#"<script>{ACTIONS_JS}</script><script>{POPULAR_JS}</script>"#),
     )
 }
 

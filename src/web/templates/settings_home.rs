@@ -1,18 +1,20 @@
 use super::layout::html_escape;
-use super::sections::section;
+use super::sections::section_with_actions_attrs;
 use super::settings_panel::surface_panel;
 use crate::web::db::AppSettings;
 
 pub(super) fn home_hero_section(settings: &AppSettings) -> String {
-    section(
+    section_with_actions_attrs(
         "Home hero",
+        None,
         &surface_panel(&format!(
             r#"<div class="settings-section-grid">
-<label class="form-group settings-wide"><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
+<label class="form-group settings-wide" data-settings-item><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
 </div>"#,
             html_escape(&settings.home_intro_markdown),
         )),
         "settings-section",
+        "",
     )
 }
 
@@ -41,11 +43,12 @@ pub(super) fn home_sections_section(settings: &AppSettings) -> String {
         ),
     ];
     rows.sort_by_key(|row| row.position);
-    section(
+    section_with_actions_attrs(
         "Home sections",
+        None,
         &surface_panel(&format!(
             r#"<div class="settings-table">
-<div class="settings-row settings-row-head"><span>Section</span><span>Visible</span><span>Items</span></div>
+<div class="settings-row settings-row-head" data-settings-item><span>Section</span><span>Visible</span><span>Items</span></div>
 <div class="settings-table-body" data-settings-order-list>{}</div>
 </div>"#,
             rows.into_iter()
@@ -54,6 +57,7 @@ pub(super) fn home_sections_section(settings: &AppSettings) -> String {
                 .join("")
         )),
         "settings-section",
+        "",
     )
 }
 
@@ -77,18 +81,12 @@ fn section_row(item: HomeSectionItem) -> String {
     let visible_name = format!("{}_visible", item.prefix);
     let position_name = format!("{}_position", item.prefix);
     let limit_name = format!("{}_limit", item.prefix);
-    let up_label = format!("Move {} up", item.label);
-    let down_label = format!("Move {} down", item.label);
     format!(
-        r#"<div class="settings-row settings-order-item" data-settings-order-item draggable="true">
+        r#"<div class="settings-row settings-order-item" data-settings-item data-settings-order-item draggable="true">
 <input type="hidden" name="{position_name}" value="{}">
 <div class="settings-row-label-group">
 <button type="button" class="settings-drag-handle" aria-label="Reorder home sections">Drag</button>
 <span class="settings-row-label">{}</span>
-</div>
-<div class="settings-order-controls">
-<button type="button" class="settings-move-button" data-settings-move="up" aria-label="{up_label}">Up</button>
-<button type="button" class="settings-move-button" data-settings-move="down" aria-label="{down_label}">Down</button>
 </div>
 <span class="settings-row-field settings-row-check"><input type="checkbox" name="{visible_name}" {}></span>
 <span class="settings-row-field"><input type="number" name="{limit_name}" min="1" max="24" value="{}"></span>

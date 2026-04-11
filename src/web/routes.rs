@@ -93,6 +93,7 @@ pub fn router(state: AppState) -> Router {
             "/admin/site-icon",
             post(site_icon::upload).layer(DefaultBodyLimit::max(state.site_icon_upload_max_bytes)),
         )
+        .route("/admin/site-icon/reset", post(site_icon::reset))
         .route(
             "/admin/markdown-preview",
             post(preview::render_markdown_preview),

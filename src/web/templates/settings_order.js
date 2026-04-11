@@ -7,7 +7,6 @@
     var dragging = null;
 
     Array.from(list.children).forEach(function (item) {
-        bindMoveButtons(item);
         item.addEventListener('dragstart', function (event) {
             dragging = item;
             item.classList.add('dragging');
@@ -43,22 +42,6 @@
 
     syncOrder();
 
-    function bindMoveButtons(item) {
-        Array.from(item.querySelectorAll('[data-settings-move]')).forEach(function (button) {
-            button.addEventListener('click', function () {
-                if (button.disabled) return;
-                if (button.dataset.settingsMove === 'up' && item.previousElementSibling) {
-                    list.insertBefore(item, item.previousElementSibling);
-                    syncOrder();
-                }
-                if (button.dataset.settingsMove === 'down' && item.nextElementSibling) {
-                    list.insertBefore(item, item.nextElementSibling.nextElementSibling);
-                    syncOrder();
-                }
-            });
-        });
-    }
-
     function syncOrder() {
         var items = Array.from(list.querySelectorAll('[data-settings-order-item]'));
         items.forEach(function (item, index) {
@@ -66,19 +49,12 @@
             var input = item.querySelector('input[type="hidden"][name$="_position"]');
             if (input) input.value = value;
         });
-        items.forEach(function (item, index) {
-            var upButton = item.querySelector('[data-settings-move="up"]');
-            var downButton = item.querySelector('[data-settings-move="down"]');
-            if (upButton) upButton.disabled = index === 0;
-            if (downButton) downButton.disabled = index === items.length - 1;
-        });
     }
 
     function setupUnsavedPrompt() {
         var forms = Array.from(document.querySelectorAll([
             'form[action="/admin/settings"]',
-            'form[action="/admin/password"]',
-            'form[action="/admin/site-icon"]'
+            'form[action="/admin/password"]'
         ].join(','))).map(function (form) {
             return { form: form, initial: formSnapshot(form), submitted: false };
         });

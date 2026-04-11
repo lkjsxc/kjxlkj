@@ -7,7 +7,7 @@ use crate::web::handlers::session;
 use crate::web::handlers::settings_input::{validate_settings_form, SettingsForm};
 use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
-use crate::web::templates;
+use crate::web::{templates, view};
 use axum::extract::{Form, State};
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
@@ -33,8 +33,16 @@ pub async fn settings_page(
         return Ok(http::redirect(&session::login_url(&uri)));
     }
     let settings = db::get_settings(pool).await?;
+    let favorites = db::list_all_favorite_resources(pool, true).await?;
     let site = SiteContext::from_settings(&settings);
-    Ok(http::html(templates::settings_page(&settings, &site)))
+    Ok(http::html(templates::settings_page(
+        &settings,
+        &favorites
+            .iter()
+            .map(|resource| view::index_item(resource, true))
+            .collect::<Vec<_>>(),
+        &site,
+    )))
 }
 
 pub async fn settings_submit(
