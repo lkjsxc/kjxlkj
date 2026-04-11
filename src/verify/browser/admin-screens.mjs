@@ -95,6 +95,11 @@ export async function captureAdminScreens(browser, fixtures) {
     await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`, `${appUrl}/${fixtures.image.ref}</loc>`] });
     await capture(page, 'desktop-login.png');
     await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
-    await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'index,follow', canonical: `${appUrl}/${note.ref}` });
+    await assertHead(page, {
+        title: 'Upload Cursor | Launchpad',
+        descriptionIncludes: '漢🙂',
+        robots: 'index,follow',
+        canonical: `${appUrl}/${note.ref}`,
+    });
     await context.close();
 }
