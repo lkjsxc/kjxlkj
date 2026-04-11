@@ -23,5 +23,8 @@
 - Saving redirects back to `/admin/settings`.
 - Successful saves immediately affect `/`, `/search`, `/admin`, newly opened resource pages, and discovery surfaces.
 - Fresh installs and untouched settings default new resources to public.
+- Fresh installs and untouched settings order Home sections as `Recently updated`, `Favorites`, then `Popular`.
 - Leaving the page with unsaved settings, icon, or password fields prompts the user to stay.
+- The prompt applies to same-origin shell links, browser back/forward, and full-page unload.
+- Canceling the prompt keeps the visible page and browser URL on `/admin/settings`.
 - The prompt clears for the submitted form after a successful submit.

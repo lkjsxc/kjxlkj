@@ -11,6 +11,8 @@
 ## Login Return Path
 
 - `GET /login` accepts optional `return_to`.
+- Guest-shell `Admin sign in` controls preserve the exact current same-origin path and query in `return_to`.
+- Admin-only HTML routes redirect to `/login` with the attempted same-origin path and query as `return_to`.
 - `return_to` must be a same-origin relative path beginning with `/`.
 - Setup, login, logout, reset-password, write API, and health routes are invalid return targets.
 - Successful login redirects to valid `return_to`.

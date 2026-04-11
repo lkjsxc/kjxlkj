@@ -16,7 +16,7 @@
 ## Rendering
 
 - A card links to the media page or snapshot page, not directly to the variant.
-- Image cards use the best available WebP thumbnail.
-- Video cards use the generated poster when available.
+- Image cards use the best available WebP `variant=card` thumbnail.
+- Video cards use the generated WebP `variant=card` thumbnail when available.
 - Cards show title, media kind, and concise metadata.
 - Inaccessible or non-media URLs render as ordinary Markdown links.

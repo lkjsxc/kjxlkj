@@ -9,25 +9,27 @@
 ## Image Variants
 
 - Image uploads may create WebP derivatives for card and display contexts.
+- Image derivative generation should still be attempted for browser-unfriendly originals such as `HEIC` and `HEIF` when any server decoder path can read them.
 - Card variants target repeated list thumbnails.
 - Display variants target primary media-page and Markdown display.
 - Variant quality uses the persisted `media_webp_quality` setting at upload time.
 - Variant generation failure must not make the original upload fail when the original can be stored.
 
-## Video Posters
+## Video Still Images
 
 - Video uploads keep the original video untouched.
-- Video media may create a WebP poster from the first decodable video frame.
-- Poster extraction runs server-side during upload.
+- Video media may create both a WebP card variant and a WebP poster from the first decodable video frame.
+- Still-image extraction runs server-side during upload.
 - Poster generation failure must not make the original upload fail when the original can be stored.
-- Existing media derivatives are immutable; first-frame posters apply to future uploads only.
+- Existing media derivatives are immutable; first-frame card and poster generation applies to future uploads only.
 
 ## Selection
 
-- List cards prefer `variant=card` for image thumbnails and video posters.
+- List cards prefer `variant=card` for both image and video thumbnails.
 - Media pages and Markdown output prefer `variant=display` for images when present.
 - Video players use the original video as `src` and the WebP poster as `poster` when present.
-- Missing variants fall back to the original file for images and to no poster for videos.
+- Public share cards prefer absolute WebP derivative URLs when present.
+- Missing variants fall back to the original file only when browsers can reasonably render that original inline.
 
 ## Settings
 

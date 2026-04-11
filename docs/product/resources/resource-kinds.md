@@ -20,6 +20,9 @@
 - Images may also keep `width` and `height`.
 - Videos may also keep `width`, `height`, and `duration_ms`.
 - Media may keep WebP derivative metadata for card, display, and poster contexts.
+- `card` variants serve repeated cards, URL cards, and share previews for both image and video media.
+- `display` variants serve inline image display on media pages and Markdown output.
+- `poster` variants serve video player posters rather than list cards.
 - `/{ref}/file` returns the current media binary.
 - `/{snapshot_id}/file` returns the immutable media binary stored on that snapshot.
 - `/{ref}/file?variant=card|display|poster` returns the requested derivative when present.

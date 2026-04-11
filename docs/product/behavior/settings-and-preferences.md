@@ -8,6 +8,13 @@
 - `media_webp_quality` controls future image WebP and video poster generation quality.
 - Uploaded site icon metadata controls favicon and shell icon delivery.
 - Home section visibility, ordering, and limits apply to mixed-resource sections.
+- Fresh-install home section order is `Recently updated`, `Favorites`, then `Popular`.
+
+## Dirty Settings State
+
+- Dragging home sections changes only the in-form pending state until `Save settings`.
+- Dirty settings block same-origin shell navigation, browser back/forward, and full-page unload until the user explicitly discards the pending edits.
+- Choosing to stay keeps both the visible page and the browser URL on `/admin/settings`.
 
 ## Immediate Effects
 

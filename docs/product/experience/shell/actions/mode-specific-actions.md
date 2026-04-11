@@ -15,5 +15,6 @@
 ## Admin Note and History Rails
 
 - Admin note/history rails use note-management and session actions as the trailing block.
-- `Delete note` and `Logout` remain below `Open GitHub`.
+- `Delete note`, `Delete media`, and `Logout` remain below `Open GitHub`.
+- The destructive action uses a `4`-second arm-and-confirm button instead of a modal dialog.
 - Destructive or session actions do not move above the GitHub section.

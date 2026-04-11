@@ -6,6 +6,7 @@
 - Every HTML page emits a viewport meta tag.
 - Every HTML page emits the canonical favicon link.
 - Every HTML page emits an icon link that resolves through the effective site icon.
+- Public live resource pages may emit social-card tags from [social-cards.md](social-cards.md).
 - Primary media-page images may use `fetchpriority="high"` when they are likely to be the largest contentful paint candidate.
 - Repeated thumbnails should not use high fetch priority.
 - Every HTML page emits a meta description.

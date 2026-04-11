@@ -69,3 +69,7 @@
 - Performs soft delete on the live resource only.
 - Returns `204` with no body.
 - Saved snapshots remain immutable and available when their stored visibility allows access.
+- The HTML admin rail uses a two-step armed delete control rather than a dialog.
+- The first press arms delete for `4` seconds and changes the button copy to require a second press.
+- The second press within the armed window issues `DELETE /resources/{id}`.
+- Letting the armed window expire resets the button without network traffic.

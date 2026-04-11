@@ -32,6 +32,6 @@
 - Visual checks assert mixed resource cards, note-editor upload flow, media page rendering, inline note embeds, and rail ordering.
 - Browser checks cover note-editor upload against trailing blank lines and stale insertion ranges.
 - Browser checks cover note-editor upload against multibyte cursor positions.
-- Browser checks cover first-frame video posters and prose-contained video embeds.
-- Browser checks cover partial shell navigation with rail scroll preservation.
-- Browser checks cover uploaded site icon delivery, settings unsaved prompts, local media URL cards, and password flows.
+- Browser checks cover first-frame video posters, video card thumbnails, browser-unfriendly image derivatives, and prose-contained video embeds.
+- Browser checks cover partial shell navigation, browser back/forward, and rail scroll preservation.
+- Browser checks cover uploaded site icon delivery, login return paths, settings unsaved prompts, local media URL cards, delete arming, and password flows.

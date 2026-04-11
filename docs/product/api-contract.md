@@ -34,6 +34,7 @@
   "height": 1080,
   "duration_ms": 93210,
   "media_variants": {
+    "card": { "href": "/launch-video/file?variant=card", "content_type": "image/webp" },
     "poster": { "href": "/launch-video/file?variant=poster", "content_type": "image/webp" }
   },
   "is_favorite": false,
@@ -110,6 +111,7 @@
 - `POST /resources/media` is `multipart/form-data`.
 - Required part: `file`.
 - Optional parts: `alias`, `is_favorite`, `is_private`.
+- Accepted image filename extensions include `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.svg`, `.heic`, and `.heif`.
 - The server derives `media_family`, content metadata, and the initial Markdown body from the uploaded file.
 - The server stores the original file and attempts derivative WebP preparation.
 
@@ -169,9 +171,9 @@
 ## File Variant Query
 
 - `GET /{ref}/file` returns the original current file.
-- `GET /{ref}/file?variant=card` returns a current card WebP when present.
+- `GET /{ref}/file?variant=card` returns a current card WebP when present for image or video media.
 - `GET /{ref}/file?variant=display` returns a current display WebP when present.
-- `GET /{ref}/file?variant=poster` returns a current poster WebP when present.
+- `GET /{ref}/file?variant=poster` returns a current video poster WebP when present.
 - Snapshot file routes accept the same variant names and use saved derivative metadata.
 
 ## Preview API
@@ -208,6 +210,7 @@
   "content_type": "video/mp4",
   "byte_size": 18342012,
   "media_variants": {
+    "card": { "href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file?variant=card", "content_type": "image/webp" },
     "poster": { "href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file?variant=poster", "content_type": "image/webp" }
   },
   "created_at": "2026-03-26T08:35:00Z"

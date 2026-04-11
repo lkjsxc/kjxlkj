@@ -16,6 +16,8 @@
 - `GET /{ref}/file`: current media binary or `404` for note resources.
 - `GET /{snapshot_id}/file`: saved-snapshot media binary or `404` for note snapshots.
 - File routes accept optional `variant=card|display|poster`.
+- `variant=card` is the canonical card still-image route for both image and video media.
+- `variant=poster` remains the canonical video player poster route.
 
 ## HTML Fragment Endpoints
 

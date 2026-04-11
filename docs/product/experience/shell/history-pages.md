@@ -30,6 +30,7 @@
 - Each saved-snapshot card links directly to its root-path saved-snapshot page.
 - The live-note card remains visible on every page instead of becoming part of the paginated slice.
 - History paging is URL-shareable through `cursor`, `direction`, and `limit`.
+- History paging works with normal browser back/forward without forcing a full reload.
 
 ## Rail Limits
 

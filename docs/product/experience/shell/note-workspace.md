@@ -19,6 +19,7 @@
 - Notes use one Markdown-first workspace.
 - Media uses a file-first workspace with the same Markdown body editor and preview companion.
 - Desktop uses a body-editor-first workspace with preview closed by default.
+- Media preview surfaces do not show `Current file` copy above the primary image or video.
 - Live note pages place `Upload media` beside `Show preview`.
 - Public checkbox, alias, and favorite controls stay inside the editing surface.
 - Opening the resource should leave the caret ready for direct typing.
@@ -28,4 +29,5 @@
 
 - Guests see rendered Markdown only for notes.
 - Guests see the primary image or video plus rendered Markdown body for media.
+- Image media pages prefer a derived display image when the original binary is not browser-friendly.
 - Markdown typography may use a dedicated content stack separate from UI chrome.

@@ -30,3 +30,4 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
 7. Guest and admin resource/history surfaces expose required navigation and file behaviors.
 8. Text responses negotiate compression when requested.
 9. Browser-rendered desktop and compact screenshots pass.
+10. Browser back/forward, settings leave guards, and login return-path flows remain usable inside the shell.
