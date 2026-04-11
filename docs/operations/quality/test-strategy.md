@@ -7,7 +7,8 @@
 - Markdown sanitization and safe embed rendering.
 - Object-storage key handling and snapshot retention rules.
 - Note-attachment upload preserves raw body text and falls back to append-at-end for stale selection ranges.
-- Media derivative metadata, WebP quality validation, and variant selection.
+- Note-attachment upload returns a server-confirmed UTF-8 cursor after insertion.
+- Media derivative metadata, first-frame video posters, WebP quality validation, and variant selection.
 - Setup code, password change, reset-token, and login return-path validation.
 - History changed-excerpt generation.
 
@@ -30,4 +31,7 @@
 - Browser-rendered screenshots verify desktop and compact layouts.
 - Visual checks assert mixed resource cards, note-editor upload flow, media page rendering, inline note embeds, and rail ordering.
 - Browser checks cover note-editor upload against trailing blank lines and stale insertion ranges.
+- Browser checks cover note-editor upload against multibyte cursor positions.
+- Browser checks cover first-frame video posters and prose-contained video embeds.
+- Browser checks cover partial shell navigation with rail scroll preservation.
 - Browser checks cover uploaded site icon delivery, settings unsaved prompts, local media URL cards, and password flows.

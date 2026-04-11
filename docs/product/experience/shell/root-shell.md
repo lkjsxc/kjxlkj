@@ -8,6 +8,7 @@
 - The brand area shows the product name only and carries no marketing caption.
 - Desktop pages do not use a top-right action cluster for browse, search, or auth links.
 - Rectangular shell cards and actions use tight corners instead of soft rounded shells.
+- Same-origin shell transitions should preserve rail state instead of feeling like a full reload.
 
 ## Rail Content
 
@@ -26,3 +27,4 @@
 - Root, admin, admin-settings, and search pages keep home, browse, settings, stats, and query work in the main pane.
 - Note and history pages keep document-focused content in the main pane.
 - The rail adds navigation and context without repeating explanatory copy that the main pane already makes obvious.
+- Partial navigation rules are owned by [partial-navigation.md](partial-navigation.md).

@@ -34,7 +34,7 @@
   "height": 1080,
   "duration_ms": 93210,
   "media_variants": {
-    "card": { "href": "/launch-video/file?variant=poster", "content_type": "image/webp" }
+    "poster": { "href": "/launch-video/file?variant=poster", "content_type": "image/webp" }
   },
   "is_favorite": false,
   "favorite_position": null,
@@ -66,6 +66,7 @@
 - Media upload file parts spill to temporary files while the multipart stream is read.
 - SeaweedFS uploads read original media bodies from those temporary files rather than cloned in-memory buffers.
 - Image derivative generation may read the source image into memory because the derivative encoder operates on decoded bytes.
+- Video poster generation may invoke server-side FFmpeg against the temporary upload file.
 
 ## Browse Query Parameters
 
@@ -123,6 +124,7 @@
 - Valid insertion ranges replace the selected draft slice with the inserted embeds.
 - Invalid, reversed, or stale insertion ranges append the embeds to the end of the submitted draft and set `selection_fallback` in the response.
 - The endpoint is valid only for live notes.
+- Responses include `cursor_utf8`, the zero-based UTF-8 cursor offset after the inserted block in the saved body.
 
 ## Shared Update Rules
 
@@ -153,7 +155,8 @@
       "file_href": "/ag6m3m3jy6hm74m6rfj7dnu3ga/file"
     }
   ],
-  "selection_fallback": false
+  "selection_fallback": false,
+  "cursor_utf8": 55
 }
 ```
 
@@ -161,6 +164,7 @@
 - The endpoint does not create generated notes that only link to or embed media.
 - The target live note is updated only when the entire batch succeeds.
 - `selection_fallback = true` means the embeds were appended because the submitted selection was not valid for the submitted draft body.
+- `cursor_utf8` is authoritative for restoring the browser caret after upload.
 
 ## File Variant Query
 

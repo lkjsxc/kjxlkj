@@ -14,6 +14,7 @@ Use this subtree for shared page chrome and resource workspace layouts.
 - [actions/README.md](actions/README.md): shared rail action ordering and mode-specific actions
 - [root-shell.md](root-shell.md): shared shell structure and rail content
 - [rail-layout.md](rail-layout.md): rail sections, metadata, actions, and timeline treatment
+- [partial-navigation.md](partial-navigation.md): same-origin shell transition and state-preservation rules
 - [note-workspace.md](note-workspace.md): admin and guest resource-page layout and chrome sync
 - [admin-dashboard.md](admin-dashboard.md): dashboard layout, blocks, and visual rules
 - [admin-settings.md](admin-settings.md): settings page intent, layout, and form behavior

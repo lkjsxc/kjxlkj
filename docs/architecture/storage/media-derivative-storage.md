@@ -11,7 +11,7 @@
 
 - `card`: small WebP for repeated list thumbnails.
 - `display`: larger WebP for media pages and rendered local Markdown image embeds.
-- `poster`: deterministic WebP poster for video media.
+- `poster`: first-frame WebP poster for video media.
 
 ## Retention
 

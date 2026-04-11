@@ -34,4 +34,5 @@
 - A successful upload updates the current live note and therefore creates one new saved snapshot for that note.
 - Each new media resource writes saved snapshot `1`.
 - The response reports whether selection fallback was used.
+- The response reports the UTF-8 cursor offset after the inserted embed block in the saved current-resource body.
 - If any file fails validation or storage, the server creates nothing and updates nothing.

@@ -5,6 +5,7 @@
 - The rail is present on every HTML page.
 - Desktop keeps the rail as a fixed left column.
 - Rail width stays compact and must not be used as the primary full result list.
+- Rail scroll position is UI state and survives same-origin partial shell transitions.
 
 ## Rail Sections
 

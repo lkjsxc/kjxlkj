@@ -9,7 +9,7 @@
 - Direct media create may also accept optional alias, visibility, and favorite state.
 - The initial media `body` is seeded from the uploaded filename stem as a `# Heading`.
 - Image uploads create WebP variants when the server can decode the image.
-- Video uploads create a deterministic WebP poster when possible.
+- Video uploads create a first-frame WebP poster when the server can decode the video.
 
 ## Guest View
 
@@ -31,5 +31,6 @@
 - Existing derivatives are immutable after creation.
 - Updating media Markdown, alias, visibility, or favorite state does not replace the binary file.
 - New uploads create new media resources instead of replacing files on older media pages.
+- First-frame poster generation applies to new media uploads only.
 - Older saved snapshots keep their original object references.
 - Later note edits do not rewrite earlier media objects or earlier note embed text.

@@ -17,9 +17,10 @@
 ## Video Posters
 
 - Video uploads keep the original video untouched.
-- Video media may create a deterministic WebP poster from media metadata.
-- The poster is not extracted from the first frame.
-- Video poster generation must be deterministic under browser verification.
+- Video media may create a WebP poster from the first decodable video frame.
+- Poster extraction runs server-side during upload.
+- Poster generation failure must not make the original upload fail when the original can be stored.
+- Existing media derivatives are immutable; first-frame posters apply to future uploads only.
 
 ## Selection
 
