@@ -125,8 +125,10 @@ function applySavedResource(note, request, selection) {
 
 function syncResourceChrome() {
     var title = deriveTitle(currentBody());
+    var summary = deriveSummary(currentBody());
     var visibility = isPrivate ? 'Private' : 'Public';
     updateLiveText('[data-live-title]', title, 'renderedTitle');
+    updateLiveText('[data-live-summary]', summary, 'renderedSummary');
     updateLiveText('[data-live-visibility]', visibility, 'renderedVisibility');
     updateLiveText('[data-live-alias]', currentAlias || 'None', 'renderedAlias');
     syncCanonicalLinks();
@@ -178,4 +180,21 @@ function restoreSelection(selection) {
 function deriveTitle(body) {
     var match = body.match(/^\s*#\s+(.+)$/m);
     return match && match[1] ? match[1].trim() : 'Untitled note';
+}
+function deriveSummary(body) {
+    var lines = body.split('\n')
+        .map(function (line) { return line.trim(); })
+        .filter(function (line) { return line && !line.startsWith('#'); })
+        .map(stripSummaryMarkers)
+        .filter(Boolean);
+    if (!lines.length) return 'No summary yet.';
+    return shortenSummary(lines[0], lines.length > 1);
+}
+
+function stripSummaryMarkers(line) {
+    return line.replace(/^(?:[-+*]\s+|>\s+|\d+\.\s+|`{3,}[\w-]*\s*)/, '').trim();
+}
+function shortenSummary(line, hasMoreContent) {
+    if (line.length <= 120 && !hasMoreContent) return line;
+    return line.slice(0, 117).trimEnd() + '...';
 }

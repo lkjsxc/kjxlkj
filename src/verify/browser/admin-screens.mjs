@@ -12,7 +12,7 @@ import { verifyDeleteArming } from './delete-checks.mjs';
 import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
-import { assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
+import { assertAdminMediaPage, assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
 import { verifyPartialResourceNavigation, verifyRememberedRailNavigation } from './navigation-checks.mjs';
 import { appUrl, capture, login, newContext, submitLogin } from './support.mjs';
 
@@ -50,7 +50,7 @@ export async function captureAdminScreens(browser, fixtures) {
 
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
-    await expectAdminNote(page);
+    await expectAdminNote(page, fixtures.oldest.title, fixtures.newest.title);
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await verifyAuthenticatedViewsStayFlat(page, note);
     await verifyEditorFormatting(browser, page, note, fixtures);
@@ -58,6 +58,8 @@ export async function captureAdminScreens(browser, fixtures) {
     await verifyRememberedRailNavigation(page, note);
     await verifyClipboardMediaPaste(page, note);
     await capture(page, 'desktop-admin-note.png');
+    await assertAdminMediaPage(page, fixtures.image);
+    await assertAdminMediaPage(page, fixtures.file);
 
     const historyJson = await page.evaluate(async (id) => {
         const response = await fetch(`/resources/${id}/history?limit=2`);

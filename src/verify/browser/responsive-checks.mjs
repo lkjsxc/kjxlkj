@@ -80,15 +80,22 @@ async function assertVerticalTimeline(page) {
 }
 
 async function assertHorizontalNoteStrip(page) {
-    const metrics = await page.locator('.note-nav-strip .note-nav-card').evaluateAll((nodes) =>
+    const metrics = await page.locator('.resource-nav-strip .resource-nav-card').evaluateAll((nodes) =>
         nodes.map((node) => {
             const rect = node.getBoundingClientRect();
-            return { top: Math.round(rect.top), left: Math.round(rect.left) };
+            return {
+                top: Math.round(rect.top),
+                left: Math.round(rect.left),
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+            };
         })
     );
-    assert.equal(metrics.length, 3, 'expected three note navigation cards');
+    assert.equal(metrics.length, 3, 'expected three resource navigation cards');
     assert.ok(metrics.every((item) => Math.abs(item.top - metrics[0].top) <= 4));
     assert.ok(metrics[1].left > metrics[0].left && metrics[2].left > metrics[1].left);
+    assert.ok(metrics.every((item) => Math.abs(item.width - metrics[0].width) <= 4));
+    assert.ok(metrics.every((item) => Math.abs(item.height - metrics[0].height) <= 8));
 }
 
 async function assertHorizontalPager(page) {

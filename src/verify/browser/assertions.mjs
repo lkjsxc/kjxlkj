@@ -11,4 +11,9 @@ export {
     expectSearchPage,
     expectSettingsPage,
 } from './index-assertions.mjs';
-export { expectAdminNote, expectGuestNote } from './resource-assertions.mjs';
+export {
+    expectAdminMedia,
+    expectAdminNote,
+    expectGuestMedia,
+    expectGuestNote,
+} from './resource-assertions.mjs';

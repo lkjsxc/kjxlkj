@@ -1,5 +1,5 @@
 use super::model::{NavLink, ResourceChrome};
-use super::resource_shell::{note_resource_rail, resource_rail};
+use super::resource_shell::{live_resource_rail, resource_rail};
 
 fn chrome(previous: Option<NavLink>, next: Option<NavLink>) -> ResourceChrome {
     ResourceChrome {
@@ -43,8 +43,8 @@ fn resource_rail_renders_disabled_timeline_cards() {
 }
 
 #[test]
-fn note_resource_rail_omits_live_history_and_alias_sections() {
-    let html = note_resource_rail(&chrome(None, None), true);
+fn live_resource_rail_omits_live_history_and_alias_sections() {
+    let html = live_resource_rail(&chrome(None, None), true);
     assert!(html.contains("Open GitHub"));
     assert!(html.contains("Delete note"));
     assert!(!html.contains("History"));

@@ -1,11 +1,11 @@
-//! Note page template
+//! Resource page template
 
 use super::layout::{base, shell_page};
 use super::model::{ResourceAnalytics, ResourceChrome};
 use super::resource_editor::{editor_script, editor_surface};
-use super::resource_focus::{analytics_block, note_focus_strip};
+use super::resource_focus::{analytics_block, live_resource_focus_strip};
 use super::resource_media::{admin_media_panel, current_media_block};
-use super::resource_shell::{note_resource_rail, resource_rail};
+use super::resource_shell::live_resource_rail;
 use crate::core::render_markdown;
 use crate::web::db::{Resource, ResourceKind};
 use crate::web::site::SiteContext;
@@ -28,7 +28,7 @@ pub fn resource_page(
 {}{}{}"#,
         chrome.created_at,
         chrome.updated_at,
-        note_focus_strip(resource, chrome),
+        live_resource_focus_strip(chrome),
         analytics_block(analytics),
         resource_body(resource, chrome, is_admin),
     );
@@ -50,7 +50,7 @@ pub fn resource_page(
         &page_meta,
         &shell_page(
             if is_admin { "Admin" } else { "Guest" },
-            &resource_rail_html(resource, chrome, is_admin),
+            &live_resource_rail(chrome, is_admin),
             &content,
             "resource-page",
             &site.site_name,
@@ -58,14 +58,6 @@ pub fn resource_page(
         "",
         &editor_script(resource, chrome, is_admin, &site.site_name),
     )
-}
-
-fn resource_rail_html(resource: &Resource, chrome: &ResourceChrome, is_admin: bool) -> String {
-    if resource.kind == ResourceKind::Note {
-        note_resource_rail(chrome, is_admin)
-    } else {
-        resource_rail(chrome, is_admin, &chrome.current_href)
-    }
 }
 
 fn resource_body(resource: &Resource, chrome: &ResourceChrome, is_admin: bool) -> String {

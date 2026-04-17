@@ -1,4 +1,4 @@
-//! Shared note and history rail rendering
+//! Shared live-resource and history rail rendering
 
 use super::card_frame::{
     card_body, card_meta, created_updated_lines, linked_card, meta_line, static_card,
@@ -27,7 +27,7 @@ pub fn resource_rail(chrome: &ResourceChrome, is_admin: bool, active_href: &str)
     sections.join("")
 }
 
-pub fn note_resource_rail(chrome: &ResourceChrome, is_admin: bool) -> String {
+pub fn live_resource_rail(chrome: &ResourceChrome, is_admin: bool) -> String {
     let mut sections = vec![rail_section("navigate", &primary_nav("", is_admin))];
     if is_admin {
         sections.push(rail_section("create", &create_action()));

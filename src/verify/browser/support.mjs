@@ -88,9 +88,9 @@ export async function prepareState(browser) {
     seedViewAnalytics(databaseUrl, { oldest, middle, newest });
     await context.close();
     return {
-        image: mediaFixture(image, 'Orbital Chart', '.media-surface img', imageUpload.text, imageSnapshots, 'image'),
-        file: mediaFixture(file, 'Orbital Archive', '.file-media-panel', fileUpload.text, fileSnapshots, 'file'),
-        video: mediaFixture(video, 'Launch Clip', '.media-surface video', null, videoSnapshots),
+        image: mediaFixture(image, 'Orbital Chart', '.media-surface img', imageUpload.text, imageSnapshots, 'image', null, 'Orbital Archive'),
+        file: mediaFixture(file, 'Orbital Archive', '.file-media-panel', fileUpload.text, fileSnapshots, 'file', 'Orbital Chart', 'Launch Clip'),
+        video: mediaFixture(video, 'Launch Clip', '.media-surface video', null, videoSnapshots, 'video', 'Orbital Archive', 'Atlas Entry'),
         oldest: { id: oldest.id, ref: oldest.alias ?? oldest.id, title: 'Atlas Entry' },
         middle: {
             id: middle.id,
@@ -146,7 +146,7 @@ async function setupAdmin(page) {
     ]);
 }
 
-function mediaFixture(payload, title, selector, rawText, snapshots, family = 'video') {
+function mediaFixture(payload, title, selector, rawText, snapshots, family = 'video', previousTitle = null, nextTitle = null) {
     const ref = payload.alias ?? payload.id;
     return {
         family,
@@ -156,6 +156,8 @@ function mediaFixture(payload, title, selector, rawText, snapshots, family = 'vi
         fileHref: payload.file_href ?? `/${ref}/file`,
         contentType: payload.content_type,
         originalFilename: payload.original_filename,
+        previousTitle,
+        nextTitle,
         rawText,
         snapshots,
         selector,

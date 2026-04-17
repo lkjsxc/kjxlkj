@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { assertVisibleText } from './assertions.mjs';
+import { assertVisibleText, expectAdminMedia, expectGuestMedia } from './assertions.mjs';
 import { assertDownloadAndDelivery } from './media-delivery-checks.mjs';
 import { assertMediaCardGeometry } from './media-card-checks.mjs';
 import { buildVideoUpload } from './fixture-api.mjs';
@@ -20,6 +20,7 @@ export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
 
 export async function assertPublicMediaPage(page, media) {
     await page.goto(`${appUrl}/${media.ref}`, { waitUntil: 'networkidle' });
+    await expectGuestMedia(page, media.previousTitle ?? null, media.nextTitle ?? null);
     await assertVisibleText(page, media.title);
     await page.locator(media.selector).waitFor({ state: 'visible' });
     assert.equal(await page.getByText('Current file', { exact: true }).count(), 0);
@@ -42,6 +43,14 @@ export async function assertPublicMediaPage(page, media) {
     await assertVisibleText(page, 'Saved file');
     await page.locator(media.selector).waitFor({ state: 'visible' });
     await assertDownloadAndDelivery(page, media, `/${snapshot.id}/file`);
+}
+
+export async function assertAdminMediaPage(page, media) {
+    await page.goto(`${appUrl}/${media.ref}`, { waitUntil: 'networkidle' });
+    await expectAdminMedia(page, media.previousTitle ?? null, media.nextTitle ?? null);
+    await assertVisibleText(page, media.title);
+    await page.locator(media.selector).waitFor({ state: 'visible' });
+    await assertDownloadAndDelivery(page, media, media.fileHref);
 }
 
 export async function verifyUiCreatedMedia(page, note) {

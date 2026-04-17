@@ -123,8 +123,8 @@ fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
     assert!(html.contains("id=\"editor-body\""));
     assert!(html.contains("preview-toggle"));
     assert!(html.contains("upload-media-trigger"));
-    assert!(html.contains("note-nav-strip"));
-    assert!(html.contains("note-live-strip"));
+    assert!(html.contains("resource-nav-strip"));
+    assert!(html.contains("resource-live-strip"));
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("Views 1d"));
@@ -157,5 +157,40 @@ fn guest_media_page_exposes_original_download_and_display_route() {
     assert!(html.contains("href=\"/demo-image/file\""));
     assert!(html.contains("download=\"demo.heic\""));
     assert!(html.contains("Open raw file"));
+    assert!(html.contains("resource-nav-strip"));
+    assert!(html.contains("resource-live-strip"));
+    assert!(!html.contains(r#"class="summary-card current-resource-card"#));
     assert!(!html.contains("variant=display"));
+}
+
+#[test]
+fn admin_media_page_uses_live_resource_shell() {
+    let html = resource_page(
+        &sample_media_resource(),
+        &ResourceChrome {
+            current_href: "/demo-image".to_string(),
+            history_href: "/demo-image/history".to_string(),
+            kind: ResourceKind::Media,
+            ..sample_chrome()
+        },
+        Some(&ResourceAnalytics {
+            total: 5,
+            views_1d: 1,
+            views_7d: 2,
+            views_30d: 3,
+            views_90d: 4,
+            last_viewed_at: Some("2026-03-26 08:35 UTC".to_string()),
+        }),
+        true,
+        &sample_site(),
+    );
+    assert!(html.contains("resource-nav-strip"));
+    assert!(html.contains("resource-live-strip"));
+    assert!(html.contains("File URL"));
+    assert!(html.contains("File metadata"));
+    assert!(html.contains("Delete media"));
+    assert!(html.contains("Download original"));
+    assert!(html.contains("id=\"editor-body\""));
+    assert!(!html.contains(">Upload media<"));
+    assert!(!html.contains(r#"class="summary-card current-resource-card"#));
 }

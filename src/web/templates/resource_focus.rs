@@ -1,17 +1,13 @@
 use super::card_frame::{card_body, card_meta, linked_card, meta_line, static_card};
 use super::layout::html_escape;
 use super::model::{NavLink, ResourceAnalytics, ResourceChrome};
-use crate::web::db::{Resource, ResourceKind};
 
-pub fn note_focus_strip(resource: &Resource, chrome: &ResourceChrome) -> String {
-    if resource.kind != ResourceKind::Note {
-        return String::new();
-    }
+pub fn live_resource_focus_strip(chrome: &ResourceChrome) -> String {
     format!(
-        r#"<section class="note-nav-strip">{}{}</section>
-<section class="surface note-live-strip">
+        r#"<section class="resource-nav-strip">{}{}</section>
+<section class="surface resource-live-strip">
 <p class="page-summary" data-live-summary>{}</p>
-<div class="note-live-facts">
+<div class="resource-live-facts">
 <span class="status-pill" data-live-visibility>{}</span>
 {}
 {}
@@ -25,7 +21,7 @@ pub fn note_focus_strip(resource: &Resource, chrome: &ResourceChrome) -> String 
         ) + &linked_card(
             &chrome.history_href,
             " data-history-link",
-            "summary-card note-nav-card",
+            "summary-card resource-nav-card",
             &card_body("History", "Open saved snapshots."),
             &card_meta("", &meta_line("Open", "Saved snapshots")),
         ),
@@ -73,13 +69,13 @@ fn timeline_card(link: Option<&NavLink>, label: &str, empty: &str) -> String {
         Some(link) => linked_card(
             &link.href,
             "",
-            "summary-card note-nav-card",
+            "summary-card resource-nav-card",
             &card_body(label, &link.title),
             &card_meta("", &meta_line("Created", &link.created_at)),
         ),
         None => static_card(
             r#" aria-disabled="true""#,
-            "summary-card note-nav-card summary-card-muted",
+            "summary-card resource-nav-card summary-card-muted",
             &card_body(label, empty),
             &card_meta("", ""),
         ),
