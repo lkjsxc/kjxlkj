@@ -1,4 +1,5 @@
 use super::{resource::resource_page, ResourceAnalytics, ResourceChrome};
+use crate::core::render_markdown;
 use crate::web::db::{MediaFamily, Resource, ResourceKind};
 use crate::web::site::SiteContext;
 use chrono::Utc;
@@ -51,11 +52,7 @@ fn sample_chrome() -> ResourceChrome {
 }
 
 fn sample_site() -> SiteContext {
-    SiteContext {
-        site_name: "Launchpad".to_string(),
-        site_description: "Search-friendly notes.".to_string(),
-        public_base_url: Some("https://example.com".to_string()),
-    }
+    SiteContext { site_name: "Launchpad".to_string(), site_description: "Search-friendly notes.".to_string(), public_base_url: Some("https://example.com".to_string()) }
 }
 
 fn sample_media_resource() -> Resource {
@@ -93,6 +90,7 @@ fn guest_resource_page_hides_editor() {
         &sample_resource(),
         &sample_chrome(),
         None,
+        &render_markdown(&sample_resource().body),
         false,
         &sample_site(),
     );
@@ -117,6 +115,7 @@ fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
             views_90d: 9,
             last_viewed_at: Some("2026-03-26 08:35 UTC".to_string()),
         }),
+        &render_markdown(&sample_resource().body),
         true,
         &sample_site(),
     );
@@ -126,16 +125,18 @@ fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
     assert!(html.contains("preview-toggle"));
     assert!(html.contains("upload-media-trigger"));
     assert!(html.contains("resource-nav-strip"));
-    assert!(html.contains("resource-live-strip"));
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
     assert!(html.contains("Views 1d"));
     assert!(html.contains("2026-03-26 08:35 UTC"));
     assert!(html.contains("Open GitHub"));
+    assert!(html.contains("status-pill"));
     assert!(!html.contains(r#"class="summary-card current-resource-card"#));
     assert!(!html.contains("<strong>Alias</strong>"));
     assert!(!html.contains("Markdown body"));
     assert!(!html.contains("<div class=\"page-title-stack\"><h1"));
+    assert!(!html.contains("Open saved snapshots."));
+    assert!(!html.contains(r#"<p class="page-summary" data-live-summary>"#));
     assert!(!html.contains("toastui"));
     assert!(html.contains("content=\"noindex,nofollow\""));
     assert!(!html.contains("rel=\"canonical\""));
@@ -152,6 +153,7 @@ fn guest_media_page_exposes_original_download_and_display_route() {
             ..sample_chrome()
         },
         None,
+        &render_markdown(&sample_media_resource().body),
         false,
         &sample_site(),
     );
@@ -160,8 +162,8 @@ fn guest_media_page_exposes_original_download_and_display_route() {
     assert!(html.contains("download=\"demo.heic\""));
     assert!(html.contains("Open raw file"));
     assert!(html.contains("resource-nav-strip"));
-    assert!(html.contains("resource-live-strip"));
     assert!(!html.contains(r#"class="summary-card current-resource-card"#));
+    assert!(!html.contains("data-history-link"));
     assert!(!html.contains("variant=display"));
 }
 
@@ -183,11 +185,11 @@ fn admin_media_page_uses_live_resource_shell() {
             views_90d: 4,
             last_viewed_at: Some("2026-03-26 08:35 UTC".to_string()),
         }),
+        &render_markdown(&sample_media_resource().body),
         true,
         &sample_site(),
     );
     assert!(html.contains("resource-nav-strip"));
-    assert!(html.contains("resource-live-strip"));
     assert!(html.contains("File URL"));
     assert!(html.contains("File metadata"));
     assert!(html.contains("Delete media"));

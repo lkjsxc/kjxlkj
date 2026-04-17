@@ -67,7 +67,7 @@ export async function capturePublicScreens(browser, notes) {
         nodes.map((node) => node.dataset.cardTitle.trim())
     );
     assert.equal(titles[0], notes.image.title);
-    assert.equal(await page.locator('#search-popular-window').inputValue(), '30d');
+    assert.equal(await page.locator('#search-sort').inputValue(), 'title_desc');
 
     await page.goto(`${appUrl}/search?q=orbit`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, true);

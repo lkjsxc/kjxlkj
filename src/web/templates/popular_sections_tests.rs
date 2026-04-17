@@ -31,7 +31,7 @@ fn home_popular_section_marks_surface_and_active_window() {
     assert!(html.contains(r#"data-popular-surface="home""#));
     assert!(html.contains(r#"data-popular-window="1d""#));
     assert!(html.contains(r#"data-popular-window="30d" aria-pressed="true""#));
-    assert!(html.contains("/search?sort=popular_desc&popular_window=30d"));
+    assert!(html.contains("/search?sort=popular_30d_desc"));
 }
 
 #[test]

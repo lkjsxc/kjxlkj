@@ -6,7 +6,6 @@ pub fn search_section(
     kind: &str,
     scope: &str,
     sort: &str,
-    popular_window: &str,
     has_query: bool,
 ) -> String {
     let query_card = if has_query {
@@ -33,10 +32,6 @@ pub fn search_section(
 <span class="visually-hidden">Sort</span>
 <select id="search-sort" name="sort" aria-label="Sort">{}</select>
 </label>
-<label class="form-group search-sort" for="search-popular-window">
-<span class="visually-hidden">Popular window</span>
-<select id="search-popular-window" name="popular_window" aria-label="Popular window">{}</select>
-</label>
 <button type="submit" class="btn btn-primary">Search</button>
 </div>
 </form>"#,
@@ -45,7 +40,6 @@ pub fn search_section(
             scope,
             kind_options(kind),
             sort_options(sort, has_query, scope),
-            popular_window_options(popular_window),
         ),
         "search-section",
     )
@@ -81,25 +75,6 @@ fn kind_options(selected: &str) -> String {
     .join("")
 }
 
-fn popular_window_options(selected: &str) -> String {
-    [
-        ("1d", "1d"),
-        ("7d", "7d"),
-        ("30d", "30d"),
-        ("90d", "90d"),
-        ("all", "All time"),
-    ]
-    .into_iter()
-    .map(|(value, label)| {
-        format!(
-            r#"<option value="{value}"{}>{label}</option>"#,
-            if value == selected { " selected" } else { "" }
-        )
-    })
-    .collect::<Vec<_>>()
-    .join("")
-}
-
 fn sort_catalog(has_query: bool, scope: &str) -> Vec<(&'static str, &'static str)> {
     let mut items = vec![
         ("updated_desc", "Recently updated"),
@@ -108,8 +83,11 @@ fn sort_catalog(has_query: bool, scope: &str) -> Vec<(&'static str, &'static str
         ("created_asc", "Oldest created"),
         ("title_asc", "Title A-Z"),
         ("title_desc", "Title Z-A"),
-        ("popular_desc", "Popular"),
-        ("views_total_desc", "Most viewed"),
+        ("popular_1d_desc", "Popular 1d"),
+        ("popular_7d_desc", "Popular 7d"),
+        ("popular_30d_desc", "Popular 30d"),
+        ("popular_90d_desc", "Popular 90d"),
+        ("popular_all_desc", "Popular all time"),
     ];
     if has_query {
         items.insert(0, ("relevance", "Relevance"));

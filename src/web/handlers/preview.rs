@@ -1,9 +1,9 @@
 //! Markdown preview handler
 
-use crate::core::render_markdown;
 use crate::error::AppError;
 use crate::web::handlers::http;
 use crate::web::handlers::session;
+use crate::web::markdown;
 use crate::web::routes::AppState;
 use axum::extract::{Json, State};
 use axum::http::{HeaderMap, StatusCode};
@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize)]
 pub struct PreviewInput {
     pub body: String,
+    pub current_resource_id: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -29,7 +30,13 @@ pub async fn render_markdown_preview(
     Ok(http::json_status(
         StatusCode::OK,
         PreviewOutput {
-            html: render_markdown(&body.body),
+            html: markdown::render_markdown_page(
+                &state.pool,
+                &body.body,
+                body.current_resource_id.as_deref(),
+                true,
+            )
+            .await?,
         },
     ))
 }

@@ -26,6 +26,7 @@
     ];
 
     formatLocalTimes();
+    setupImageNavigation();
     setupDrawer();
 
     function formatLocalTimes(root) {
@@ -120,6 +121,16 @@
             media.removeEventListener('change', onMediaChange);
         };
         sync();
+    }
+
+    function setupImageNavigation() {
+        document.addEventListener('click', function (event) {
+            if (event.defaultPrevented || event.button !== 0) return;
+            var image = event.target.closest('img[data-resource-image-href]');
+            if (!image || image.closest('a[href]')) return;
+            event.preventDefault();
+            app.navigate?.(image.dataset.resourceImageHref, 'push');
+        });
     }
 
     function syncHeadDocument(nextDocument) {

@@ -101,11 +101,6 @@ export async function assertStableMetadata(page, title) {
     assert.ok(heights.every((height) => height <= 24), 'timestamps should stay compact');
 }
 
-export async function assertSingleHistoryCard(page) {
-    await assertVisibleText(page, 'History');
-    assert.equal(await page.getByText('History', { exact: true }).count(), 1);
-}
-
 export async function assertCreateActionBelowHome(page) {
     const createControl = page.getByRole('button', { name: 'New note', exact: true }).first();
     if (!(await createControl.count()) || !(await createControl.isVisible())) return;

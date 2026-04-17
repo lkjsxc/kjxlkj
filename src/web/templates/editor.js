@@ -26,7 +26,6 @@ var editorState = {
     uploading: false,
     lastPreviewBody: null,
     renderedTitle: '',
-    renderedSummary: '',
     renderedVisibility: '',
     renderedAlias: '',
     uploadSelection: null

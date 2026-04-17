@@ -5,6 +5,7 @@ use crate::error::AppError;
 use crate::web::db::{self, DbPool};
 use crate::web::handlers::http;
 use crate::web::handlers::session;
+use crate::web::markdown;
 use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
@@ -85,6 +86,7 @@ async fn render_current_resource(
         db::count_resource_view(pool, &resource.id).await?;
     }
     let chrome = view::resource_chrome(pool, resource, is_admin).await?;
+    let body_html = markdown::render_markdown_page(pool, &resource.body, Some(&resource.id), is_admin).await?;
     let analytics = if is_admin {
         Some(view::resource_analytics(
             &db::get_resource_view_stats(pool, &resource.id).await?,
@@ -96,6 +98,7 @@ async fn render_current_resource(
         resource,
         &chrome,
         analytics.as_ref(),
+        &body_html,
         is_admin,
         site,
     )))
@@ -111,9 +114,17 @@ async fn render_snapshot(
         return Ok(not_found(site));
     }
     let chrome = view::resource_chrome(pool, &target.resource, is_admin).await?;
+    let body_html = markdown::render_markdown_page(
+        pool,
+        &target.snapshot.body,
+        Some(&target.resource.id),
+        is_admin,
+    )
+    .await?;
     Ok(http::html(templates::snapshot_page(
         &chrome,
         &target.snapshot,
+        &body_html,
         is_admin,
         site,
     )))

@@ -44,7 +44,6 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     });
     await assertVisibleText(page, 'Delete note');
     await assertVisibleText(page, 'Open GitHub');
-    await assertVisibleText(page, 'History');
     await expectClosedDrawer(page);
     await assertHorizontalNoteStrip(page);
     await capture(page, 'compact-admin-note.png');

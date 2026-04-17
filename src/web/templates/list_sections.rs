@@ -74,10 +74,7 @@ pub fn favorite_browse_card() -> String {
 
 pub fn popular_browse_card(window: PopularWindow) -> String {
     view_more_card(
-        &format!(
-            "/search?sort=popular_desc&popular_window={}",
-            window.as_str()
-        ),
+        &format!("/search?sort={}", popular_sort(window)),
         "View more resources",
         "Browse more popularity-ranked resources in the current rolling window.",
         window.button_label(),
@@ -102,4 +99,14 @@ fn empty_card(message: &str) -> String {
 <div class="card-body"><p class="surface-empty">{message}</p></div>
 </article>"#
     )
+}
+
+fn popular_sort(window: PopularWindow) -> &'static str {
+    match window {
+        PopularWindow::Days1 => "popular_1d_desc",
+        PopularWindow::Days7 => "popular_7d_desc",
+        PopularWindow::Days30 => "popular_30d_desc",
+        PopularWindow::Days90 => "popular_90d_desc",
+        PopularWindow::All => "popular_all_desc",
+    }
 }

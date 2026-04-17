@@ -18,7 +18,6 @@ pub struct SearchView<'a> {
     pub limit: i64,
     pub scope: &'a str,
     pub sort: &'a str,
-    pub popular_window: &'a str,
     pub is_admin: bool,
     pub guest_login_href: String,
     pub site: &'a SiteContext,
@@ -41,7 +40,6 @@ pub fn search_page(view: SearchView<'_>) -> String {
             view.kind,
             view.scope,
             view.sort,
-            view.popular_window,
             has_query,
         ),
         results_section(&view, query, has_query),
@@ -97,7 +95,6 @@ fn results_section(view: &SearchView<'_>, query: &str, has_query: bool) -> Strin
                     ("kind", view.kind),
                     ("scope", view.scope),
                     ("sort", view.sort),
-                    ("popular_window", view.popular_window),
                     ("limit", &view.limit.to_string()),
                 ],
             )

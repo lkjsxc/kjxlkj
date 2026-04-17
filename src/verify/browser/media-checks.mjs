@@ -86,6 +86,7 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.equal(uploadResponse.status(), 200);
     const payload = await uploadResponse.json();
     assert.equal(payload.created_media.length, 2);
+    assert.ok(payload.created_media.every((media) => media.owner_note_id === note.id));
     assert.equal(Object.hasOwn(payload, 'created_notes'), false);
     const body = await page.locator('#editor-body').inputValue();
     for (const media of payload.created_media) {
@@ -111,6 +112,7 @@ export async function verifyUiCreatedMedia(page, note) {
         buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><rect width="12" height="12" fill="#7ec8ff"/></svg>', 'utf8'),
     }]);
     const cursorPayload = await (await cursorUploadPromise).json();
+    assert.equal(cursorPayload.created_media[0]?.owner_note_id, note.id);
     assert.ok(cursorPayload.current_resource.body.includes(cursorPayload.inserted_markdown + 'B'));
     const editorCursor = await page.locator('#editor-body').evaluate((field) => ({
         body: field.value,
@@ -164,9 +166,11 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.equal(staleRangeResponse.status, 200);
     assert.equal(staleRangeResponse.payload.selection_fallback, true);
     assert.equal(staleRangeResponse.payload.created_media.length, 1);
+    assert.equal(staleRangeResponse.payload.created_media[0]?.owner_note_id, note.id);
     assert.equal(Object.hasOwn(staleRangeResponse.payload, 'created_notes'), false);
     assert.ok(
         staleRangeResponse.payload.current_resource.body.endsWith(staleRangeResponse.payload.inserted_markdown),
         'stale upload selection should append embeds to the submitted draft'
     );
+    return { ownerImageHref: cursorPayload.created_media[0]?.file_href };
 }

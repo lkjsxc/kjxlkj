@@ -12,7 +12,7 @@ export async function popularTitles(page) {
 }
 
 export async function assertHomeBrowseLinks(page) {
-    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=30d');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_30d_desc');
     assert.equal(await browseHref(page, 'Recently updated'), '/search');
     assert.equal(await browseHref(page, 'Favorites'), '/search?scope=favorites');
 }
@@ -20,18 +20,18 @@ export async function assertHomeBrowseLinks(page) {
 export async function assertPopularWindowSwitch(page, path, surface) {
     const before = await navigationCount(page);
     await clickWindow(page, surface, '1d', '1d', 'Beacon Log');
-    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=1d');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_1d_desc');
     if (surface === 'admin') await assertPopularMetricLabel(page, surface, '1d views');
     assertStableUrl(page, path, before);
     await clickWindow(page, surface, '90d', '90d', 'Atlas Entry');
-    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=90d');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_90d_desc');
     assertStableUrl(page, path, before);
     await clickWindow(page, surface, 'All time', 'all', 'Atlas Entry');
-    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=all');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_all_desc');
     if (surface === 'admin') await assertPopularMetricLabel(page, surface, 'Views');
     assertStableUrl(page, path, before);
     await clickWindow(page, surface, '30d', '30d', 'Beacon Log');
-    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=30d');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_30d_desc');
     assertStableUrl(page, path, before);
 }
 

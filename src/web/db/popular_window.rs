@@ -21,10 +21,6 @@ impl PopularWindow {
         }
     }
 
-    pub fn resolve(value: Option<&str>) -> Self {
-        value.and_then(Self::parse).unwrap_or(Self::Days30)
-    }
-
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Days1 => "1d",

@@ -102,7 +102,8 @@ export async function captureAdminScreens(browser, fixtures) {
         canonical: null,
     });
     await assertVisibleText(page, 'Current shared snapshot stretches across the list card');
-    await verifyUiCreatedMedia(page, note);
+    const uploadedMedia = await verifyUiCreatedMedia(page, note);
+    await verifyOwnerNoteImageNavigation(page, fixtures.oldest, note, uploadedMedia.ownerImageHref);
     await Promise.all([
         page.waitForURL('**/'),
         page.getByRole('button', { name: 'Logout', exact: true }).first().click(),
@@ -151,4 +152,42 @@ async function statValue(page, label) {
     const locator = (await analyticsCard.count()) > 0 ? analyticsCard : dashboardCard;
     const text = await locator.locator('strong').first().textContent();
     return Number.parseInt(text ?? '0', 10);
+}
+
+async function verifyOwnerNoteImageNavigation(page, otherNote, ownerNote, ownerImageHref) {
+    assert.ok(ownerImageHref, 'expected an attached image href for owner-note routing');
+    const ownerMediaPath = ownerImageHref.replace(/\/file(?:\?.*)?$/, '');
+    await openPreview(page);
+    await expectPreviewImageTarget(page, ownerImageHref, ownerMediaPath);
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).pathname === ownerMediaPath),
+        page.locator(`#editor-preview img[src="${ownerImageHref}"]`).click(),
+    ]);
+    await page.goto(`${appUrl}/${otherNote.id}`, { waitUntil: 'networkidle' });
+    await page.locator('#editor-body').fill(`# ${otherNote.title}\n\n![Owner note image](${ownerImageHref})`);
+    await page.locator('#editor-body').dispatchEvent('input');
+    await openPreview(page);
+    await expectPreviewImageTarget(page, ownerImageHref, `/${ownerNote.ref}`);
+    await Promise.all([
+        page.waitForURL((url) => new URL(url).pathname === `/${ownerNote.ref}`),
+        page.locator(`#editor-preview img[src="${ownerImageHref}"]`).click(),
+    ]);
+}
+
+async function openPreview(page) {
+    const toggle = page.getByRole('button', { name: 'Show preview', exact: true });
+    if (await toggle.count()) await toggle.click();
+    await page.locator('#editor-preview').waitFor({ state: 'visible' });
+}
+
+async function expectPreviewImageTarget(page, src, href) {
+    const image = page.locator(`#editor-preview img[src="${src}"]`);
+    await image.waitFor({ state: 'visible' });
+    await page.waitForFunction(
+        ({ expectedHref, expectedSrc }) => {
+            const node = document.querySelector(`#editor-preview img[src="${expectedSrc}"]`);
+            return !!node && node.dataset.resourceImageHref === expectedHref;
+        },
+        { expectedHref: href, expectedSrc: src }
+    );
 }

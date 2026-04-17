@@ -74,6 +74,10 @@
     background: var(--bg-1);
 }
 
+.prose img[data-resource-image-href] {
+    cursor: pointer;
+}
+
 .prose :is(p, li, blockquote, td, th, code, strong, em) {
     overflow-wrap: anywhere;
 }

@@ -132,7 +132,6 @@ fn context<'a>(request: &'a ListingQuery<'a>) -> PageCursorContext<'a> {
         scope: request.scope,
         direction: request.direction,
         sort: request.sort,
-        popular_window: request.popular_window,
         has_cursor: request.cursor.is_some(),
     }
 }

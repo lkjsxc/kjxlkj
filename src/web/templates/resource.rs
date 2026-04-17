@@ -1,12 +1,12 @@
 //! Resource page template
 
+use super::card_frame::status_pill;
 use super::layout::{base, shell_page};
 use super::model::{ResourceAnalytics, ResourceChrome};
 use super::resource_editor::{editor_script, editor_surface};
-use super::resource_focus::{analytics_block, live_resource_focus_strip};
+use super::resource_focus::{analytics_block, live_resource_nav_strip};
 use super::resource_media::{admin_media_panel, current_media_block};
 use super::resource_shell::live_resource_rail;
-use crate::core::render_markdown;
 use crate::web::db::{Resource, ResourceKind};
 use crate::web::site::SiteContext;
 use crate::web::view_media;
@@ -15,6 +15,7 @@ pub fn resource_page(
     resource: &Resource,
     chrome: &ResourceChrome,
     analytics: Option<&ResourceAnalytics>,
+    body_html: &str,
     is_admin: bool,
     site: &SiteContext,
 ) -> String {
@@ -23,14 +24,16 @@ pub fn resource_page(
 <div class="page-meta">
 <small><span>Created</span>{}</small>
 <small><span>Updated</span>{}</small>
+{}
 </div>
 </header>
 {}{}{}"#,
         chrome.created_at,
         chrome.updated_at,
-        live_resource_focus_strip(chrome),
+        status_pill(chrome.visibility, ""),
+        live_resource_nav_strip(chrome, is_admin),
         analytics_block(analytics),
-        resource_body(resource, chrome, is_admin),
+        resource_body(resource, chrome, body_html, is_admin),
     );
     let page_meta = site
         .page_meta(
@@ -60,7 +63,7 @@ pub fn resource_page(
     )
 }
 
-fn resource_body(resource: &Resource, chrome: &ResourceChrome, is_admin: bool) -> String {
+fn resource_body(resource: &Resource, chrome: &ResourceChrome, body_html: &str, is_admin: bool) -> String {
     if is_admin {
         return format!(
             "{}{}",
@@ -79,6 +82,6 @@ fn resource_body(resource: &Resource, chrome: &ResourceChrome, is_admin: bool) -
         } else {
             String::new()
         },
-        render_markdown(&resource.body)
+        body_html
     )
 }

@@ -1,41 +1,12 @@
-use super::card_frame::{card_body, card_meta, linked_card, meta_line, static_card};
-use super::layout::html_escape;
+use super::card_frame::{card_body, card_meta, linked_card, static_card};
 use super::model::{NavLink, ResourceAnalytics, ResourceChrome};
 
-pub fn live_resource_focus_strip(chrome: &ResourceChrome) -> String {
+pub fn live_resource_nav_strip(chrome: &ResourceChrome, is_admin: bool) -> String {
     format!(
-        r#"<section class="resource-nav-strip">{}{}</section>
-<section class="surface resource-live-strip">
-<p class="page-summary" data-live-summary>{}</p>
-<div class="resource-live-facts">
-<span class="status-pill" data-live-visibility>{}</span>
-{}
-{}
-<small><span>URL</span><a href="{}" data-current-resource-link>{}</a></small>
-</div>
-</section>"#,
-        timeline_card(
-            chrome.previous.as_ref(),
-            "Prev",
-            "No older accessible resource."
-        ) + &linked_card(
-            &chrome.history_href,
-            " data-history-link",
-            "summary-card resource-nav-card",
-            &card_body("History", "Open saved snapshots."),
-            &card_meta("", &meta_line("Open", "Saved snapshots")),
-        ),
-        timeline_card(
-            chrome.next.as_ref(),
-            "Next",
-            "No newer accessible resource."
-        ),
-        html_escape(&chrome.summary),
-        chrome.visibility,
-        meta_line("Created", &chrome.created_at),
-        meta_line("Updated", &chrome.updated_at),
-        html_escape(&chrome.current_href),
-        html_escape(&chrome.current_href),
+        r#"<section class="resource-nav-strip">{}{}{}</section>"#,
+        timeline_card(chrome.previous.as_ref(), "Prev", "No older accessible resource."),
+        history_card(chrome, is_admin),
+        timeline_card(chrome.next.as_ref(), "Next", "No newer accessible resource."),
     )
 }
 
@@ -71,7 +42,7 @@ fn timeline_card(link: Option<&NavLink>, label: &str, empty: &str) -> String {
             "",
             "summary-card resource-nav-card",
             &card_body(label, &link.title),
-            &card_meta("", &meta_line("Created", &link.created_at)),
+            &card_meta("", ""),
         ),
         None => static_card(
             r#" aria-disabled="true""#,
@@ -80,4 +51,17 @@ fn timeline_card(link: Option<&NavLink>, label: &str, empty: &str) -> String {
             &card_meta("", ""),
         ),
     }
+}
+
+fn history_card(chrome: &ResourceChrome, is_admin: bool) -> String {
+    if !is_admin {
+        return String::new();
+    }
+    linked_card(
+        &chrome.history_href,
+        " data-history-link",
+        "summary-card resource-nav-card",
+        &card_body("History", ""),
+        &card_meta("", ""),
+    )
 }

@@ -77,7 +77,7 @@ async function renderPreview() {
         var response = await fetch('/admin/markdown-preview', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ body: body })
+            body: JSON.stringify({ body: body, current_resource_id: currentId })
         });
         if (!response.ok) throw new Error(await previewError(response));
         var payload = await response.json();

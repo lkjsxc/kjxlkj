@@ -1,9 +1,7 @@
 //! Search HTML handler
 
 use crate::error::AppError;
-use crate::web::db::{
-    self, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow,
-};
+use crate::web::db::{self, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow};
 use crate::web::handlers::http;
 use crate::web::handlers::session;
 use crate::web::routes::AppState;
@@ -22,7 +20,6 @@ pub struct SearchParams {
     pub kind: Option<String>,
     pub sort: Option<String>,
     pub scope: Option<String>,
-    pub popular_window: Option<String>,
     pub cursor: Option<String>,
     pub limit: Option<i64>,
 }
@@ -50,8 +47,8 @@ pub async fn search_page(
     let direction = ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref());
     let kind = ListKind::resolve(params.kind.as_deref());
     let scope = ListScope::resolve(params.scope.as_deref());
-    let popular_window = PopularWindow::resolve(params.popular_window.as_deref());
     let sort = ListSort::resolve(params.sort.as_deref(), query.is_some(), &scope);
+    let popular_window = sort.popular_window().unwrap_or(PopularWindow::Days30);
     let page = db::list_resources(
         pool,
         &ListRequest {
@@ -80,7 +77,6 @@ pub async fn search_page(
         limit,
         scope: scope.as_str(),
         sort: sort.as_str(),
-        popular_window: popular_window.as_str(),
         is_admin,
         guest_login_href: session::login_url(&uri),
         site: &site,

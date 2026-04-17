@@ -70,6 +70,7 @@ pub fn history_page(
 pub fn snapshot_page(
     chrome: &ResourceChrome,
     snapshot: &ResourceSnapshot,
+    body_html: &str,
     is_admin: bool,
     site: &SiteContext,
 ) -> String {
@@ -111,7 +112,7 @@ pub fn snapshot_page(
         } else {
             String::new()
         },
-        crate::core::render_markdown(&snapshot.body)
+        body_html
     );
     shell(
         &format!(

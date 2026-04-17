@@ -12,29 +12,8 @@
     padding: 12px 14px;
 }
 
-.resource-live-strip {
-    gap: 12px;
-}
-
-.resource-live-strip,
 .file-media-panel {
     display: grid;
-}
-
-.resource-live-facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-
-.resource-live-facts small {
-    display: inline-grid;
-    grid-template-columns: auto auto;
-    gap: 6px;
-}
-
-.file-media-panel {
     gap: 12px;
     padding: 16px;
     border: 1px dashed var(--line-strong);

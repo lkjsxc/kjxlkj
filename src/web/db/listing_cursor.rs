@@ -1,6 +1,6 @@
 use super::listing::{ListDirection, ListPage, ListSort};
 use super::listing_row::row_to_listed_resource;
-use super::{ListKind, ListScope, ListedResource, PopularWindow};
+use super::{ListKind, ListScope, ListedResource};
 use crate::error::AppError;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use chrono::{DateTime, Utc};
@@ -12,7 +12,6 @@ pub(super) struct Cursor {
     pub(super) sort: String,
     pub(super) kind: String,
     pub(super) scope: String,
-    pub(super) popular_window: String,
     pub(super) id: String,
     pub(super) updated_at: Option<DateTime<Utc>>,
     pub(super) created_at: Option<DateTime<Utc>>,
@@ -30,7 +29,6 @@ pub(super) struct PageCursorContext<'a> {
     pub(super) scope: &'a ListScope,
     pub(super) direction: &'a ListDirection,
     pub(super) sort: &'a ListSort,
-    pub(super) popular_window: PopularWindow,
     pub(super) has_cursor: bool,
 }
 
@@ -52,7 +50,6 @@ pub(super) fn page_from_rows(
                 context.kind,
                 context.scope,
                 context.sort,
-                context.popular_window,
             ),
             resource: row_to_listed_resource(row),
         })
@@ -85,7 +82,6 @@ pub(super) fn decode_cursor(
     sort: &ListSort,
     kind: &ListKind,
     scope: &ListScope,
-    popular_window: PopularWindow,
 ) -> Result<Option<Cursor>, AppError> {
     let Some(cursor) = cursor else {
         return Ok(None);
@@ -101,7 +97,6 @@ pub(super) fn decode_cursor(
         || cursor.sort != sort.as_str()
         || cursor.kind != kind.as_str()
         || cursor.scope != scope.as_str()
-        || cursor.popular_window != popular_window.as_str()
     {
         return Err(AppError::InvalidRequest("invalid cursor".to_string()));
     }
@@ -114,14 +109,12 @@ fn cursor_from_row(
     kind: &ListKind,
     scope: &ListScope,
     sort: &ListSort,
-    popular_window: PopularWindow,
 ) -> Cursor {
     Cursor {
         query: query.map(str::to_string),
         sort: sort.as_str().to_string(),
         kind: kind.as_str().to_string(),
         scope: scope.as_str().to_string(),
-        popular_window: popular_window.as_str().to_string(),
         id: row.get("id"),
         updated_at: Some(row.get("updated_at")),
         created_at: Some(row.get("created_at")),

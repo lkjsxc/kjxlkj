@@ -50,7 +50,6 @@ pub async fn list_resources(pool: &DbPool, request: &ListRequest) -> Result<List
         &request.sort,
         &request.kind,
         &request.scope,
-        request.popular_window,
     )?;
     if let Some(query) = query {
         search_resources(

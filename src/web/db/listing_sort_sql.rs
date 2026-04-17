@@ -22,17 +22,11 @@ impl ListSort {
             (Self::TitleAsc, ListDirection::Prev) => "title_key DESC, id DESC",
             (Self::TitleDesc, ListDirection::Next) => "title_key DESC, id ASC",
             (Self::TitleDesc, ListDirection::Prev) => "title_key ASC, id DESC",
-            (Self::PopularDesc, ListDirection::Next) => {
+            (Self::Popular1dDesc | Self::Popular7dDesc | Self::Popular30dDesc | Self::Popular90dDesc | Self::PopularAllDesc, ListDirection::Next) => {
                 "popular_views DESC, view_count_total DESC, updated_at DESC, id ASC"
             }
-            (Self::PopularDesc, ListDirection::Prev) => {
+            (Self::Popular1dDesc | Self::Popular7dDesc | Self::Popular30dDesc | Self::Popular90dDesc | Self::PopularAllDesc, ListDirection::Prev) => {
                 "popular_views ASC, view_count_total ASC, updated_at ASC, id DESC"
-            }
-            (Self::ViewsTotalDesc, ListDirection::Next) => {
-                "view_count_total DESC, updated_at DESC, id ASC"
-            }
-            (Self::ViewsTotalDesc, ListDirection::Prev) => {
-                "view_count_total ASC, updated_at ASC, id DESC"
             }
             (Self::FavoritePositionAsc, ListDirection::Next) => {
                 "favorite_position ASC NULLS LAST, id ASC"
@@ -94,23 +88,17 @@ impl ListSort {
             (Self::TitleDesc, ListDirection::Prev) => format!(
                 "(${title}::TEXT IS NULL OR title_key > ${title} OR (title_key = ${title} AND id < ${id}))"
             ),
-            (Self::PopularDesc, ListDirection::Next) => format!(
+            (Self::Popular1dDesc | Self::Popular7dDesc | Self::Popular30dDesc | Self::Popular90dDesc | Self::PopularAllDesc, ListDirection::Next) => format!(
                 "(${popular}::BIGINT IS NULL OR popular_views < ${popular} \
                  OR (popular_views = ${popular} AND view_count_total < ${total}) \
                  OR (popular_views = ${popular} AND view_count_total = ${total} AND updated_at < ${updated}) \
                  OR (popular_views = ${popular} AND view_count_total = ${total} AND updated_at = ${updated} AND id > ${id}))"
             ),
-            (Self::PopularDesc, ListDirection::Prev) => format!(
+            (Self::Popular1dDesc | Self::Popular7dDesc | Self::Popular30dDesc | Self::Popular90dDesc | Self::PopularAllDesc, ListDirection::Prev) => format!(
                 "(${popular}::BIGINT IS NULL OR popular_views > ${popular} \
                  OR (popular_views = ${popular} AND view_count_total > ${total}) \
                  OR (popular_views = ${popular} AND view_count_total = ${total} AND updated_at > ${updated}) \
                  OR (popular_views = ${popular} AND view_count_total = ${total} AND updated_at = ${updated} AND id < ${id}))"
-            ),
-            (Self::ViewsTotalDesc, ListDirection::Next) => format!(
-                "(${total}::BIGINT IS NULL OR view_count_total < ${total} OR (view_count_total = ${total} AND updated_at < ${updated}) OR (view_count_total = ${total} AND updated_at = ${updated} AND id > ${id}))"
-            ),
-            (Self::ViewsTotalDesc, ListDirection::Prev) => format!(
-                "(${total}::BIGINT IS NULL OR view_count_total > ${total} OR (view_count_total = ${total} AND updated_at > ${updated}) OR (view_count_total = ${total} AND updated_at = ${updated} AND id < ${id}))"
             ),
             (Self::FavoritePositionAsc, ListDirection::Next) => format!(
                 "(${favorite}::BIGINT IS NULL OR favorite_position > ${favorite} OR (favorite_position = ${favorite} AND id > ${id}))"
