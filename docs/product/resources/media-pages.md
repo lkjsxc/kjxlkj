@@ -9,6 +9,8 @@
 - Uploads may include common browser and desktop media extensions such as `.png`, `.jpg`, `.webp`, `.gif`, `.svg`, `.heic`, `.heif`, `.mp4`, `.webm`, `.mov`, `.m4v`, `.mkv`, `.ogv`, `.avi`, `.wmv`, `.mpeg`, `.mpg`, and `.3gp`.
 - Direct media create may also accept optional alias, visibility, and favorite state.
 - The initial media `body` is seeded from the uploaded filename stem as a `# Heading`.
+- Media created from note attachment persist the triggering note as immutable `owner_note_id`.
+- Direct media create leaves `owner_note_id` empty.
 - Image uploads create WebP variants when the server can decode the image.
 - Video uploads create a first-frame WebP card variant and poster when the server can decode the video.
 - File-family media do not create display, card, or poster variants.
@@ -17,7 +19,7 @@
 
 - Live media pages reuse the same top-row live-resource shell as live Markdown notes.
 - The rail omits live-resource context, alias, timeline cards, and the history affordance for live media pages.
-- The main pane starts with the shared `Prev` / `History` / `Next` row followed by live-resource metadata.
+- The main pane starts with the shared top-row navigation followed by live-resource metadata.
 - Image pages render the primary image above the Markdown body.
 - Video pages render the primary video player above the Markdown body.
 - File-family pages render metadata plus `Download original` above the Markdown body.
@@ -48,6 +50,7 @@
 
 - Existing media binaries are immutable after creation.
 - Existing derivatives are immutable after creation.
+- `owner_note_id` is immutable after creation.
 - Updating media Markdown, alias, visibility, or favorite state does not replace the binary file.
 - New uploads create new media resources instead of replacing files on older media pages.
 - First-frame poster generation applies to new media uploads only.

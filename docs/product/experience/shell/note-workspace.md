@@ -9,6 +9,7 @@
 ## Shared Header Content
 
 - Created and updated time.
+- The visibility badge sits in the same top metadata row immediately after `Updated`.
 - No visible raw ID chips in normal UI.
 - Browser title, rail title, and other chrome may derive from the first `# ` heading in `body`.
 
@@ -26,13 +27,16 @@
 ## Live Resource Page Layout
 
 - Live note pages and live media pages share the same top-of-main-pane shell.
-- `Prev`, `History`, and `Next` render in one horizontal compact-card row near the top of the main pane.
-- The three cards keep matched widths and a matched minimum height so one longer summary does not visually enlarge only one card.
-- The row remains visibly balanced when one or two targets are unavailable.
 - Live-resource metadata stays in the main pane rather than a `Live note` or current-resource rail card.
 - Live-resource pages do not show `LIVE NOTE` copy in the rail or main pane.
+- Live-resource pages do not show a second summary, URL card, or other leftover current-resource card below the metadata row.
 - Live-resource pages do not show alias inside the rail.
 - Live-resource pages do not place history below the body/editor surface.
+- Admin live-resource pages render `Prev`, `History`, and `Next` in one horizontal compact-card row near the top of the main pane.
+- Guest live-resource pages render only `Prev` and `Next` in that row.
+- Visible navigation cards keep matched widths and a matched minimum height so one longer summary does not visually enlarge only one card.
+- The row remains visibly balanced when one or two targets are unavailable.
+- `Prev` and `Next` do not show `Created` metadata.
 - Live media pages place the current image, video, or file metadata surface below the shared top-row strip and live-resource metadata strip.
 
 ## Guest View

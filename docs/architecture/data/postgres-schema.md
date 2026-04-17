@@ -18,6 +18,7 @@
 - `height`: nullable current intrinsic height.
 - `duration_ms`: nullable current video duration.
 - `media_variants`: nullable current derivative metadata JSON.
+- `owner_note_id`: nullable immutable live-note reference for media created from note attachment.
 - `is_favorite`: favorite flag.
 - `favorite_position`: nullable persistent favorite ordering slot.
 - `is_private`: privacy flag.
@@ -47,6 +48,7 @@
 - `height`: nullable saved intrinsic height.
 - `duration_ms`: nullable saved video duration.
 - `media_variants`: nullable saved derivative metadata JSON.
+- `owner_note_id`: nullable copied owner-note reference for snapshot-stable image-link behavior.
 - `is_private`: saved visibility.
 - `snapshot_number`: immutable per-resource sequence.
 - `created_at`: snapshot UTC timestamp.

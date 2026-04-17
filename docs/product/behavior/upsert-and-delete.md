@@ -32,6 +32,7 @@
 - The draft `body` is raw Markdown and is not trimmed before insertion or persistence.
 - The server validates and processes the entire batch atomically.
 - Each selected file creates one new `media` resource.
+- Created media store the triggering note as immutable `owner_note_id`.
 - Created media inherit the triggering note visibility.
 - Created media receive the same derivative preparation as direct media uploads.
 - The upload flow does not create generated notes that only link to or embed the media.
@@ -65,6 +66,7 @@
 - Alias validity and uniqueness are checked across both notes and media.
 - Direct typing must preserve internal `-`, `_`, and `.` separators in the editor field.
 - Favorite ordering is shared across both resource kinds.
+- `owner_note_id` is immutable once set and direct media uploads leave it empty.
 
 ## Delete (`DELETE /resources/{id}`)
 

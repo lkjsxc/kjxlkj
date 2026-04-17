@@ -20,3 +20,4 @@
 - File-family cards use text metadata only and do not request thumbnail variants.
 - Cards show title, media kind, and concise metadata.
 - Inaccessible or non-media URLs render as ordinary Markdown links.
+- Local image embeds are not URL cards and use the owner-note click rules from [embed-rules.md](embed-rules.md).

@@ -7,6 +7,10 @@
 - Snapshot-stable image embeds use `![](/{snapshot_id}/file)`.
 - Rendering may serve a smaller WebP display derivative through generated HTML while preserving the authored Markdown URL.
 - Generated HTML should prefer `variant=display` and then `variant=card` for local image embeds before using the raw original.
+- Rendered local images remain clickable.
+- Clicked local images prefer the immutable owner note page when one exists and it is not the current page.
+- Clicking a local image on its own owner note page falls back to the media page.
+- Media without an owner note fall back to the media page.
 - Admin preview and guest rendering must display the same image output for the same Markdown.
 
 ## Videos

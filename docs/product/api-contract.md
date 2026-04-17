@@ -30,6 +30,7 @@
   "byte_size": 18342012,
   "original_filename": "launch-video.mp4",
   "sha256_hex": "c0ffee...",
+  "owner_note_id": null,
   "width": 1920,
   "height": 1080,
   "duration_ms": 93210,
@@ -57,6 +58,7 @@
 - `created_at` and `updated_at`: UTC RFC3339 timestamps.
 - Media-only fields are absent for `note`.
 - `media_variants` is nullable derivative metadata for media resources.
+- `owner_note_id` is nullable and set only for media created from note attachment.
 
 ## Upload Limits
 
@@ -71,11 +73,11 @@
 
 ## Browse Query Parameters
 
-- `/search` accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.
+- `/search` accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, and `scope`.
 - `kind=all` is the default.
 - `kind=note` narrows to notes only.
 - `kind=media` narrows to media only.
-- `popular_window` accepts `1d`, `7d`, `30d`, `90d`, and `all`.
+- Popularity sort values are `popular_1d_desc`, `popular_7d_desc`, `popular_30d_desc`, `popular_90d_desc`, and `popular_all_desc`.
 
 ## Settings Schema
 
@@ -141,6 +143,7 @@
 - Valid insertion ranges replace the selected draft slice with the inserted embeds.
 - Invalid, reversed, or stale insertion ranges append the embeds to the end of the submitted draft and set `selection_fallback` in the response.
 - The endpoint is valid only for live notes.
+- Each created media stores the triggering note as immutable `owner_note_id`.
 - Responses include `cursor_utf8`, the zero-based UTF-8 cursor offset after the inserted block in the saved body.
 
 ## Shared Update Rules
@@ -169,6 +172,7 @@
       "id": "ag6m3m3jy6hm74m6rfj7dnu3ga",
       "kind": "media",
       "alias": null,
+      "owner_note_id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
       "file_href": "/ag6m3m3jy6hm74m6rfj7dnu3ga/file"
     }
   ],
@@ -223,6 +227,7 @@
   "summary": "Primary product walkthrough.",
   "body": "# Launch Video\n\nPrimary product walkthrough.",
   "is_private": false,
+  "owner_note_id": null,
   "file_href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file",
   "content_type": "video/mp4",
   "byte_size": 18342012,

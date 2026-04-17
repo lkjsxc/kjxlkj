@@ -4,7 +4,7 @@
 
 - History index and saved-snapshot pages reuse the note shell.
 - The history index main pane keeps the live resource row above the saved-snapshot list.
-- The live resource page itself owns the compact `Prev` / `History` / `Next` row; the history index remains the dedicated saved-snapshot browsing surface.
+- The live resource page itself owns the compact top-row navigation; the history index remains the dedicated saved-snapshot browsing surface.
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
 - Visible rail section headings remain absent here too.
@@ -15,6 +15,7 @@
 - Guests may read only public saved snapshots.
 - Admins may read all saved snapshots.
 - Guests cannot open the history index list.
+- Guests do not see a `History` card on live resource pages.
 - Saved-snapshot pages never expose raw live-note IDs as normal page chrome.
 - Saved-snapshot pages use their own opaque root-path URL at `/{id}`.
 - Guest saved-snapshot pages do not show a `Back to history` link.
@@ -35,5 +36,5 @@
 
 ## Rail Limits
 
-- History pages may keep one history affordance, but the live resource page itself owns the compact top-row history control.
+- History pages may keep one history affordance, but only admin live resource pages expose the compact top-row history control.
 - The rail never lists individual saved snapshots.

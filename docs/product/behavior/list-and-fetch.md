@@ -18,9 +18,10 @@
 ## Search and Browse
 
 - `GET /search` is the canonical browse and search workspace.
-- Search accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, `scope`, and `popular_window`.
+- Search accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, and `scope`.
 - `kind=all` is the default.
 - `scope=favorites` narrows results to favorite resources only.
+- Popularity search uses explicit sort values rather than a separate public window parameter.
 - Empty `q` returns the first paginated page of viewable resources inside the current kind, scope, and sort.
 - Non-empty `q` returns paginated matches inside the current kind and scope only.
 
@@ -63,3 +64,4 @@
 - Admins can fetch all saved snapshots.
 - The history rail never expands into per-snapshot links.
 - Guests may open public saved-snapshot root URLs when they already know the snapshot URL.
+- Guests do not receive a live-page `History` affordance.
