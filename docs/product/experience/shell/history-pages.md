@@ -4,7 +4,7 @@
 
 - History index and saved-snapshot pages reuse the note shell.
 - The history index main pane keeps the live resource row above the saved-snapshot list.
-- The note page itself owns the compact `Prev` / `History` / `Next` row; the history index remains the dedicated saved-snapshot browsing surface.
+- The live resource page itself owns the compact `Prev` / `History` / `Next` row; the history index remains the dedicated saved-snapshot browsing surface.
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
 - Visible rail section headings remain absent here too.
@@ -35,5 +35,5 @@
 
 ## Rail Limits
 
-- History pages may keep one history affordance, but the note page itself owns the compact top-row history control.
+- History pages may keep one history affordance, but the live resource page itself owns the compact top-row history control.
 - The rail never lists individual saved snapshots.

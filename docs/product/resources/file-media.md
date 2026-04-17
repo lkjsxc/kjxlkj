@@ -15,6 +15,7 @@
 ## Display Rules
 
 - File-family media pages are download-first rather than preview-first.
+- Live file-family pages reuse the same top-row `Prev` / `History` / `Next` shell used by live notes and other live media pages.
 - Guest and admin file-family pages expose `Download original` and the Markdown body.
 - File-family list cards and local URL cards use text metadata rather than generated thumbnails.
 - File-family resources remain first-class peers in search, favorites, popularity, history, and paging.

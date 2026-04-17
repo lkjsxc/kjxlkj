@@ -15,6 +15,6 @@
 
 ## Resource and History Rails
 
-- Note pages move `Prev`, `History`, and `Next` into the main pane and do not keep those controls in the rail.
+- Live resource pages move `Prev`, `History`, and `Next` into the main pane and do not keep those controls in the rail.
 - History pages keep their history-specific context above `Open GitHub`.
 - `Open GitHub` stays above guest sign-in and admin resource-management/session actions.

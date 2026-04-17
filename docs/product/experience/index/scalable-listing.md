@@ -2,7 +2,7 @@
 
 ## Shared Behavior
 
-- Homepage note blocks, search results, history cards, and rail timeline cards share the same compact card language.
+- Homepage note blocks, search results, history cards, and live-resource `Prev` / `History` / `Next` cards share the same compact card language.
 - Browse/search/history cards are compact, sortable server-side, and safe for thousands of notes.
 - The list is cursor-paginated, not infinite scroll.
 - Home sections may append one final browse card that shares the same grid rhythm without mimicking a resource card exactly.
@@ -22,7 +22,7 @@
 - Grid cards may gain a small amount of height so timestamp rows remain fully contained.
 - Media grid cards may stay thumbnail-only, but thumbnails use one fixed cropped `128px` height.
 - Media card badges and metadata must sit below the thumbnail without overlap.
-- Rail timeline cards keep the same one-line title clamp and two-line summary clamp as other note-summary cards.
+- Live-resource `Prev` / `History` / `Next` cards keep the same one-line title clamp and two-line summary clamp as other note-summary cards.
 
 ## Action Treatment
 

@@ -37,6 +37,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Home-section ordering on settings uses drag-only controls.
 - Site icon upload and reset work from `/admin/settings` without leaving the page.
 - Guest media pages expose `Download original` while inline image display may still prefer WebP.
+- Live note pages and live media pages both place `Prev`, `History`, and `Next` in the main pane rather than the rail.
+- The three live-resource cards keep visibly matched widths and heights.
 - Authenticated admin resource-page opens do not increment counted view totals.
 - Resource-to-resource shell transitions preserve rail scroll state.
 - Private file URLs do not leak to guest verification flows.

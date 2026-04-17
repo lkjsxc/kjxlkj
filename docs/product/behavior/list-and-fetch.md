@@ -29,7 +29,7 @@
 - Homepage recent blocks sort by `updated_at DESC, id ASC`.
 - Homepage favorite blocks use persistent `favorite_position ASC`.
 - Homepage popular blocks sort by the selected rolling window, then lifetime views, then `updated_at DESC, id ASC`.
-- Note-to-note `Prev` and `Next` semantics now apply to the mixed resource timeline.
+- `Prev` and `Next` semantics apply to the mixed resource timeline across both notes and media.
 
 ## Fetch (`GET /{ref}`)
 

@@ -11,4 +11,4 @@
 
 - Compact pagers remain readable without page-level horizontal overflow.
 - Disabled paging controls keep the same footprint as enabled controls.
-- Compact pager layout does not change the rail timeline, which stays vertical.
+- Compact pager layout does not own the live-resource `Prev` / `History` / `Next` strip.

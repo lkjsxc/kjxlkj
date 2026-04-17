@@ -3,7 +3,7 @@
 ## Shared Pager Rules
 
 - `/search` and `/{ref}/history` use explicit `Prev` and `Next` actions.
-- The main-pane pager is separate from the note/history rail timeline.
+- The main-pane pager is separate from the live-resource `Prev` / `History` / `Next` strip.
 - Empty cursor means the first page.
 - Missing previous page disables `Prev`.
 - Missing next page disables `Next`.

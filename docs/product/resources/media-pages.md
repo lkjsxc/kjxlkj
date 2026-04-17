@@ -15,6 +15,9 @@
 
 ## Guest View
 
+- Live media pages reuse the same top-row live-resource shell as live Markdown notes.
+- The rail omits live-resource context, alias, timeline cards, and the history affordance for live media pages.
+- The main pane starts with the shared `Prev` / `History` / `Next` row followed by live-resource metadata.
 - Image pages render the primary image above the Markdown body.
 - Video pages render the primary video player above the Markdown body.
 - File-family pages render metadata plus `Download original` above the Markdown body.
@@ -25,11 +28,12 @@
 
 ## Admin View
 
-- Admin media pages keep the shared shell rail and current-resource chrome.
+- Admin live media pages use the same live-resource shell layout as live Markdown notes.
 - Image and video pages show the current preview, file metadata, Markdown body editor, alias, favorite, and visibility controls.
 - File-family pages show file metadata, `Download original`, Markdown body editor, alias, favorite, and visibility controls.
 - The page shows `Download original` for the current raw file.
 - The primary preview surface does not prepend `Current file` copy.
+- The shared top-row `Prev` / `History` / `Next` cards keep matched widths and a matched minimum height.
 - Markdown body edits autosave like note edits.
 - Existing media binaries do not change from the media edit page.
 - Existing derivative metadata does not change from the media edit page.

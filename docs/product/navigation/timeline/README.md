@@ -1,12 +1,13 @@
 # Timeline Navigation
 
-Use this subtree for the resource-to-resource `Prev` / `Next` cards shown in resource and history rails.
+Use this subtree for the resource-to-resource `Prev` / `Next` cards shown in live resource pages and related shells.
 
 ## Read This Section When
 
-- You are changing note or history rail navigation.
+- You are changing live resource navigation around `Prev`, `History`, and `Next`.
+- You are changing live resource top-row navigation.
 - You need the shared meaning of `Prev` and `Next`.
-- You need compact-layout rules for the rail timeline.
+- You need compact-layout rules for the shared timeline cards.
 
 ## Child Index
 

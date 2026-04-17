@@ -10,14 +10,15 @@
 
 ## Shared Surface Rules
 
-- Note and history rails expose the timeline.
-- The rail always renders exactly two timeline slots.
+- Live resource pages expose the timeline in the main-pane `Prev` / `History` / `Next` row.
+- The row always renders exactly two timeline target slots plus one history slot.
 - Missing targets use muted non-interactive cards with explanatory copy.
-- Timeline labels stay outside the preview cards.
+- Timeline labels stay inside the shared cards.
 
 ## Slot Order
 
 - `Prev` is always the first slot.
-- `Next` is always the second slot.
+- `History` is always the middle slot.
+- `Next` is always the third slot.
 - Fixed slot positions do not change when one side is unavailable.
 - Timeline rules are separate from search/history paging rules.

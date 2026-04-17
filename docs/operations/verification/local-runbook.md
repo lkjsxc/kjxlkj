@@ -45,6 +45,8 @@ curl -sS -X POST http://127.0.0.1:8080/resources/media \
 
 - `/search` can filter `kind=all|note|media`.
 - Admin rails show `New note`, then `Open GitHub`.
+- Live note pages and live media pages show the same top-row `Prev` / `History` / `Next` strip.
+- The three top-row cards stay visually aligned rather than growing to unrelated sizes.
 - Guest image media pages show the image plus rendered Markdown body.
 - Image media pages may serve WebP display variants while preserving the original file URL.
 - Live and saved-snapshot media pages expose `Download original`.
