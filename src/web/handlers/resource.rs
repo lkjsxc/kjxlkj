@@ -86,7 +86,8 @@ async fn render_current_resource(
         db::count_resource_view(pool, &resource.id).await?;
     }
     let chrome = view::resource_chrome(pool, resource, is_admin).await?;
-    let body_html = markdown::render_markdown_page(pool, &resource.body, Some(&resource.id), is_admin).await?;
+    let body_html =
+        markdown::render_markdown_page(pool, &resource.body, Some(&resource.id), is_admin).await?;
     let analytics = if is_admin {
         Some(view::resource_analytics(
             &db::get_resource_view_stats(pool, &resource.id).await?,

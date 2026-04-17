@@ -35,13 +35,7 @@ pub fn search_page(view: SearchView<'_>) -> String {
     let content = format!(
         "{}{}{}",
         page_header("Search", None, "search-head"),
-        search_section(
-            query,
-            view.kind,
-            view.scope,
-            view.sort,
-            has_query,
-        ),
+        search_section(query, view.kind, view.scope, view.sort, has_query,),
         results_section(&view, query, has_query),
     );
     let admin_actions = view.is_admin.then(admin_create_actions);

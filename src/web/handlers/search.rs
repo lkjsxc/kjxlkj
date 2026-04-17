@@ -1,7 +1,9 @@
 //! Search HTML handler
 
 use crate::error::AppError;
-use crate::web::db::{self, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow};
+use crate::web::db::{
+    self, ListDirection, ListKind, ListRequest, ListScope, ListSort, PopularWindow,
+};
 use crate::web::handlers::http;
 use crate::web::handlers::session;
 use crate::web::routes::AppState;

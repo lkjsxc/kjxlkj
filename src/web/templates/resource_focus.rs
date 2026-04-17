@@ -4,9 +4,17 @@ use super::model::{NavLink, ResourceAnalytics, ResourceChrome};
 pub fn live_resource_nav_strip(chrome: &ResourceChrome, is_admin: bool) -> String {
     format!(
         r#"<section class="resource-nav-strip">{}{}{}</section>"#,
-        timeline_card(chrome.previous.as_ref(), "Prev", "No older accessible resource."),
+        timeline_card(
+            chrome.previous.as_ref(),
+            "Prev",
+            "No older accessible resource."
+        ),
         history_card(chrome, is_admin),
-        timeline_card(chrome.next.as_ref(), "Next", "No newer accessible resource."),
+        timeline_card(
+            chrome.next.as_ref(),
+            "Next",
+            "No newer accessible resource."
+        ),
     )
 }
 

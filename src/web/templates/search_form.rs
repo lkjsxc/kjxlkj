@@ -1,13 +1,7 @@
 use super::layout::html_escape;
 use super::sections::section;
 
-pub fn search_section(
-    query: &str,
-    kind: &str,
-    scope: &str,
-    sort: &str,
-    has_query: bool,
-) -> String {
+pub fn search_section(query: &str, kind: &str, scope: &str, sort: &str, has_query: bool) -> String {
     let query_card = if has_query {
         format!(
             r#"<div class="search-state-card"><small>Query</small><strong>{}</strong></div>"#,

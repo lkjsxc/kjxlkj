@@ -24,9 +24,10 @@ async fn decorate_local_images(
 ) -> Result<String, AppError> {
     let mut targets = HashMap::new();
     for src in local_image_sources(html) {
-        if !targets.contains_key(&src) {
-            let target = resolve_image_target(pool, &src, current_resource_id, is_admin).await?;
-            targets.insert(src, target);
+        if let std::collections::hash_map::Entry::Vacant(entry) = targets.entry(src) {
+            let target =
+                resolve_image_target(pool, entry.key(), current_resource_id, is_admin).await?;
+            entry.insert(target);
         }
     }
     Ok(apply_image_targets(html, &targets))

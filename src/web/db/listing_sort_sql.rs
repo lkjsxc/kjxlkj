@@ -22,12 +22,22 @@ impl ListSort {
             (Self::TitleAsc, ListDirection::Prev) => "title_key DESC, id DESC",
             (Self::TitleDesc, ListDirection::Next) => "title_key DESC, id ASC",
             (Self::TitleDesc, ListDirection::Prev) => "title_key ASC, id DESC",
-            (Self::Popular1dDesc | Self::Popular7dDesc | Self::Popular30dDesc | Self::Popular90dDesc | Self::PopularAllDesc, ListDirection::Next) => {
-                "popular_views DESC, view_count_total DESC, updated_at DESC, id ASC"
-            }
-            (Self::Popular1dDesc | Self::Popular7dDesc | Self::Popular30dDesc | Self::Popular90dDesc | Self::PopularAllDesc, ListDirection::Prev) => {
-                "popular_views ASC, view_count_total ASC, updated_at ASC, id DESC"
-            }
+            (
+                Self::Popular1dDesc
+                | Self::Popular7dDesc
+                | Self::Popular30dDesc
+                | Self::Popular90dDesc
+                | Self::PopularAllDesc,
+                ListDirection::Next,
+            ) => "popular_views DESC, view_count_total DESC, updated_at DESC, id ASC",
+            (
+                Self::Popular1dDesc
+                | Self::Popular7dDesc
+                | Self::Popular30dDesc
+                | Self::Popular90dDesc
+                | Self::PopularAllDesc,
+                ListDirection::Prev,
+            ) => "popular_views ASC, view_count_total ASC, updated_at ASC, id DESC",
             (Self::FavoritePositionAsc, ListDirection::Next) => {
                 "favorite_position ASC NULLS LAST, id ASC"
             }

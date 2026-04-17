@@ -67,7 +67,7 @@ pub async fn list_popular_resources(
         "WITH popular AS ({}) \
          SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
-         r.duration_ms, r.media_variants, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
+         r.duration_ms, r.media_variants, r.owner_note_id, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
          r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, \
          COALESCE(p.popular_views, 0)::BIGINT AS popular_views \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \

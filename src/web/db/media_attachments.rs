@@ -51,7 +51,8 @@ pub async fn attach_media_to_note(
             "media attachments require a live note".to_string(),
         ));
     }
-    let created_media = create_media_resources(&tx, note_id, attachments, update.is_private).await?;
+    let created_media =
+        create_media_resources(&tx, note_id, attachments, update.is_private).await?;
     let current_resource =
         update_target_note(&tx, note_id, update, was_favorite, current_position).await?;
     tx.commit()

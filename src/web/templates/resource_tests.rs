@@ -51,9 +51,8 @@ fn sample_chrome() -> ResourceChrome {
     }
 }
 
-fn sample_site() -> SiteContext {
-    SiteContext { site_name: "Launchpad".to_string(), site_description: "Search-friendly notes.".to_string(), public_base_url: Some("https://example.com".to_string()) }
-}
+#[rustfmt::skip]
+fn sample_site() -> SiteContext { SiteContext { site_name: "Launchpad".to_string(), site_description: "Search-friendly notes.".to_string(), public_base_url: Some("https://example.com".to_string()) } }
 
 fn sample_media_resource() -> Resource {
     Resource {

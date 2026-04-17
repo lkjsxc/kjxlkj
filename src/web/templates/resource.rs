@@ -63,7 +63,12 @@ pub fn resource_page(
     )
 }
 
-fn resource_body(resource: &Resource, chrome: &ResourceChrome, body_html: &str, is_admin: bool) -> String {
+fn resource_body(
+    resource: &Resource,
+    chrome: &ResourceChrome,
+    body_html: &str,
+    is_admin: bool,
+) -> String {
     if is_admin {
         return format!(
             "{}{}",
