@@ -52,7 +52,7 @@ export async function expectSearchPage(page, hasQueryCard = false) {
     }
     await page.getByLabel('Sort').waitFor({ state: 'visible' });
     await page.getByLabel('Kind').waitFor({ state: 'visible' });
-    assert.equal(await page.locator('.search-sort .visually-hidden').count(), 2);
+    assert.equal(await page.locator('.search-sort .visually-hidden').count(), 3);
     assert.equal(await page.locator('.search-sort span:not(.visually-hidden)').count(), 0);
     await assertSearchControlsAligned(page);
     await page.getByRole('button', { name: 'Prev', exact: true }).waitFor({ state: 'visible' });

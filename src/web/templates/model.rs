@@ -39,6 +39,7 @@ pub struct ResourceChrome {
 #[derive(Clone, Debug)]
 pub struct ResourceAnalytics {
     pub total: i64,
+    pub views_1d: i64,
     pub views_7d: i64,
     pub views_30d: i64,
     pub views_90d: i64,

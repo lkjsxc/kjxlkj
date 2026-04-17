@@ -1,6 +1,7 @@
 //! Core domain models and validation
 
 mod markdown;
+mod markdown_links;
 #[cfg(test)]
 mod markdown_tests;
 mod validation;

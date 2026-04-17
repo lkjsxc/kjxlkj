@@ -14,6 +14,13 @@ function bindUploadEvents() {
         uploadSelectedMedia(Array.from(editorState.uploadInput.files));
         editorState.uploadInput.value = '';
     });
+    editorState.bodyField.addEventListener('paste', function (event) {
+        var files = clipboardFiles(event.clipboardData);
+        if (!files.length || editorState.uploading) return;
+        event.preventDefault();
+        editorState.uploadSelection = currentSelectionRange();
+        uploadSelectedMedia(files);
+    });
 }
 
 async function uploadSelectedMedia(files) {
@@ -141,4 +148,12 @@ function setUploadBusy(busy) {
     if (editorState.aliasField) editorState.aliasField.readOnly = busy;
     if (editorState.publicToggle) editorState.publicToggle.disabled = busy;
     if (editorState.favoriteToggle) editorState.favoriteToggle.disabled = busy;
+}
+
+function clipboardFiles(clipboardData) {
+    if (!clipboardData?.items?.length) return [];
+    return Array.from(clipboardData.items)
+        .filter(function (item) { return item.kind === 'file'; })
+        .map(function (item) { return item.getAsFile(); })
+        .filter(Boolean);
 }

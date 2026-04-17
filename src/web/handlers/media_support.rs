@@ -4,6 +4,9 @@ use crate::web::db::MediaFamily;
 use std::path::Path;
 
 pub fn detect_media_family(content_type: &str, filename: &str) -> Result<MediaFamily, AppError> {
+    if is_supported_file(content_type, filename) {
+        return Ok(MediaFamily::File);
+    }
     if content_type.starts_with("image/") {
         return Ok(MediaFamily::Image);
     }
@@ -11,15 +14,13 @@ pub fn detect_media_family(content_type: &str, filename: &str) -> Result<MediaFa
         return Ok(MediaFamily::Video);
     }
     match extension(filename).as_deref() {
-        Some("png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" | "heic" | "heif") => {
-            Ok(MediaFamily::Image)
-        }
+        Some("png" | "jpg" | "jpeg" | "gif" | "webp" | "svg") => Ok(MediaFamily::Image),
         Some(
             "mp4" | "webm" | "mov" | "m4v" | "ogg" | "ogv" | "mkv" | "avi" | "wmv" | "mpeg" | "mpg"
             | "3gp",
         ) => Ok(MediaFamily::Video),
         _ => Err(AppError::InvalidRequest(
-            "unsupported media type; use an image or video".to_string(),
+            "unsupported media type; use an image, video, or supported file".to_string(),
         )),
     }
 }
@@ -28,10 +29,11 @@ pub fn initial_body(filename: &str) -> String {
     format!("# {}", pretty_stem(filename))
 }
 
-pub fn embed_markdown(media_ref: &str, family: MediaFamily) -> String {
+pub fn embed_markdown(media_ref: &str, family: MediaFamily, filename: &str) -> String {
     match family {
         MediaFamily::Image => format!("![](/{media_ref}/file)"),
         MediaFamily::Video => format!(r#"<video controls src="/{media_ref}/file"></video>"#),
+        MediaFamily::File => format!("[{}](/{media_ref})", escape_link_label(filename)),
     }
 }
 
@@ -84,4 +86,14 @@ fn extension(filename: &str) -> Option<String> {
         .extension()
         .and_then(|value| value.to_str())
         .map(|value| value.to_ascii_lowercase())
+}
+
+fn is_supported_file(content_type: &str, filename: &str) -> bool {
+    content_type.to_ascii_lowercase().contains("heic")
+        || content_type.to_ascii_lowercase().contains("heif")
+        || matches!(extension(filename).as_deref(), Some("heic" | "heif"))
+}
+
+fn escape_link_label(value: &str) -> String {
+    value.replace('\\', r"\\").replace(']', r"\]")
 }

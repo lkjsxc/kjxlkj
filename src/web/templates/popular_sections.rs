@@ -29,6 +29,7 @@ fn popular_resources_section(surface: &str, notes: &[IndexItem], window: Popular
 
 fn window_controls(window: PopularWindow) -> String {
     let buttons = [
+        PopularWindow::Days1,
         PopularWindow::Days7,
         PopularWindow::Days30,
         PopularWindow::Days90,

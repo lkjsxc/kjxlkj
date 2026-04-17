@@ -27,13 +27,13 @@ pub fn settings_page(
     let settings_form = format!(
         "<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}{}{}{}{}{}{}<div class=\"settings-submit-row\"><button type=\"submit\" class=\"btn btn-primary\">Save settings</button><a href=\"/admin\" class=\"btn\">Back to dashboard</a></div></form>",
         site_identity_section(settings),
-        site_icon_section(settings),
         home_hero_section(settings),
         home_sections_section(settings),
         settings_favorite_order_section(favorites),
         sessions_section(settings),
         search_options_section(settings),
         media_section(settings),
+        site_icon_section(settings),
         new_resources_section(settings),
     );
     let search_root =

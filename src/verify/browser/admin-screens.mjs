@@ -7,12 +7,13 @@ import {
     verifySettingsSearch,
     verifySiteIconControls,
 } from './dashboard-checks.mjs';
+import { verifyClipboardMediaPaste } from './clipboard-checks.mjs';
 import { verifyDeleteArming } from './delete-checks.mjs';
 import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
 import { assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
-import { verifyPartialResourceNavigation } from './navigation-checks.mjs';
+import { verifyPartialResourceNavigation, verifyRememberedRailNavigation } from './navigation-checks.mjs';
 import { appUrl, capture, login, newContext, submitLogin } from './support.mjs';
 
 export async function captureAdminScreens(browser, fixtures) {
@@ -54,6 +55,8 @@ export async function captureAdminScreens(browser, fixtures) {
     await verifyAuthenticatedViewsStayFlat(page, note);
     await verifyEditorFormatting(browser, page, note, fixtures);
     await verifyPartialResourceNavigation(page, note, fixtures.oldest);
+    await verifyRememberedRailNavigation(page, note);
+    await verifyClipboardMediaPaste(page, note);
     await capture(page, 'desktop-admin-note.png');
 
     const historyJson = await page.evaluate(async (id) => {
@@ -106,6 +109,7 @@ export async function captureAdminScreens(browser, fixtures) {
     await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public resources.', robots: 'index,follow', canonical: `${appUrl}/` });
     await assertDiscoveryRoutes(page, { sitemapContains: [`${appUrl}/</loc>`, `${appUrl}/${note.ref}</loc>`, `${appUrl}/${fixtures.image.ref}</loc>`] });
     await assertPublicMediaPage(page, fixtures.image);
+    await assertPublicMediaPage(page, fixtures.file);
     await capture(page, 'desktop-login.png');
     await page.goto(`${appUrl}/${note.ref}`, { waitUntil: 'networkidle' });
     await assertHead(page, {

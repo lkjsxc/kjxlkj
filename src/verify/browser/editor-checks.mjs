@@ -9,8 +9,12 @@ export async function verifyUiCreatedDraft(page, expectedPrivate = false) {
         page.getByRole('button', { name: 'New note', exact: true }).first().click(),
     ]);
     await page.locator('#editor-body').waitFor({ state: 'visible' });
-    const title = (await page.locator('[data-live-title]').first().textContent()).trim();
+    const title = await page.locator('#editor-body').evaluate((field) => {
+        const match = field.value.match(/^\s*#\s+(.+)$/m);
+        return match?.[1]?.trim() ?? '';
+    });
     assert.match(title, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
+    assert.match(await page.title(), new RegExp(`^${title} \\| `));
     assert.equal(await page.locator('#public-toggle').isChecked(), !expectedPrivate, 'new note visibility should follow settings');
     assert.equal(await page.locator('#preview-toggle').getAttribute('aria-expanded'), 'false', 'preview should start closed');
     await expectEditorFocus(page);
@@ -62,6 +66,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
         ({ imageSrc, videoSrc }) =>
             !!document.querySelector('.prose h2') &&
             document.querySelectorAll('.prose li').length >= 1 &&
+            document.querySelectorAll('.prose input[type="checkbox"]').length >= 2 &&
             !!document.querySelector('.prose blockquote') &&
             !!document.querySelector('.prose pre') &&
             !!document.querySelector('.prose table') &&
@@ -120,6 +125,9 @@ async function appendMarkdown(page) {
         '',
         '[Docs](https://example.com/very-long-link-for-wrap-testing)',
         '',
+        '- [x] Done',
+        '- [ ] Todo',
+        '',
         '- Alpha',
         '',
         '> Quoted line',
@@ -144,6 +152,7 @@ async function waitForPreviewStructures(page) {
         () =>
             !!document.querySelector('#editor-preview h2') &&
             document.querySelectorAll('#editor-preview li').length >= 1 &&
+            document.querySelectorAll('#editor-preview input[type="checkbox"]').length >= 2 &&
             !!document.querySelector('#editor-preview blockquote') &&
             !!document.querySelector('#editor-preview pre') &&
             !!document.querySelector('#editor-preview table')

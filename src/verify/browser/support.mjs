@@ -5,6 +5,7 @@ import {
     createHistoryNote,
     createMedia,
     createNote,
+    fileUpload,
     imageUpload,
     listSnapshots,
     updateResource,
@@ -44,6 +45,18 @@ export async function prepareState(browser) {
         { alias: 'orbital-chart', isPrivate: false, favorite: false }
     );
     const imageSnapshots = await listSnapshots(page, image.id);
+    const file = await createMedia(page, fileUpload, {
+        alias: 'orbital-archive',
+        isPrivate: false,
+        favorite: false,
+    });
+    await updateResource(
+        page,
+        file.id,
+        '# Orbital Archive\n\nPublic file fixture for HEIC download-first pages and note embeds.',
+        { alias: 'orbital-archive', isPrivate: false, favorite: false }
+    );
+    const fileSnapshots = await listSnapshots(page, file.id);
     const video = await createMedia(page, await buildVideoUpload(page), {
         alias: 'launch-clip',
         isPrivate: false,
@@ -75,7 +88,8 @@ export async function prepareState(browser) {
     seedViewAnalytics(databaseUrl, { oldest, middle, newest });
     await context.close();
     return {
-        image: mediaFixture(image, 'Orbital Chart', '.media-surface img', imageUpload.text, imageSnapshots),
+        image: mediaFixture(image, 'Orbital Chart', '.media-surface img', imageUpload.text, imageSnapshots, 'image'),
+        file: mediaFixture(file, 'Orbital Archive', '.file-media-panel', fileUpload.text, fileSnapshots, 'file'),
         video: mediaFixture(video, 'Launch Clip', '.media-surface video', null, videoSnapshots),
         oldest: { id: oldest.id, ref: oldest.alias ?? oldest.id, title: 'Atlas Entry' },
         middle: {
@@ -132,9 +146,10 @@ async function setupAdmin(page) {
     ]);
 }
 
-function mediaFixture(payload, title, selector, rawText, snapshots) {
+function mediaFixture(payload, title, selector, rawText, snapshots, family = 'video') {
     const ref = payload.alias ?? payload.id;
     return {
+        family,
         id: payload.id,
         ref,
         title,

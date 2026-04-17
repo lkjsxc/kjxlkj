@@ -21,6 +21,19 @@
     padding-left: 24px;
 }
 
+.prose li:has(> input[type="checkbox"]) {
+    list-style: none;
+    margin-left: -24px;
+}
+
+.prose input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0 8px 0 0;
+    accent-color: var(--accent);
+    vertical-align: text-bottom;
+}
+
 .prose blockquote {
     padding-left: 16px;
     border-left: 2px solid var(--accent);
@@ -144,4 +157,8 @@
 .local-url-card span {
     padding: 12px 14px;
     overflow-wrap: anywhere;
+}
+
+.local-url-card-page a {
+    grid-template-columns: 1fr;
 }

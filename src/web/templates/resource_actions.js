@@ -38,7 +38,7 @@ function performDelete(button, id) {
     fetch('/resources/' + id, { method: 'DELETE' })
         .then(function (response) {
             if (!response.ok) throw new Error('delete failed');
-            window.location.href = '/admin';
+            window.location.href = '/';
         })
         .catch(function () { alert('Failed to delete resource'); });
 }

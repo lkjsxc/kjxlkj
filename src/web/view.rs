@@ -33,6 +33,7 @@ pub fn popular_index_item(
 pub fn resource_analytics(stats: &db::ResourceViewStats) -> ResourceAnalytics {
     ResourceAnalytics {
         total: stats.total,
+        views_1d: stats.views_1d,
         views_7d: stats.views_7d,
         views_30d: stats.views_30d,
         views_90d: stats.views_90d,
@@ -92,6 +93,7 @@ fn build_index_item(
     let kind_badge = match resource.media_family {
         Some(MediaFamily::Image) => "Image",
         Some(MediaFamily::Video) => "Video",
+        Some(MediaFamily::File) => "File",
         None => "Note",
     };
     IndexItem {
@@ -103,7 +105,11 @@ fn build_index_item(
         updated_at: render_time(&resource.updated_at),
         kind_badge,
         media_family: resource.media_family,
-        media_href: resource.media_family.map(|_| card_file_href(resource)),
+        media_href: matches!(
+            resource.media_family,
+            Some(MediaFamily::Image | MediaFamily::Video)
+        )
+        .then(|| card_file_href(resource)),
         is_favorite: resource.is_favorite,
         visibility: show_visibility.then_some(visibility_label(resource.is_private)),
         metrics,

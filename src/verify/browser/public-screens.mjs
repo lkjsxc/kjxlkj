@@ -67,6 +67,7 @@ export async function capturePublicScreens(browser, notes) {
         nodes.map((node) => node.dataset.cardTitle.trim())
     );
     assert.equal(titles[0], notes.image.title);
+    assert.equal(await page.locator('#search-popular-window').inputValue(), '30d');
 
     await page.goto(`${appUrl}/search?q=orbit`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, true);
@@ -76,8 +77,6 @@ export async function capturePublicScreens(browser, notes) {
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
     await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
-    await assertVisibleText(page, 'Oldest public note.');
-    await assertVisibleText(page, 'Newest public note.');
     await capture(page, 'desktop-guest-note.png');
 
     await page.goto(`${appUrl}/${notes.oldest.ref}`, { waitUntil: 'networkidle' });
@@ -86,6 +85,7 @@ export async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.newest.ref}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.middle.title, null);
     await assertPublicMediaPage(page, notes.image);
+    await assertPublicMediaPage(page, notes.file);
     await assertPublicMediaPage(page, notes.video);
 
     const publicSnapshotResponse = await page.goto(`${appUrl}/${publicSnapshot.id}`, { waitUntil: 'networkidle' });

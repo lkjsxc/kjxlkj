@@ -155,7 +155,13 @@ async fn store_uploads(
 fn inserted_markdown(attachments: &[AttachmentCreate]) -> String {
     attachments
         .iter()
-        .map(|attachment| embed_markdown(&attachment.media_id, attachment.media_family))
+        .map(|attachment| {
+            embed_markdown(
+                &attachment.media_id,
+                attachment.media_family,
+                &attachment.original_filename,
+            )
+        })
         .collect::<Vec<_>>()
         .join("\n\n")
 }

@@ -65,7 +65,7 @@ pub fn admin_page(
 fn stats_grid(stats: &ResourceStats) -> String {
     format!(
         r#"<section class="stats-grid">
-{}{}{}{}{}{}{}{}{}{}
+{}{}{}{}{}{}{}{}{}{}{}
 </section>"#,
         stat_card("Resources", stats.total),
         stat_card("Public", stats.public_count),
@@ -74,6 +74,7 @@ fn stats_grid(stats: &ResourceStats) -> String {
         stat_card("Updated this month", stats.updated_this_month),
         stat_card("Updated this year", stats.updated_this_year),
         stat_card("Views total", stats.view_count_total),
+        stat_card("Views 1d", stats.view_count_1d),
         stat_card("Views 7d", stats.view_count_7d),
         stat_card("Views 30d", stats.view_count_30d),
         stat_card("Views 90d", stats.view_count_90d),

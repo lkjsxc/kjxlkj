@@ -25,7 +25,7 @@
         var link = event.target.closest('a[href]');
         if (!link || !shouldIntercept(link)) return;
         event.preventDefault();
-        await requestNavigation(link.href, 'push');
+        await requestNavigation(app.resolveRememberedUrl?.(link.href) || link.href, 'push');
     }
 
     async function requestNavigation(url, historyMode) {
@@ -41,6 +41,7 @@
         if (app.navigating) return;
         var currentShell = document.querySelector('.shell-frame');
         if (!currentShell) return fullNavigate(url);
+        app.captureCurrentPageState?.(true);
         app.navigating = true;
         app.navigationUrl = url;
         app.navigationMode = historyMode;
@@ -75,8 +76,9 @@
             app.formatLocalTimes?.();
             app.runPageScripts?.(nextDocument);
             await restoreRailScroll(railScroll);
-            window.scrollTo(0, 0);
             syncHistory(url, historyMode);
+            if (!await app.restoreRememberedPageState?.()) window.scrollTo(0, 0);
+            app.captureCurrentPageState?.(true);
             return 'ok';
         } catch (_) {
             if (controller?.signal.aborted) return 'queued';

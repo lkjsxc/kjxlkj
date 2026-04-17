@@ -27,6 +27,19 @@ pub fn resource_rail(chrome: &ResourceChrome, is_admin: bool, active_href: &str)
     sections.join("")
 }
 
+pub fn note_resource_rail(chrome: &ResourceChrome, is_admin: bool) -> String {
+    let mut sections = vec![rail_section("navigate", &primary_nav("", is_admin))];
+    if is_admin {
+        sections.push(rail_section("create", &create_action()));
+    }
+    sections.push(rail_section("project", &project_link()));
+    sections.push(rail_section(
+        "actions",
+        &actions(chrome, is_admin, &chrome.current_href),
+    ));
+    sections.join("")
+}
+
 fn current_resource(chrome: &ResourceChrome, active_href: &str) -> String {
     let card_body = format!(
         r#"<div class="card-body"><p class="card-title" data-live-title>{}</p><p class="card-summary">{}</p></div>"#,

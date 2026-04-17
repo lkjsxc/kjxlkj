@@ -1,6 +1,7 @@
 (function () {
     if (window.kjxlkj?.popularWindowReady) return;
     if (window.kjxlkj) window.kjxlkj.popularWindowReady = true;
+    if (window.kjxlkj) window.kjxlkj.refreshPopularSection = refreshSection;
     var controllers = {};
     var requestIds = {};
 
@@ -33,6 +34,7 @@
             window.kjxlkj?.formatLocalTimes?.(replacement);
             if (requestIds[surface] !== requestId) return;
             section.replaceWith(replacement);
+            window.kjxlkj?.captureCurrentPageState?.();
         } catch (error) {
             if (error.name === 'AbortError' || requestIds[surface] !== requestId) return;
             setBusy(section, false);

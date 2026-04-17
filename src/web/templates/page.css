@@ -102,7 +102,12 @@
 }
 
 .search-section .search-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) minmax(180px, 220px) auto;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(150px, 190px)
+        minmax(180px, 220px)
+        minmax(150px, 190px)
+        auto;
 }
 
 .search-state-card {

@@ -49,6 +49,8 @@ fn search_page_browses_without_query() {
     assert!(!html.contains(">Query<"));
     assert!(html.contains("name=\"sort\""));
     assert!(html.contains("aria-label=\"Sort\""));
+    assert!(html.contains("name=\"popular_window\""));
+    assert!(html.contains("aria-label=\"Popular window\""));
     assert!(!html.contains("<span>Sort</span>"));
     assert!(html.contains("value=\"updated_desc\" selected"));
     assert!(html.contains(">Prev<"));
@@ -77,6 +79,7 @@ fn search_page_keeps_query_and_sort_in_form() {
     assert!(html.contains("name=\"q\" value=\"orbit\""));
     assert!(html.contains(">Query<"));
     assert!(html.contains("value=\"relevance\" selected"));
+    assert!(html.contains("value=\"30d\" selected"));
     assert!(html.contains("name=\"direction\" value=\"prev\""));
     assert!(html.contains("New note"));
 }

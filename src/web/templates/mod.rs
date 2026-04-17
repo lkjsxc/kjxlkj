@@ -18,6 +18,8 @@ mod popular_sections;
 #[cfg(test)]
 mod popular_sections_tests;
 mod resource;
+mod resource_editor;
+mod resource_focus;
 mod resource_media;
 mod resource_shell;
 #[cfg(test)]

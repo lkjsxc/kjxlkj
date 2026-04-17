@@ -28,3 +28,21 @@ fn render_markdown_cards_local_file_links() {
     assert!(html.contains("src=\"/demo/file?variant=card\""));
     assert!(html.contains("https://example.com/file"));
 }
+
+#[test]
+fn render_markdown_keeps_task_list_checkboxes() {
+    let html = render_markdown("- [x] Done\n- [ ] Todo");
+
+    assert!(html.contains("type=\"checkbox\""));
+    assert!(html.contains("checked"));
+    assert!(html.contains("disabled"));
+}
+
+#[test]
+fn render_markdown_cards_local_resource_pages() {
+    let html = render_markdown("[Orbit Ledger](/orbit-ledger)");
+
+    assert!(html.contains("local-url-card-page"));
+    assert!(html.contains("href=\"/orbit-ledger\""));
+    assert!(html.contains(">Orbit Ledger<"));
+}

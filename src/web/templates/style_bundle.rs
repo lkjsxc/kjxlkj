@@ -15,6 +15,7 @@ const PAGE_CSS: &str = include_str!("page.css");
 const FAVORITES_CSS: &str = include_str!("favorites.css");
 const EDITOR_CSS: &str = include_str!("editor.css");
 const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
+const RESOURCE_FOCUS_CSS: &str = include_str!("resource_focus.css");
 const SETTINGS_CSS: &str = include_str!("settings.css");
 
 static STYLESHEET: Lazy<String> = Lazy::new(|| minify_css(raw_css()));
@@ -38,6 +39,7 @@ fn raw_css() -> String {
         FAVORITES_CSS,
         EDITOR_CSS,
         EDITOR_EXTRA_CSS,
+        RESOURCE_FOCUS_CSS,
         SETTINGS_CSS,
     ]
     .join("\n")

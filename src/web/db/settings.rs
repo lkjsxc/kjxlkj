@@ -71,14 +71,15 @@ pub async fn get_resource_stats(
     client(pool)
         .await?
         .query_one(
-            "WITH rollup AS (SELECT resource_id, COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 6), 0)::BIGINT AS view_count_7d, \
+            "WITH rollup AS (SELECT resource_id, COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE), 0)::BIGINT AS view_count_1d, \
+             COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 6), 0)::BIGINT AS view_count_7d, \
              COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 29), 0)::BIGINT AS view_count_30d, \
              COALESCE(SUM(view_count) FILTER (WHERE view_date >= CURRENT_DATE - 89), 0)::BIGINT AS view_count_90d \
              FROM resource_daily_views GROUP BY resource_id) \
              SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE is_private = FALSE) AS public_count, COUNT(*) FILTER (WHERE is_private = TRUE) AS private_count, \
              COUNT(*) FILTER (WHERE is_favorite = TRUE) AS favorite_count, COUNT(*) FILTER (WHERE updated_at >= date_trunc('month', NOW())) AS updated_this_month, \
              COUNT(*) FILTER (WHERE updated_at >= date_trunc('year', NOW())) AS updated_this_year, COALESCE(SUM(view_count_total), 0)::BIGINT AS view_count_total, \
-             COALESCE(SUM(rollup.view_count_7d), 0)::BIGINT AS view_count_7d, COALESCE(SUM(rollup.view_count_30d), 0)::BIGINT AS view_count_30d, \
+             COALESCE(SUM(rollup.view_count_1d), 0)::BIGINT AS view_count_1d, COALESCE(SUM(rollup.view_count_7d), 0)::BIGINT AS view_count_7d, COALESCE(SUM(rollup.view_count_30d), 0)::BIGINT AS view_count_30d, \
              COALESCE(SUM(rollup.view_count_90d), 0)::BIGINT AS view_count_90d \
              FROM resources LEFT JOIN rollup ON rollup.resource_id = resources.id WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE)",
             &[&include_private],
@@ -92,6 +93,7 @@ pub async fn get_resource_stats(
             updated_this_month: row.get("updated_this_month"),
             updated_this_year: row.get("updated_this_year"),
             view_count_total: row.get("view_count_total"),
+            view_count_1d: row.get("view_count_1d"),
             view_count_7d: row.get("view_count_7d"),
             view_count_30d: row.get("view_count_30d"),
             view_count_90d: row.get("view_count_90d"),

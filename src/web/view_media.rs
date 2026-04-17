@@ -27,6 +27,7 @@ pub fn social_card_href(resource: &Resource) -> Option<String> {
     match resource.media_family {
         Some(MediaFamily::Image) => current_variant_href(resource, &["display", "card"]),
         Some(MediaFamily::Video) => current_variant_href(resource, &["card"]),
+        Some(MediaFamily::File) => None,
         None => None,
     }
 }

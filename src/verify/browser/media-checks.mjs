@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText } from './assertions.mjs';
+import { assertDownloadAndDelivery } from './media-delivery-checks.mjs';
 import { assertMediaCardGeometry } from './media-card-checks.mjs';
 import { buildVideoUpload } from './fixture-api.mjs';
 import { appUrl } from './support.mjs';
@@ -11,6 +12,7 @@ export async function assertMediaSearchFilter(page, media, hiddenNoteTitle) {
         .locator('.resource-row[data-card-title]')
         .evaluateAll((nodes) => nodes.map((node) => node.dataset.cardTitle.trim()));
     assert.ok(titles.includes(media.image.title));
+    assert.ok(titles.includes(media.file.title));
     assert.ok(titles.includes(media.video.title));
     assert.ok(!titles.includes(hiddenNoteTitle));
     await assertMediaCardGeometry(page, media.video.title);
@@ -23,13 +25,15 @@ export async function assertPublicMediaPage(page, media) {
     assert.equal(await page.getByText('Current file', { exact: true }).count(), 0);
     await assertDownloadAndDelivery(page, media, media.fileHref);
     const robots = await page.locator('meta[name="robots"]').getAttribute('content');
-    if (robots === 'index,follow' && media.contentType?.startsWith('image/')) {
+    if (robots === 'index,follow' && media.family === 'image') {
         const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
         assert.match(ogImage ?? '', /variant=(display|card)/);
         assert.equal(
             await page.locator('meta[name="twitter:card"]').getAttribute('content'),
             'summary_large_image'
         );
+    } else {
+        assert.equal(await page.locator('meta[property="og:image"]').count(), 0);
     }
     const snapshot = media.snapshots?.[0];
     if (!snapshot) return;
@@ -155,46 +159,5 @@ export async function verifyUiCreatedMedia(page, note) {
     assert.ok(
         staleRangeResponse.payload.current_resource.body.endsWith(staleRangeResponse.payload.inserted_markdown),
         'stale upload selection should append embeds to the submitted draft'
-    );
-}
-
-async function assertDownloadAndDelivery(page, media, rawHref) {
-    const download = page.getByRole('link', { name: 'Download original', exact: true });
-    await download.waitFor({ state: 'visible' });
-    assert.equal(await download.getAttribute('href'), rawHref);
-    assert.equal(await download.getAttribute('download'), media.originalFilename);
-    const rawResponse = await fetchResource(page, rawHref, !!media.rawText);
-    assert.equal(rawResponse.status, 200, 'media file should stream publicly');
-    assert.equal(
-        rawResponse.contentType?.startsWith(media.contentType),
-        true,
-        'media file should keep its raw content type'
-    );
-    if (media.rawText) {
-        assert.equal(rawResponse.body, media.rawText, 'raw media download should preserve the uploaded bytes');
-    }
-    if (!media.contentType?.startsWith('image/')) return;
-    const displayHref = await page.locator('.media-surface img').getAttribute('src');
-    assert.match(displayHref ?? '', /variant=display/);
-    const displayResponse = await fetchResource(page, displayHref, false);
-    assert.equal(displayResponse.status, 200, 'display variant should stream publicly');
-    assert.equal(
-        displayResponse.contentType?.startsWith('image/webp'),
-        true,
-        'display delivery should use a WebP derivative'
-    );
-}
-
-async function fetchResource(page, href, includeBody) {
-    return page.evaluate(
-        async ({ requestHref, readBody }) => {
-            const response = await fetch(requestHref);
-            return {
-                status: response.status,
-                contentType: response.headers.get('content-type'),
-                body: readBody ? await response.text() : null,
-            };
-        },
-        { requestHref: href, readBody: includeBody }
     );
 }

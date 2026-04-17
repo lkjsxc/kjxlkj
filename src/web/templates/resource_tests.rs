@@ -62,10 +62,10 @@ fn sample_media_resource() -> Resource {
         id: "bcdefghijklmnopqrstuvwxy27".to_string(),
         kind: ResourceKind::Media,
         alias: Some("demo-image".to_string()),
-        title: "Demo image".to_string(),
-        summary: "Image body".to_string(),
-        body: "# Demo image\n\nBody".to_string(),
-        media_family: Some(MediaFamily::Image),
+        title: "Demo file".to_string(),
+        summary: "File body".to_string(),
+        body: "# Demo file\n\nBody".to_string(),
+        media_family: Some(MediaFamily::File),
         file_key: Some("media/demo/original.heic".to_string()),
         content_type: Some("image/heic".to_string()),
         byte_size: Some(1234),
@@ -109,6 +109,7 @@ fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
         &sample_chrome(),
         Some(&ResourceAnalytics {
             total: 12,
+            views_1d: 2,
             views_7d: 4,
             views_30d: 7,
             views_90d: 9,
@@ -122,10 +123,15 @@ fn admin_resource_page_renders_alias_controls_without_markdown_body_label() {
     assert!(html.contains("id=\"editor-body\""));
     assert!(html.contains("preview-toggle"));
     assert!(html.contains("upload-media-trigger"));
+    assert!(html.contains("note-nav-strip"));
+    assert!(html.contains("note-live-strip"));
     assert!(html.contains("editor-field-card"));
     assert!(html.contains("Views total"));
+    assert!(html.contains("Views 1d"));
     assert!(html.contains("2026-03-26 08:35 UTC"));
     assert!(html.contains("Open GitHub"));
+    assert!(!html.contains(r#"class="summary-card current-resource-card"#));
+    assert!(!html.contains("<strong>Alias</strong>"));
     assert!(!html.contains("Markdown body"));
     assert!(!html.contains("<div class=\"page-title-stack\"><h1"));
     assert!(!html.contains("toastui"));
@@ -150,5 +156,6 @@ fn guest_media_page_exposes_original_download_and_display_route() {
     assert!(html.contains("Download original"));
     assert!(html.contains("href=\"/demo-image/file\""));
     assert!(html.contains("download=\"demo.heic\""));
-    assert!(html.contains("src=\"/demo-image/file?variant=display\""));
+    assert!(html.contains("Open raw file"));
+    assert!(!html.contains("variant=display"));
 }

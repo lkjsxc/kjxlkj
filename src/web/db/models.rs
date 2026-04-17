@@ -33,6 +33,7 @@ impl ResourceKind {
 pub enum MediaFamily {
     Image,
     Video,
+    File,
 }
 
 impl MediaFamily {
@@ -40,6 +41,7 @@ impl MediaFamily {
         match self {
             Self::Image => "image",
             Self::Video => "video",
+            Self::File => "file",
         }
     }
 
@@ -47,6 +49,7 @@ impl MediaFamily {
         match value.as_deref() {
             Some("video") => Some(Self::Video),
             Some("image") => Some(Self::Image),
+            Some("file") => Some(Self::File),
             _ => None,
         }
     }
@@ -168,6 +171,7 @@ pub struct ResourceStats {
     pub updated_this_month: i64,
     pub updated_this_year: i64,
     pub view_count_total: i64,
+    pub view_count_1d: i64,
     pub view_count_7d: i64,
     pub view_count_30d: i64,
     pub view_count_90d: i64,
@@ -176,6 +180,7 @@ pub struct ResourceStats {
 #[derive(Debug, Clone)]
 pub struct ResourceViewStats {
     pub total: i64,
+    pub views_1d: i64,
     pub views_7d: i64,
     pub views_30d: i64,
     pub views_90d: i64,

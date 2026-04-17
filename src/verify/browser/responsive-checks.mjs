@@ -46,7 +46,7 @@ export async function captureCompactScreens(browser, note, desktopFont) {
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'History');
     await expectClosedDrawer(page);
-    await assertVerticalTimeline(page);
+    await assertHorizontalNoteStrip(page);
     await capture(page, 'compact-admin-note.png');
     await openPreview(page);
     await assertEditorLayout(page, true);
@@ -77,6 +77,18 @@ async function assertVerticalTimeline(page) {
     assert.equal(metrics.length, 2, 'expected two timeline slots');
     assert.ok(metrics[1].top > metrics[0].top + 4, 'compact timeline should stack vertically');
     assert.ok(Math.abs(metrics[0].left - metrics[1].left) <= 4, 'compact timeline should keep aligned columns');
+}
+
+async function assertHorizontalNoteStrip(page) {
+    const metrics = await page.locator('.note-nav-strip .note-nav-card').evaluateAll((nodes) =>
+        nodes.map((node) => {
+            const rect = node.getBoundingClientRect();
+            return { top: Math.round(rect.top), left: Math.round(rect.left) };
+        })
+    );
+    assert.equal(metrics.length, 3, 'expected three note navigation cards');
+    assert.ok(metrics.every((item) => Math.abs(item.top - metrics[0].top) <= 4));
+    assert.ok(metrics[1].left > metrics[0].left && metrics[2].left > metrics[1].left);
 }
 
 async function assertHorizontalPager(page) {

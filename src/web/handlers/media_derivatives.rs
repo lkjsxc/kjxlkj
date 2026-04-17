@@ -15,6 +15,7 @@ pub async fn build_variants(
     match family {
         MediaFamily::Image => image_variants_from_path(id, path, quality).await,
         MediaFamily::Video => video_stills_from_path(id, path, quality).await,
+        MediaFamily::File => Vec::new(),
     }
 }
 

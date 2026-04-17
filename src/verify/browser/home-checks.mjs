@@ -19,6 +19,10 @@ export async function assertHomeBrowseLinks(page) {
 
 export async function assertPopularWindowSwitch(page, path, surface) {
     const before = await navigationCount(page);
+    await clickWindow(page, surface, '1d', '1d', 'Beacon Log');
+    assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=1d');
+    if (surface === 'admin') await assertPopularMetricLabel(page, surface, '1d views');
+    assertStableUrl(page, path, before);
     await clickWindow(page, surface, '90d', '90d', 'Atlas Entry');
     assert.equal(await browseHref(page, 'Popular'), '/search?sort=popular_desc&popular_window=90d');
     assertStableUrl(page, path, before);

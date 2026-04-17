@@ -37,6 +37,7 @@ pub async fn get_resource_view_stats(
         .await?
         .query_one(
             "SELECT r.view_count_total AS total, r.last_viewed_at, \
+             COALESCE(SUM(dv.view_count) FILTER (WHERE dv.view_date >= CURRENT_DATE), 0)::BIGINT AS views_1d, \
              COALESCE(SUM(dv.view_count) FILTER (WHERE dv.view_date >= CURRENT_DATE - 6), 0)::BIGINT AS views_7d, \
              COALESCE(SUM(dv.view_count) FILTER (WHERE dv.view_date >= CURRENT_DATE - 29), 0)::BIGINT AS views_30d, \
              COALESCE(SUM(dv.view_count) FILTER (WHERE dv.view_date >= CURRENT_DATE - 89), 0)::BIGINT AS views_90d \
@@ -47,6 +48,7 @@ pub async fn get_resource_view_stats(
         .await
         .map(|row| ResourceViewStats {
             total: row.get("total"),
+            views_1d: row.get("views_1d"),
             views_7d: row.get("views_7d"),
             views_30d: row.get("views_30d"),
             views_90d: row.get("views_90d"),

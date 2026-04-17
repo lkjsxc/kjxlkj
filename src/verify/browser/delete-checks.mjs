@@ -14,9 +14,9 @@ export async function verifyDeleteArming(page) {
             new URL(response.url()).pathname.startsWith('/resources/');
     });
     await Promise.all([
-        page.waitForURL((url) => new URL(url).pathname === '/admin'),
+        page.waitForURL((url) => new URL(url).pathname === '/'),
         deleteResponse,
         armed.click(),
     ]);
-    assert.equal(new URL(page.url()).pathname, '/admin');
+    assert.equal(new URL(page.url()).pathname, '/');
 }

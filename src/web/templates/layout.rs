@@ -4,6 +4,7 @@ use super::style_bundle::stylesheet;
 use crate::web::site::PageMeta;
 
 const SHELL_JS: &str = include_str!("shell.js");
+const SHELL_MEMORY_JS: &str = include_str!("shell_memory.js");
 const SHELL_NAV_JS: &str = include_str!("shell_nav.js");
 
 pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str) -> String {
@@ -20,7 +21,7 @@ pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str
 {extra_head}
 <style>{}</style>
 </head>
-<body>{content}<script>{SHELL_JS}</script><script>{SHELL_NAV_JS}</script>{extra_script}</body>
+<body>{content}<script>{SHELL_JS}</script><script>{SHELL_NAV_JS}</script><script>{SHELL_MEMORY_JS}</script>{extra_script}</body>
 </html>"#,
         html_escape(&meta.full_title()),
         meta.head_tags(),
@@ -84,24 +85,28 @@ pub fn project_link_button() -> &'static str {
 
 pub fn primary_nav(active: &str, is_admin: bool) -> String {
     let mut links = vec![
-        nav_link("/", "Home", active == "home"),
-        nav_link("/search", "Search", active == "search"),
+        nav_link("/", "Home", active == "home", Some("home")),
+        nav_link("/search", "Search", active == "search", Some("search")),
     ];
     if is_admin {
-        links.push(nav_link("/admin", "Dashboard", active == "admin"));
+        links.push(nav_link("/admin", "Dashboard", active == "admin", None));
         links.push(nav_link(
             "/admin/settings",
             "Settings",
             active == "settings",
+            None,
         ));
     }
     format!(r#"<div class="rail-list">{}</div>"#, links.join(""))
 }
 
-fn nav_link(href: &str, label: &str, active: bool) -> String {
+fn nav_link(href: &str, label: &str, active: bool, remember: Option<&str>) -> String {
     format!(
-        r#"<a href="{href}" class="rail-link rail-link-nav{}"><span>{label}</span></a>"#,
-        if active { " active" } else { "" }
+        r#"<a href="{href}" class="rail-link rail-link-nav{}"{}><span>{label}</span></a>"#,
+        if active { " active" } else { "" },
+        remember.map_or_else(String::new, |value| format!(
+            r#" data-shell-remember="{value}""#
+        )),
     )
 }
 

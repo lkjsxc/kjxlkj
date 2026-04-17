@@ -24,7 +24,6 @@ pub fn search_section(
 <label for="search-page-input" class="visually-hidden">Search resources</label>
 <div class="search-grid">
 <input id="search-page-input" type="search" name="q" value="{}" placeholder="Search aliases, titles, bodies, and filenames">
-<input type="hidden" name="popular_window" value="{}">
 <input type="hidden" name="scope" value="{}">
 <label class="form-group search-sort" for="search-kind">
 <span class="visually-hidden">Kind</span>
@@ -34,15 +33,19 @@ pub fn search_section(
 <span class="visually-hidden">Sort</span>
 <select id="search-sort" name="sort" aria-label="Sort">{}</select>
 </label>
+<label class="form-group search-sort" for="search-popular-window">
+<span class="visually-hidden">Popular window</span>
+<select id="search-popular-window" name="popular_window" aria-label="Popular window">{}</select>
+</label>
 <button type="submit" class="btn btn-primary">Search</button>
 </div>
 </form>"#,
             query_card,
             html_escape(query),
-            popular_window,
             scope,
             kind_options(kind),
             sort_options(sort, has_query, scope),
+            popular_window_options(popular_window),
         ),
         "search-section",
     )
@@ -66,6 +69,25 @@ fn kind_options(selected: &str) -> String {
         ("all", "All resources"),
         ("note", "Notes"),
         ("media", "Media"),
+    ]
+    .into_iter()
+    .map(|(value, label)| {
+        format!(
+            r#"<option value="{value}"{}>{label}</option>"#,
+            if value == selected { " selected" } else { "" }
+        )
+    })
+    .collect::<Vec<_>>()
+    .join("")
+}
+
+fn popular_window_options(selected: &str) -> String {
+    [
+        ("1d", "1d"),
+        ("7d", "7d"),
+        ("30d", "30d"),
+        ("90d", "90d"),
+        ("all", "All time"),
     ]
     .into_iter()
     .map(|(value, label)| {

@@ -8,24 +8,31 @@ use super::model::IndexItem;
 use crate::web::db::MediaFamily;
 
 pub(crate) fn note_row(note: &IndexItem) -> String {
-    let is_media = note.media_family.is_some();
+    let has_visual_cover = matches!(
+        note.media_family,
+        Some(MediaFamily::Image | MediaFamily::Video)
+    );
     linked_card(
         &note.href,
         &format!(
             r#" data-note-id="{}" data-card-title="{}"{}"#,
             note.id,
             html_escape(&note.title),
-            if is_media {
+            if has_visual_cover {
                 format!(r#" aria-label="{}""#, html_escape(&note.title))
             } else {
                 String::new()
             }
         ),
-        if is_media { "resource-row-media" } else { "" },
+        if has_visual_cover {
+            "resource-row-media"
+        } else {
+            ""
+        },
         &format!(
             "{}{}",
             card_cover(note),
-            if is_media {
+            if has_visual_cover {
                 String::new()
             } else {
                 card_body(&note.title, &note.summary)
@@ -36,7 +43,7 @@ pub(crate) fn note_row(note: &IndexItem) -> String {
             &format!(
                 "{}{}",
                 card_metrics(note),
-                if is_media {
+                if has_visual_cover {
                     meta_line("Created", &note.created_at)
                 } else {
                     created_updated_lines(&note.created_at, &note.updated_at)
