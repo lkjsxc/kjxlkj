@@ -161,7 +161,7 @@ async function verifyOwnerNoteImageNavigation(page, otherNote, ownerNote, ownerI
     await expectPreviewImageTarget(page, ownerImageHref, ownerMediaPath);
     await Promise.all([
         page.waitForURL((url) => new URL(url).pathname === ownerMediaPath),
-        page.locator(`#editor-preview img[src="${ownerImageHref}"]`).click(),
+        page.locator(`#editor-preview img[data-resource-image-href="${ownerMediaPath}"]`).click(),
     ]);
     await page.goto(`${appUrl}/${otherNote.id}`, { waitUntil: 'networkidle' });
     await page.locator('#editor-body').fill(`# ${otherNote.title}\n\n![Owner note image](${ownerImageHref})`);
@@ -170,7 +170,7 @@ async function verifyOwnerNoteImageNavigation(page, otherNote, ownerNote, ownerI
     await expectPreviewImageTarget(page, ownerImageHref, `/${ownerNote.ref}`);
     await Promise.all([
         page.waitForURL((url) => new URL(url).pathname === `/${ownerNote.ref}`),
-        page.locator(`#editor-preview img[src="${ownerImageHref}"]`).click(),
+        page.locator(`#editor-preview img[data-resource-image-href="/${ownerNote.ref}"]`).click(),
     ]);
 }
 
@@ -181,12 +181,12 @@ async function openPreview(page) {
 }
 
 async function expectPreviewImageTarget(page, src, href) {
-    const image = page.locator(`#editor-preview img[src="${src}"]`);
-    await image.waitFor({ state: 'visible' });
     await page.waitForFunction(
         ({ expectedHref, expectedSrc }) => {
-            const node = document.querySelector(`#editor-preview img[src="${expectedSrc}"]`);
-            return !!node && node.dataset.resourceImageHref === expectedHref;
+            return Array.from(document.querySelectorAll('#editor-preview img')).some((node) =>
+                node.dataset.resourceImageHref === expectedHref &&
+                (node.getAttribute('src') || '').startsWith(expectedSrc)
+            );
         },
         { expectedHref: href, expectedSrc: src }
     );
