@@ -24,6 +24,7 @@ fn sample_resource() -> Resource {
         height: None,
         duration_ms: None,
         media_variants: None,
+        owner_note_id: None,
         is_favorite: true,
         favorite_position: Some(1),
         is_private: false,

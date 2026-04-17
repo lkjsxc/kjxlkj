@@ -22,6 +22,7 @@ pub(super) fn row_to_snapshot(row: tokio_postgres::Row) -> ResourceSnapshot {
         height: row.get("height"),
         duration_ms: row.get("duration_ms"),
         media_variants: media_variants_from_json(row.get("media_variants")),
+        owner_note_id: row.get("owner_note_id"),
         is_private: row.get("is_private"),
         created_at: row.get("created_at"),
     }
@@ -48,6 +49,7 @@ pub(super) fn row_to_snapshot_target(row: tokio_postgres::Row) -> SnapshotTarget
             height: row.get("snapshot_height"),
             duration_ms: row.get("snapshot_duration_ms"),
             media_variants: media_variants_from_json(row.get("snapshot_media_variants")),
+            owner_note_id: row.get("snapshot_owner_note_id"),
             is_private: row.get("snapshot_is_private"),
             created_at: row.get("snapshot_created_at"),
         },

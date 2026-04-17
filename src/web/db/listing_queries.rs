@@ -34,6 +34,7 @@ pub(super) async fn browse_resources(
          listed AS (SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
          r.duration_ms, r.media_variants, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
+         r.owner_note_id, \
          r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, COALESCE(p.popular_views, 0)::BIGINT AS popular_views, \
          LOWER(r.title) AS title_key, 0::DOUBLE PRECISION AS rank, 0::DOUBLE PRECISION AS fuzzy \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
@@ -70,6 +71,7 @@ pub(super) async fn search_resources(
          matched AS (SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, r.duration_ms, r.media_variants, \
          r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, r.last_viewed_at, r.created_at, r.updated_at, \
+         r.owner_note_id, \
          COALESCE(NULLIF(TRIM(ts_headline('simple', body, (SELECT tsq FROM q), 'StartSel=,StopSel=,MaxWords=18,MinWords=8,ShortWord=2,FragmentDelimiter= ... ')), ''), summary) AS preview, \
          COALESCE(p.popular_views, 0)::BIGINT AS popular_views, LOWER(r.title) AS title_key, \
          ts_rank_cd(r.search_document, (SELECT tsq FROM q))::DOUBLE PRECISION AS rank, \
@@ -111,7 +113,7 @@ pub(super) async fn top_resources(
     };
     let sql = format!(
         "SELECT id, kind, alias, title, summary, body, media_family, file_key, content_type, byte_size, \
-         sha256_hex, original_filename, width, height, duration_ms, media_variants, is_favorite, favorite_position, \
+         sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, \
          is_private, view_count_total, last_viewed_at, created_at, updated_at, summary AS preview, NULL::BIGINT AS popular_views \
          FROM resources WHERE deleted_at IS NULL AND ($1 OR is_private = FALSE) {filter} ORDER BY {order} LIMIT $2"
     );

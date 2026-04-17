@@ -73,6 +73,7 @@ pub struct Resource {
     pub height: Option<i32>,
     pub duration_ms: Option<i64>,
     pub media_variants: Option<MediaVariants>,
+    pub owner_note_id: Option<String>,
     pub is_favorite: bool,
     pub favorite_position: Option<i64>,
     pub is_private: bool,
@@ -101,6 +102,7 @@ pub struct ResourceSnapshot {
     pub height: Option<i32>,
     pub duration_ms: Option<i64>,
     pub media_variants: Option<MediaVariants>,
+    pub owner_note_id: Option<String>,
     pub is_private: bool,
     pub created_at: DateTime<Utc>,
 }

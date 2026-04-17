@@ -21,6 +21,7 @@ pub(crate) fn row_to_listed_resource(row: tokio_postgres::Row) -> ListedResource
             height: row.get("height"),
             duration_ms: row.get("duration_ms"),
             media_variants: media_variants_from_json(row.get("media_variants")),
+            owner_note_id: row.get("owner_note_id"),
             is_favorite: row.get("is_favorite"),
             favorite_position: row.get("favorite_position"),
             is_private: row.get("is_private"),

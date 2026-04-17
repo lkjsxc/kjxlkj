@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS resources (
     height INTEGER,
     duration_ms BIGINT,
     media_variants JSONB,
+    owner_note_id CHAR(26) REFERENCES resources(id),
     is_favorite BOOLEAN NOT NULL DEFAULT FALSE,
     favorite_position BIGINT,
     is_private BOOLEAN NOT NULL DEFAULT FALSE,
@@ -53,7 +54,7 @@ CREATE TABLE IF NOT EXISTS resources (
     CHECK (
         (kind = 'note' AND media_family IS NULL AND file_key IS NULL AND content_type IS NULL
          AND byte_size IS NULL AND sha256_hex IS NULL AND original_filename IS NULL
-         AND width IS NULL AND height IS NULL AND duration_ms IS NULL)
+         AND width IS NULL AND height IS NULL AND duration_ms IS NULL AND owner_note_id IS NULL)
         OR
         (kind = 'media' AND media_family IS NOT NULL AND file_key IS NOT NULL
          AND content_type IS NOT NULL AND byte_size IS NOT NULL AND sha256_hex IS NOT NULL
@@ -93,6 +94,7 @@ CREATE TABLE IF NOT EXISTS resource_snapshots (
     height INTEGER,
     duration_ms BIGINT,
     media_variants JSONB,
+    owner_note_id CHAR(26) REFERENCES resources(id),
     is_private BOOLEAN NOT NULL,
     snapshot_number INTEGER NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -138,7 +140,9 @@ CREATE TABLE IF NOT EXISTS app_settings (
 );
 
 ALTER TABLE resources ADD COLUMN IF NOT EXISTS media_variants JSONB;
+ALTER TABLE resources ADD COLUMN IF NOT EXISTS owner_note_id CHAR(26) REFERENCES resources(id);
 ALTER TABLE resource_snapshots ADD COLUMN IF NOT EXISTS media_variants JSONB;
+ALTER TABLE resource_snapshots ADD COLUMN IF NOT EXISTS owner_note_id CHAR(26) REFERENCES resources(id);
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS media_webp_quality BIGINT NOT NULL DEFAULT 82;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_key TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_content_type TEXT;

@@ -35,8 +35,8 @@ pub async fn create_snapshot<C: GenericClient>(
     db.execute(
         "INSERT INTO resource_snapshots \
          (id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
-          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, is_private) \
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)",
+          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_private) \
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)",
         &[
             &snapshot_id,
             &resource.id,
@@ -56,6 +56,7 @@ pub async fn create_snapshot<C: GenericClient>(
             &resource.height,
             &resource.duration_ms,
             &media_variants,
+            &resource.owner_note_id,
             &resource.is_private,
         ],
     )

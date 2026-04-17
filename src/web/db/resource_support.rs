@@ -6,11 +6,11 @@ use tokio_postgres::error::SqlState;
 
 pub(super) const RETURNING_RECORD: &str = "RETURNING id, kind, alias, title, summary, body, \
 media_family, file_key, content_type, byte_size, sha256_hex, original_filename, width, height, \
-duration_ms, media_variants, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
+duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
 created_at, updated_at";
 pub(super) const SELECT_RECORD: &str = "SELECT id, kind, alias, title, summary, body, \
 media_family, file_key, content_type, byte_size, sha256_hex, original_filename, width, height, \
-duration_ms, media_variants, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
+duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
 created_at, updated_at";
 
 pub(super) async fn current_favorite_state<C: GenericClient>(
@@ -92,6 +92,7 @@ pub(crate) fn row_to_resource(row: tokio_postgres::Row) -> Resource {
         height: row.get("height"),
         duration_ms: row.get("duration_ms"),
         media_variants: media_variants_from_json(row.get("media_variants")),
+        owner_note_id: row.get("owner_note_id"),
         is_favorite: row.get("is_favorite"),
         favorite_position: row.get("favorite_position"),
         is_private: row.get("is_private"),

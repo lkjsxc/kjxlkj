@@ -19,6 +19,7 @@ struct AttachmentRefPayload {
     id: String,
     kind: ResourceKind,
     alias: Option<String>,
+    owner_note_id: Option<String>,
     file_href: Option<String>,
 }
 
@@ -81,6 +82,7 @@ pub async fn attach_media(
                         id: resource.id,
                         kind: resource.kind,
                         alias: resource.alias,
+                        owner_note_id: resource.owner_note_id,
                     })
                     .collect(),
             },

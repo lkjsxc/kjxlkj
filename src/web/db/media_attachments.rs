@@ -51,7 +51,7 @@ pub async fn attach_media_to_note(
             "media attachments require a live note".to_string(),
         ));
     }
-    let created_media = create_media_resources(&tx, attachments, update.is_private).await?;
+    let created_media = create_media_resources(&tx, note_id, attachments, update.is_private).await?;
     let current_resource =
         update_target_note(&tx, note_id, update, was_favorite, current_position).await?;
     tx.commit()
@@ -88,6 +88,7 @@ type NoteResourceState = (ResourceKind, bool, Option<i64>);
 
 async fn create_media_resources<C: GenericClient>(
     db: &C,
+    note_id: &str,
     attachments: &[AttachmentCreate],
     is_private: bool,
 ) -> Result<Vec<Resource>, AppError> {
@@ -110,8 +111,8 @@ async fn create_media_resources<C: GenericClient>(
             .query_one(
                 &format!(
                     "INSERT INTO resources (id, kind, title, summary, body, media_family, file_key, content_type, \
-                     byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, is_favorite, favorite_position, is_private) \
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, FALSE, NULL, $13) {RETURNING_RECORD}"
+                     byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private) \
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, $13, FALSE, NULL, $14) {RETURNING_RECORD}"
                 ),
                 &[
                     &attachment.media_id,
@@ -126,6 +127,7 @@ async fn create_media_resources<C: GenericClient>(
                     &blob.sha256_hex,
                     &blob.original_filename,
                     &media_variants,
+                    &note_id,
                     &is_private,
                 ],
             )
