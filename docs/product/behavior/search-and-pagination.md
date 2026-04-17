@@ -5,6 +5,8 @@
 - `/search` accepts `q`, `kind`, `scope`, `sort`, `popular_window`, `cursor`, `direction`, and `limit`.
 - `kind=all|note|media`.
 - `scope=all|favorites`.
+- `popular_window=1d|7d|30d|90d|all` when popularity sorting is active.
+- Search UI exposes a visible popularity-window control so `popular_window` is not a hidden-only state.
 
 ## Search Matching
 

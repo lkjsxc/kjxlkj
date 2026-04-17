@@ -16,7 +16,7 @@
 
 - Statistics cards for total resources, public/private split, favorites, and current month or year activity.
 - Statistics also expose counted resource-view activity totals and recent popularity context.
-- `Popular` uses an in-place `7d` / `30d` / `90d` / `All time` switch.
+- `Popular` uses an in-place `1d` / `7d` / `30d` / `90d` / `All time` switch.
 - Recently updated and Favorites may both contain notes and media.
 - Favorites reflect one persisted mixed-resource order managed from `/admin/settings`.
 - Popular cards may show the active window count, but card copy may not show the words `All time`.

@@ -75,7 +75,7 @@
 - `kind=all` is the default.
 - `kind=note` narrows to notes only.
 - `kind=media` narrows to media only.
-- `popular_window` accepts `7d`, `30d`, `90d`, and `all`.
+- `popular_window` accepts `1d`, `7d`, `30d`, `90d`, and `all`.
 
 ## Settings Schema
 
@@ -126,9 +126,9 @@
 - `POST /resources/media` is `multipart/form-data`.
 - Required part: `file`.
 - Optional parts: `alias`, `is_favorite`, `is_private`.
-- Accepted image filename extensions include `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.svg`, `.heic`, and `.heif`.
+- Accepted direct-upload formats include current image and video formats plus file-family `.heic` and `.heif`.
 - The server derives `media_family`, content metadata, and the initial Markdown body from the uploaded file.
-- The server stores the original file and attempts derivative WebP preparation.
+- The server stores the original file and attempts derivative WebP preparation only for image and video media.
 
 ## Note Media Attachment Payload
 
@@ -178,6 +178,7 @@
 ```
 
 - The endpoint creates one media resource for each uploaded file.
+- Attachment insertion is kind-aware: image Markdown image, video safe HTML video, file-family page link.
 - The endpoint does not create generated notes that only link to or embed media.
 - The target live note is updated only when the entire batch succeeds.
 - `selection_fallback = true` means the embeds were appended because the submitted selection was not valid for the submitted draft body.
@@ -187,8 +188,8 @@
 
 - `GET /{ref}/file` returns the preserved original current file.
 - `GET /{ref}/file?variant=card` returns a current card WebP when present for image or video media.
-- `GET /{ref}/file?variant=display` returns a current display WebP when present.
-- `GET /{ref}/file?variant=poster` returns a current video poster WebP when present.
+- `GET /{ref}/file?variant=display` returns a current display WebP when present for image media.
+- `GET /{ref}/file?variant=poster` returns a current video poster WebP when present for video media.
 - Snapshot file routes accept the same variant names and use saved derivative metadata.
 - `variant=display` and `variant=card` may fall back to the raw original only when that original is reasonably browser-renderable inline.
 

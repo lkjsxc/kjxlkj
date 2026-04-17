@@ -27,13 +27,14 @@
 - The homepage always contains `Quick search`.
 - The homepage may contain `Popular`, `Recently updated`, and `Favorites` in the configured order.
 - The homepage does not contain a statistics block.
-- The Popular section exposes one in-place window switch for `7d`, `30d`, `90d`, and `All time`.
+- The Popular section exposes one in-place window switch for `1d`, `7d`, `30d`, `90d`, and `All time`.
 - The default homepage popularity window is `30d`.
 - Popular switching leaves the visible URL at `/`.
 - Popular switching replaces the full section from server-rendered HTML instead of re-sorting the existing DOM.
 - Popular switching preserves browser-local timestamp rendering after fragment replacement.
+- Returning to `/` from a shell rail link restores the remembered in-tab homepage state, including the selected popularity window and main-pane scroll position.
 - Without JavaScript, the homepage stays on the default `30d` render.
-- `Popular`, `Recently updated`, and `Favorites` each end with one `View more notes` card that links into `/search`.
+- `Popular`, `Recently updated`, and `Favorites` each end with one browse card that links into `/search`.
 - Guest Popular cards do not expose popularity totals.
 - Admin Popular cards may expose the active popularity total only.
 - When the active window is `All time`, the visible card metric label is `Views`.

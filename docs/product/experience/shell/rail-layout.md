@@ -12,11 +12,13 @@
 - Brand and session mode.
 - Admin-only create actions near the top of the rail.
 - Primary navigation.
-- Live resource context.
-- Timeline navigation.
-- One history card labeled `History`.
 - One GitHub section linking to `https://github.com/lkjsxc/kjxlkj`.
 - Mode-specific actions.
+
+## Note-Page Exception
+
+- Live note pages move live-resource context, alias, timeline navigation, and the history affordance into the main pane.
+- Media pages and history pages may still keep resource-specific rail context when it improves scannability.
 
 ## Create Actions
 

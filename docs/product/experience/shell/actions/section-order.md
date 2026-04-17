@@ -15,6 +15,6 @@
 
 ## Resource and History Rails
 
-- Resource/history section order is live context, timeline, `History`, `Open GitHub`, then mode-specific actions.
-- `History` stays above `Open GitHub`.
+- Note pages move `Prev`, `History`, and `Next` into the main pane and do not keep those controls in the rail.
+- History pages keep their history-specific context above `Open GitHub`.
 - `Open GitHub` stays above guest sign-in and admin resource-management/session actions.

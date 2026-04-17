@@ -16,6 +16,6 @@
 
 ## Consumers
 
-- Dashboard totals for `Views total`, `Views 7d`, `Views 30d`, and `Views 90d` use counted opens only.
+- Dashboard totals for `Views total`, `Views 1d`, `Views 7d`, `Views 30d`, and `Views 90d` use counted opens only.
 - Popularity windows use counted opens only.
 - Counted opens apply equally to notes and media once a resource is public and guest-readable.

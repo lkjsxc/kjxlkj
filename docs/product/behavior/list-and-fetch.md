@@ -43,7 +43,7 @@
 ## Current File Fetch (`GET /{ref}/file`)
 
 - Returns the preserved current raw-original media binary when `/{ref}` is live media.
-- `variant=card|display|poster` returns the matching current derivative when it exists.
+- `variant=card|display|poster` returns the matching current derivative when it exists for image or video media.
 - `variant=display` and `variant=card` may fall back to the raw original only when browsers can reasonably render that original inline.
 - Returns `404` when `/{ref}` resolves to a note.
 - Returns `404` for private live media when no valid session exists.
@@ -51,7 +51,7 @@
 ## Snapshot File Fetch (`GET /{snapshot_id}/file`)
 
 - Returns the immutable raw-original media binary stored on that snapshot.
-- `variant=card|display|poster` returns the matching saved derivative when it exists.
+- `variant=card|display|poster` returns the matching saved derivative when it exists for image or video media.
 - `variant=display` and `variant=card` may fall back to the saved raw original only when browsers can reasonably render that original inline.
 - Returns `404` when the snapshot belongs to a note.
 - Uses the snapshot’s stored visibility.

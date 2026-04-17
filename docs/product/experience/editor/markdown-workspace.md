@@ -18,6 +18,7 @@
 - The editor lives inside the normal resource shell.
 - Preview starts closed and opens on demand from resource chrome.
 - Live note pages expose `Upload media` beside `Show preview`.
+- Live note pages accept supported pasted clipboard files through the same attachment flow as `Upload media`.
 - The `Public` checkbox remains outside the textarea and inside the workspace chrome.
 - Alias, canonical URL, file URL, and metadata controls should use a consistent card-like presentation.
 - The page itself may not require horizontal scrolling to edit.

@@ -11,6 +11,6 @@ Use this subtree for contracts that depend on external libraries, data formats, 
 ## Child Index
 
 - [json-contract.md](json-contract.md): JSON success and error shapes
-- [license-inventory.md](license-inventory.md): repo, runtime, tooling, and container-image license inventory
+- [licenses/README.md](licenses/README.md): repo, runtime, verification, and FFmpeg license inventory
 - [time-contract.md](time-contract.md): storage and presentation rules for timestamps
 - [password-contract.md](password-contract.md): password validation, hashing, and timing-safety rules

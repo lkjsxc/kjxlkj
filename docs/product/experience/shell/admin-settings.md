@@ -10,10 +10,10 @@
 ## Form Groups
 
 - `Site identity` contains `Site name`, `Site description`, and `Public base URL`.
-- `Site icon` contains current-state, upload, and reset controls for the icon used across the site.
 - `Home hero` contains the editable intro Markdown field.
 - `Home sections` contains visibility, drag-only order, and item-count controls for mixed-resource sections.
 - `Favorites` contains the reorderable mixed-resource favorite list.
+- `Site icon` is its own top-level section and contains current-state, upload, and reset controls for the icon used across the site.
 - `Sessions` contains the future-login timeout field in minutes.
 - `Search` contains the default result-count control for `/search`.
 - `Media` contains the WebP quality value for future derivative generation.

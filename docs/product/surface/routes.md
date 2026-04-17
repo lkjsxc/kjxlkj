@@ -23,7 +23,7 @@
 
 - `GET /_/popular-resources/home/{window}` returns the homepage Popular section.
 - `GET /_/popular-resources/admin/{window}` returns the dashboard Popular section.
-- `{window}` is `7d`, `30d`, `90d`, or `all`.
+- `{window}` is `1d`, `7d`, `30d`, `90d`, or `all`.
 
 ## Asset Delivery
 

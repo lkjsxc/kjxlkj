@@ -3,7 +3,8 @@
 ## Layout
 
 - History index and saved-snapshot pages reuse the note shell.
-- The rail keeps live-note context, timeline cards, one history card, the GitHub control, and trailing actions.
+- The history index main pane keeps the live resource row above the saved-snapshot list.
+- The note page itself owns the compact `Prev` / `History` / `Next` row; the history index remains the dedicated saved-snapshot browsing surface.
 - The history body stays in the main pane.
 - The history index is the only full saved-snapshot browsing surface.
 - Visible rail section headings remain absent here too.
@@ -34,9 +35,5 @@
 
 ## Rail Limits
 
-- The rail history section contains exactly one card labeled `History`.
-- The rail places `History` above `Open GitHub` on both guest and admin note/history pages.
-- Note/history action ordering follows [actions/section-order.md](actions/section-order.md).
+- History pages may keep one history affordance, but the note page itself owns the compact top-row history control.
 - The rail never lists individual saved snapshots.
-- Saved-snapshot pages keep the same single-card history affordance.
-- Rail timeline semantics and compact ordering follow [../../navigation/timeline/README.md](../../navigation/timeline/README.md).

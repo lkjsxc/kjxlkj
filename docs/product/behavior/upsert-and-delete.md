@@ -16,7 +16,7 @@
 - Requires multipart part `file`.
 - Optional parts: `alias`, `is_favorite`, and `is_private`.
 - The server stores the uploaded binary in SeaweedFS-backed storage and derives media metadata.
-- The server prepares derivative WebP metadata when supported by the media family.
+- The server prepares derivative WebP metadata only for image and video families.
 - The initial Markdown `body` is seeded from the uploaded filename stem as a `# Heading`.
 - Successful create returns `201` with created resource JSON.
 - Creating media also creates saved snapshot `1`.
@@ -35,7 +35,10 @@
 - Created media inherit the triggering note visibility.
 - Created media receive the same derivative preparation as direct media uploads.
 - The upload flow does not create generated notes that only link to or embed the media.
-- The current note updates by inserting direct media embeds at the supplied selection range in picker order.
+- The current note updates by inserting kind-aware Markdown at the supplied selection range in picker order.
+- Image attachments insert `![](/<ref>/file)`.
+- Video attachments insert `<video controls src="/<ref>/file"></video>`.
+- File-family attachments insert `[filename](/<ref>)`.
 - If the supplied selection range is stale or invalid for the submitted draft, the current note appends the embeds instead of failing the batch.
 - A successful batch creates one new saved snapshot for the current note plus saved snapshot `1` for each newly created media.
 - Any file failure aborts the whole batch and leaves the current note unchanged.
@@ -73,3 +76,4 @@
 - The first press arms delete for `4` seconds and changes the button copy to require a second press.
 - The second press within the armed window issues `DELETE /resources/{id}`.
 - Letting the armed window expire resets the button without network traffic.
+- After a successful HTML delete, the admin UI redirects to `/`.

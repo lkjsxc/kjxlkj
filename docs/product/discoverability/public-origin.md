@@ -28,5 +28,5 @@
 ## Operator Guidance
 
 - Operators may leave `public_base_url` blank during private setup, staging, or hostname cutover work.
-- Operators should set `public_base_url` before publishing public notes to search engines.
+- Operators should set `public_base_url` before publishing public resources to search engines.
 - The settings page should explain that blank disables indexing rather than silently guessing public URLs.

@@ -14,6 +14,7 @@
 
 - `/admin/settings` is the canonical admin workspace for global settings plus favorite ordering.
 - The page exposes one browser-local settings search that filters visible settings items without persisting anything.
+- `Site identity` and `Site icon` are separate top-level sections.
 - Reordering home sections changes only the in-form pending state until `Save settings`.
 - Home-section ordering uses drag-and-drop only; explicit `Up` and `Down` controls are not part of the contract.
 - Favorite ordering and site icon upload/reset persist immediately through their own admin-only requests.

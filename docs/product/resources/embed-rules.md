@@ -7,7 +7,6 @@
 - Snapshot-stable image embeds use `![](/{snapshot_id}/file)`.
 - Rendering may serve a smaller WebP display derivative through generated HTML while preserving the authored Markdown URL.
 - Generated HTML should prefer `variant=display` and then `variant=card` for local image embeds before using the raw original.
-- Raw originals such as `HEIC` and `HEIF` should not be preferred for inline rendering when a stored WebP derivative exists.
 - Admin preview and guest rendering must display the same image output for the same Markdown.
 
 ## Videos
@@ -18,6 +17,14 @@
 - Rendering may add a stored WebP poster to local video embeds while preserving the authored video URL.
 - Inline videos must stay no wider than the prose surface and preserve their aspect ratio.
 - Admin preview and guest rendering must display the same video output for the same Markdown.
+
+## Files
+
+- File-family media should not be embedded with Markdown image syntax.
+- The canonical note-attachment pattern for file-family media is a page link such as `[capture.heic](/alias-or-id)`.
+- Snapshot-stable file links may point at `/{snapshot_id}`.
+- Direct raw-file links such as `/{ref}/file` remain valid when download-first Markdown is desired.
+- Admin preview and guest rendering must apply the same local-card promotion rules to file-family links.
 
 ## Safety and Failure Rules
 

@@ -19,6 +19,9 @@
 - Compact drawer open state is preserved when the target page also uses the shell.
 - Browser history, document title, canonical links, robots metadata, and social-card metadata update to the target page.
 - Local time formatting and page-specific scripts re-run after the shell swap.
+- Home and Search keep remembered in-tab state for shell rail returns.
+- Remembered Home state includes the selected popularity window and main-pane scroll position.
+- Remembered Search state includes the last full search URL and main-pane scroll position.
 
 ## Navigation Guards
 

@@ -4,7 +4,9 @@
 
 - Live admin note pages expose `Upload media` beside `Show preview`.
 - The control is absent on guest pages and on media edit pages.
-- The picker accepts one or more image or video files.
+- The picker accepts one or more supported media uploads.
+- Current supported uploads are image files, video files, and file-family `HEIC` or `HEIF` uploads.
+- Clipboard paste of supported files uses the same batch-attachment contract as the picker.
 - The editor captures the textarea selection before the file picker opens.
 - Upload state and failure messaging stay inside the note editor surface.
 
@@ -26,6 +28,7 @@
 
 - Images insert `![](/<media-ref>/file)`.
 - Videos insert `<video controls src="/<media-ref>/file"></video>`.
+- File-family media insert `[<original-filename>](/<media-ref>)`.
 - `<media-ref>` prefers alias when one exists and otherwise uses the live media `id`.
 - Generated notes are not part of the note-editor upload flow.
 
