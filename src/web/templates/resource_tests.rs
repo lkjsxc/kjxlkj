@@ -84,6 +84,7 @@ fn sample_media_resource() -> Resource {
 }
 
 #[test]
+#[rustfmt::skip]
 fn guest_resource_page_hides_editor() {
     let html = resource_page(
         &sample_resource(),
