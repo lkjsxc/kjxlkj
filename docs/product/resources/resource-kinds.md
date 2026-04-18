@@ -34,5 +34,7 @@
 
 - Public routes prefer `alias` when present.
 - Normal UI does not show raw IDs as visible chrome.
+- Resource headers and admin-visible cards use the same user-facing kind vocabulary: `Note`, `Image`, `Video`, and `File`.
+- Resource kind remains visible even when visibility and favorite state are also shown.
 - Browse, favorites, popularity, and search treat notes and media as peer resources.
 - Timeline navigation is shared across notes and media.

@@ -11,6 +11,7 @@
 
 - Title is the strongest text.
 - Summary is secondary, clipped to a short preview, and stripped of leading Markdown control markers.
+- Badge rows communicate kind first, then optional favorite state, then visibility when visibility is intentionally exposed.
 - Created and updated times use browser-local 24-hour formatting.
 - Live-note cards on note and history pages use the same Created/Updated metadata language as Home and Search cards.
 - Admin rows may show visibility state, but guest rows do not expose private-only metadata.
@@ -23,6 +24,7 @@
 - Media grid cards may stay thumbnail-only, but thumbnails use one fixed cropped `128px` height.
 - Media card badges and metadata must sit below the thumbnail without overlap.
 - Live-resource `Prev` / `History` / `Next` cards keep the same one-line title clamp and two-line summary clamp as other note-summary cards.
+- Live-resource timeline cards inside note/media pages align to the same max readable width as the main prose/editor surface rather than the full shell column.
 
 ## Action Treatment
 
