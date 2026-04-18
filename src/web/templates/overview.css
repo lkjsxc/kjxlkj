@@ -99,6 +99,11 @@
     color: #ffd66e;
 }
 
+.status-pill-kind {
+    background: var(--panel-2);
+    color: var(--text-soft);
+}
+
 .card-title,
 .card-summary,
 .rail-link span {
@@ -126,6 +131,10 @@
     width: 100%;
     justify-content: flex-end;
     align-items: flex-start;
+}
+
+.page-badges {
+    justify-content: flex-end;
 }
 
 .resource-grid .resource-row {

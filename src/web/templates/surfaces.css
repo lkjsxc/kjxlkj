@@ -138,6 +138,8 @@
 
 .resource-head {
     align-items: end;
+    width: min(100%, 1040px);
+    justify-self: start;
 }
 
 .page-intro {

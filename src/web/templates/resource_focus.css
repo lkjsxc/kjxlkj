@@ -3,6 +3,8 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     align-items: stretch;
+    width: min(100%, 1040px);
+    justify-self: start;
 }
 
 .resource-nav-strip-dual {
@@ -10,6 +12,7 @@
 }
 
 .resource-nav-card {
+    width: 100%;
     min-width: 0;
     min-height: 142px;
     height: 100%;

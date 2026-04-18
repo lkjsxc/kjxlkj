@@ -8,6 +8,9 @@ pub struct NavLink {
     pub title: String,
     pub summary: String,
     pub created_at: String,
+    pub kind_badge: &'static str,
+    pub is_favorite: bool,
+    pub visibility: Option<&'static str>,
 }
 
 #[derive(Clone, Debug)]

@@ -9,7 +9,7 @@ use super::resource_media::{admin_media_panel, current_media_block};
 use super::resource_shell::live_resource_rail;
 use crate::web::db::{Resource, ResourceKind};
 use crate::web::site::SiteContext;
-use crate::web::view_media;
+use crate::web::{view, view_media};
 
 pub fn resource_page(
     resource: &Resource,
@@ -24,13 +24,13 @@ pub fn resource_page(
 <div class="page-meta">
 <small><span>Created</span>{}</small>
 <small><span>Updated</span>{}</small>
-{}
+<div class="card-badges page-badges">{}</div>
 </div>
 </header>
 {}{}{}"#,
         chrome.created_at,
         chrome.updated_at,
-        status_pill(chrome.visibility, ""),
+        resource_badges(resource, chrome),
         live_resource_nav_strip(chrome, is_admin),
         analytics_block(analytics),
         resource_body(resource, chrome, body_html, is_admin),
@@ -61,6 +61,18 @@ pub fn resource_page(
         "",
         &editor_script(resource, chrome, is_admin, &site.site_name),
     )
+}
+
+fn resource_badges(resource: &Resource, chrome: &ResourceChrome) -> String {
+    let mut badges = vec![status_pill(
+        view::kind_badge(resource.media_family),
+        "status-pill-kind",
+    )];
+    if chrome.is_favorite {
+        badges.push(status_pill("Favorite", "status-pill-favorite"));
+    }
+    badges.push(status_pill(chrome.visibility, ""));
+    badges.join("")
 }
 
 fn resource_body(

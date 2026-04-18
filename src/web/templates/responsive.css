@@ -73,6 +73,10 @@
         text-align: left;
     }
 
+    .page-badges {
+        justify-content: flex-start;
+    }
+
     .page-meta small,
     .card-meta small,
     .rail-facts span,

@@ -1,4 +1,4 @@
-use super::card_frame::{card_body, card_meta, linked_card, static_card};
+use super::card_frame::{card_body, card_meta, linked_card, static_card, status_pill};
 use super::model::{NavLink, ResourceAnalytics, ResourceChrome};
 
 pub fn live_resource_nav_strip(chrome: &ResourceChrome, is_admin: bool) -> String {
@@ -54,8 +54,8 @@ fn timeline_card(link: Option<&NavLink>, label: &str, empty: &str) -> String {
             &link.href,
             "",
             "summary-card resource-nav-card",
-            &card_body(label, &link.title),
-            &card_meta("", ""),
+            &card_body(&link.title, &link.summary),
+            &card_meta(&timeline_badges(label, link), ""),
         ),
         None => static_card(
             r#" aria-disabled="true""#,
@@ -77,4 +77,18 @@ fn history_card(chrome: &ResourceChrome, is_admin: bool) -> String {
         &card_body("History", ""),
         &card_meta("", ""),
     )
+}
+
+fn timeline_badges(label: &str, link: &NavLink) -> String {
+    let mut badges = vec![
+        status_pill(label, "status-pill-kind"),
+        status_pill(link.kind_badge, "status-pill-kind"),
+    ];
+    if link.is_favorite {
+        badges.push(status_pill("Favorite", "status-pill-favorite"));
+    }
+    if let Some(visibility) = link.visibility {
+        badges.push(status_pill(visibility, ""));
+    }
+    badges.join("")
 }

@@ -90,12 +90,6 @@ fn build_index_item(
     metrics: Vec<IndexMetric>,
 ) -> IndexItem {
     let resource = &listed.resource;
-    let kind_badge = match resource.media_family {
-        Some(MediaFamily::Image) => "Image",
-        Some(MediaFamily::Video) => "Video",
-        Some(MediaFamily::File) => "File",
-        None => "Note",
-    };
     IndexItem {
         id: resource.id.clone(),
         href: resource_href(resource),
@@ -103,7 +97,7 @@ fn build_index_item(
         summary: listed.preview.clone(),
         created_at: render_time(&resource.created_at),
         updated_at: render_time(&resource.updated_at),
-        kind_badge,
+        kind_badge: kind_badge(resource.media_family),
         media_family: resource.media_family,
         media_href: matches!(
             resource.media_family,
@@ -132,6 +126,9 @@ async fn adjacent_link(
         title: title_for(&resource),
         summary: resource.summary.clone(),
         created_at: render_time(&resource.created_at),
+        kind_badge: kind_badge(resource.media_family),
+        is_favorite: resource.is_favorite,
+        visibility: include_private.then_some(visibility_label(resource.is_private)),
     }))
 }
 
@@ -168,5 +165,14 @@ pub fn visibility_label(is_private: bool) -> &'static str {
         "Private"
     } else {
         "Public"
+    }
+}
+
+pub fn kind_badge(media_family: Option<MediaFamily>) -> &'static str {
+    match media_family {
+        Some(MediaFamily::Image) => "Image",
+        Some(MediaFamily::Video) => "Video",
+        Some(MediaFamily::File) => "File",
+        None => "Note",
     }
 }
