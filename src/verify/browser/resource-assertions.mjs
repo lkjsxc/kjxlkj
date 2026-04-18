@@ -29,14 +29,14 @@ export async function expectAdminNote(page, previousTitle, nextTitle) {
     await assertCreateActionBelowHome(page);
 }
 
-export async function expectGuestNote(page, previousTitle, nextTitle) {
+export async function expectGuestNote(page, previousTitle, nextTitle, favorite = true) {
     await expectLiveResourceShell(page, {
         admin: false,
         deleteLabel: null,
         previousTitle,
         nextTitle,
     });
-    await assertHeaderPills(page, ['Note', 'Favorite', 'Public']);
+    await assertHeaderPills(page, favorite ? ['Note', 'Favorite', 'Public'] : ['Note', 'Public']);
     assert.equal(await page.getByText('Views total', { exact: true }).count(), 0);
 }
 

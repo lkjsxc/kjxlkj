@@ -80,7 +80,7 @@ export async function capturePublicScreens(browser, notes) {
     await capture(page, 'desktop-guest-note.png');
 
     await page.goto(`${appUrl}/${notes.oldest.ref}`, { waitUntil: 'networkidle' });
-    await expectGuestNote(page, notes.video.title, notes.middle.title);
+    await expectGuestNote(page, notes.video.title, notes.middle.title, false);
 
     await page.goto(`${appUrl}/${notes.newest.ref}`, { waitUntil: 'networkidle' });
     await expectGuestNote(page, notes.middle.title, null);
