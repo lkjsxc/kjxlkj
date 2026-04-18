@@ -2,8 +2,13 @@ use super::card_frame::{card_body, card_meta, linked_card, static_card};
 use super::model::{NavLink, ResourceAnalytics, ResourceChrome};
 
 pub fn live_resource_nav_strip(chrome: &ResourceChrome, is_admin: bool) -> String {
+    let strip_class = if is_admin {
+        "resource-nav-strip"
+    } else {
+        "resource-nav-strip resource-nav-strip-dual"
+    };
     format!(
-        r#"<section class="resource-nav-strip">{}{}{}</section>"#,
+        r#"<section class="{strip_class}">{}{}{}</section>"#,
         timeline_card(
             chrome.previous.as_ref(),
             "Prev",

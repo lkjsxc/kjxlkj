@@ -97,8 +97,8 @@ fn guest_resource_page_hides_editor() {
     assert!(!html.contains("id=\"editor-body\""));
     assert_eq!(html.match_indices("<h1>").count(), 1);
     assert!(html.contains("<title>Demo | Launchpad</title>"));
-    assert!(html.contains("rel=\"canonical\" href=\"https://example.com/demo-note\""));
-    assert!(html.contains("content=\"index,follow\""));
+    assert!(html.contains(r#"class="resource-nav-strip resource-nav-strip-dual""#));
+    assert!(html.contains("rel=\"canonical\" href=\"https://example.com/demo-note\"") && html.contains("content=\"index,follow\""));
 }
 
 #[test]
@@ -160,7 +160,7 @@ fn guest_media_page_exposes_original_download_and_display_route() {
     assert!(html.contains("href=\"/demo-image/file\""));
     assert!(html.contains("download=\"demo.heic\""));
     assert!(html.contains("Open raw file"));
-    assert!(html.contains("resource-nav-strip"));
+    assert!(html.contains(r#"class="resource-nav-strip resource-nav-strip-dual""#));
     assert!(!html.contains(r#"class="summary-card current-resource-card"#));
     assert!(!html.contains("data-history-link"));
     assert!(!html.contains("variant=display"));
