@@ -90,7 +90,7 @@ async function expectLiveResourceShell(page, options) {
 async function assertLiveResourceMetadata(page) {
     const card = page.locator('.resource-head .page-meta');
     await card.waitFor({ state: 'visible' });
-    await page.locator('.resource-head .status-pill').waitFor({ state: 'visible' });
+    await page.locator('.resource-head .status-pill').first().waitFor({ state: 'visible' });
     await card.getByText('Created', { exact: true }).waitFor({ state: 'visible' });
     await card.getByText('Updated', { exact: true }).waitFor({ state: 'visible' });
 }
