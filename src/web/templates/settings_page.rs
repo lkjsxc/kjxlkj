@@ -100,15 +100,14 @@ fn site_identity_section(settings: &AppSettings) -> String {
 }
 
 fn settings_search_section() -> String {
-    format!(
-        r#"<div class="settings-search-row">
+    r#"<div class="settings-search-row">
 <label class="form-group settings-search-card">
 <span>Search settings</span>
 <input type="search" placeholder="Search labels, rows, and helper text" data-settings-search-input>
 </label>
 <p class="surface-empty settings-search-empty" data-settings-search-empty hidden>No matching settings.</p>
 </div>"#
-    )
+        .to_string()
 }
 
 fn search_options_section(settings: &AppSettings) -> String {
