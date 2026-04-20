@@ -48,7 +48,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
     await waitForPreviewMedia(page, previewImageSrc, media.video.fileHref);
     await assertContainedVideo(page, '#editor-preview video');
     await assertEditorLayout(page, false);
-    await assertAccentLink(page, '#editor-preview a');
+    await assertAccentLink(page, '#editor-preview a[href="https://example.com/very-long-link-for-wrap-testing"]');
     await page.waitForTimeout(1800);
     assert.ok(saveRequests.length >= 1, 'editing should trigger autosave');
     const settledCount = saveRequests.length;
@@ -77,7 +77,7 @@ export async function verifyEditorFormatting(browser, page, note, media) {
     );
     await assertNoHorizontalOverflow(guestPage);
     await assertContainedVideo(guestPage, '.prose video');
-    await assertAccentLink(guestPage, '.prose a');
+    await assertAccentLink(guestPage, '.prose a[href="https://example.com/very-long-link-for-wrap-testing"]');
     await assertVisibleText(guestPage, 'Alpha');
     await assertInvisibleText(guestPage, '* Alpha');
     await guest.close();

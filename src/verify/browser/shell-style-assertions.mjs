@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { alpha, contrast, isDark, isLight } from './style-utils.mjs';
 
 export async function assertDarkSurface(page) {
-    const shell = page.locator('.surface, .index-card').first();
+    const shell = page.locator('.surface, .index-card, .settings-row').first();
     const style = await shell.evaluate((node) => {
         const computed = getComputedStyle(node);
         return { background: computed.backgroundColor, backgroundImage: computed.backgroundImage, boxShadow: computed.boxShadow };
@@ -69,7 +69,7 @@ export async function assertRestrainedMainColumn(page) {
 
 export async function assertTightCorners(page) {
     const samples = await page.evaluate(() =>
-        ['.btn', '.surface', '.index-card', '.rail-link', 'input:not([type="checkbox"]):not([type="radio"])', 'select', 'textarea']
+        ['.btn', '.surface', '.index-card', '.settings-row', '.rail-link', 'input:not([type="checkbox"]):not([type="radio"])', 'select', 'textarea']
             .map((selector) => {
                 const node = [...document.querySelectorAll(selector)].find((item) => {
                     const style = getComputedStyle(item);

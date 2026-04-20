@@ -174,7 +174,10 @@ async function gridTitles(page) {
     );
 }
 async function expectVisibleSection(page, name, visible) {
-    assert.equal(await page.locator('[data-settings-row]', { hasText: name }).first().isVisible(), visible);
+    const row = page.locator('[data-settings-row]').filter({
+        has: page.locator('.settings-row-title').getByText(name, { exact: true }),
+    }).first();
+    assert.equal(await row.isVisible(), visible, `${name} visibility should be ${visible}`);
 }
 async function iconResponse(page, pathname) {
     const response = await page.waitForResponse((item) => {
