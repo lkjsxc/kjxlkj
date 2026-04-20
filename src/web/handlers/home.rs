@@ -4,6 +4,7 @@ use crate::error::AppError;
 use crate::web::db::{self, PopularWindow};
 use crate::web::handlers::http;
 use crate::web::handlers::session;
+use crate::web::markdown;
 use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
@@ -44,8 +45,17 @@ pub async fn home_page(
         .map(|resource| view::index_item(resource, is_admin))
         .collect::<Vec<_>>();
     let guest_login_href = session::login_url(&uri);
+    let intro_html = markdown::render_markdown_page(
+        pool,
+        &settings.home_intro_markdown,
+        None,
+        is_admin,
+        site.public_base_url.as_deref(),
+    )
+    .await?;
     Ok(http::html(templates::home_page(HomeView {
         settings: &settings,
+        intro_html: &intro_html,
         popular: &popular_items,
         recent: &recent_items,
         favorites: &favorite_items,

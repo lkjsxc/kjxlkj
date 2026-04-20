@@ -46,3 +46,44 @@ fn render_markdown_cards_local_resource_pages() {
     assert!(html.contains("href=\"/orbit-ledger\""));
     assert!(html.contains(">Orbit Ledger<"));
 }
+
+#[test]
+fn render_markdown_embeds_standalone_external_urls() {
+    let html = render_markdown("Before\n\nhttps://github.com/lkjsxc/kjxlkj/pull/12\n\nAfter");
+
+    assert!(html.contains("external-embed-card"));
+    assert!(html.contains("GitHub"));
+    assert!(html.contains("lkjsxc/kjxlkj pull #12"));
+}
+
+#[test]
+fn render_markdown_keeps_non_standalone_urls_plain() {
+    let html = render_markdown(
+        "Inline https://github.com/lkjsxc/kjxlkj stays text.\n\n    https://x.com/lkjsxc\n\n```txt\nhttps://pixiv.net/artworks/123\n```",
+    );
+
+    assert!(!html.contains("external-embed"));
+    assert!(html.contains("https://github.com/lkjsxc/kjxlkj"));
+    assert!(html.contains("https://pixiv.net/artworks/123"));
+}
+
+#[test]
+fn render_markdown_generates_safe_provider_frames() {
+    let html = render_markdown(
+        "https://youtu.be/dQw4w9WgXcQ\n\n<iframe src=\"https://evil.example\"></iframe>",
+    );
+
+    assert!(html.contains("external-embed-frame"));
+    assert!(html.contains("https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"));
+    assert!(!html.contains("evil.example"));
+}
+
+#[test]
+fn render_markdown_embeds_direct_images_and_local_urls() {
+    let html = render_markdown("https://example.com/chart.webp\n\n/demo/file");
+
+    assert!(html.contains("external-embed-image"));
+    assert!(html.contains("src=\"https://example.com/chart.webp\""));
+    assert!(html.contains("local-url-card"));
+    assert!(html.contains("/demo/file?variant=card"));
+}

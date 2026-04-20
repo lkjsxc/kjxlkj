@@ -11,8 +11,9 @@ pub async fn render_markdown_page(
     body: &str,
     current_resource_id: Option<&str>,
     is_admin: bool,
+    public_base_url: Option<&str>,
 ) -> Result<String, AppError> {
-    let html = crate::core::render_markdown(body);
+    let html = crate::core::render_markdown_with_origin(body, public_base_url);
     decorate_local_images(pool, &html, current_resource_id, is_admin).await
 }
 

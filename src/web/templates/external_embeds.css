@@ -1,0 +1,70 @@
+.external-embed {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--panel-2);
+}
+
+.external-embed-card a {
+    display: grid;
+    gap: 6px;
+    padding: 14px 16px;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.external-embed-card strong,
+.external-embed-card small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.external-embed-card small,
+.external-embed-frame a,
+.external-embed-image figcaption {
+    color: var(--text-soft);
+}
+
+.external-embed-provider {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.external-embed-frame {
+    display: grid;
+    overflow: hidden;
+}
+
+.external-embed-frame iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border: 0;
+    background: var(--bg-1);
+}
+
+.external-embed-frame a {
+    padding: 10px 14px;
+    text-decoration: none;
+}
+
+.external-embed-image {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 10px;
+}
+
+.external-embed-image img {
+    display: block;
+    width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    background: var(--bg-1);
+}
+
+.external-embed-image figcaption {
+    padding: 0 4px 2px;
+}

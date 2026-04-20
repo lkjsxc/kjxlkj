@@ -1,10 +1,12 @@
 //! Markdown preview handler
 
 use crate::error::AppError;
+use crate::web::db;
 use crate::web::handlers::http;
 use crate::web::handlers::session;
 use crate::web::markdown;
 use crate::web::routes::AppState;
+use crate::web::site::SiteContext;
 use axum::extract::{Json, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
@@ -27,6 +29,8 @@ pub async fn render_markdown_preview(
     Json(body): Json<PreviewInput>,
 ) -> Result<Response, AppError> {
     session::require_session(&headers, &state.pool).await?;
+    let settings = db::get_settings(&state.pool).await?;
+    let site = SiteContext::from_settings(&settings);
     Ok(http::json_status(
         StatusCode::OK,
         PreviewOutput {
@@ -35,6 +39,7 @@ pub async fn render_markdown_preview(
                 &body.body,
                 body.current_resource_id.as_deref(),
                 true,
+                site.public_base_url.as_deref(),
             )
             .await?,
         },

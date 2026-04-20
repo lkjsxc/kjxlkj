@@ -52,6 +52,16 @@ pub fn is_local_file_href(href: &str) -> bool {
     resource_link_parts(href).is_some_and(|(_, is_file)| is_file)
 }
 
+pub fn local_url_card(href: &str, label: &str) -> Option<String> {
+    if is_local_page_href(href) {
+        Some(local_page_card(href, label))
+    } else if is_local_file_href(href) {
+        Some(local_file_card(href, label))
+    } else {
+        None
+    }
+}
+
 pub fn escape_attr(value: &str) -> String {
     value
         .replace('&', "&amp;")
@@ -98,7 +108,7 @@ fn valid_resource_reference(value: &str) -> bool {
     looks_like_id(value) || normalize_alias(Some(value)).is_ok()
 }
 
-fn html_text(value: &str) -> String {
+pub fn html_text(value: &str) -> String {
     value
         .replace('&', "&amp;")
         .replace('<', "&lt;")

@@ -1,6 +1,8 @@
 //! Core domain models and validation
 
 mod markdown;
+mod markdown_embed_blocks;
+mod markdown_embeds;
 mod markdown_links;
 #[cfg(test)]
 mod markdown_tests;
@@ -8,7 +10,7 @@ mod validation;
 #[cfg(test)]
 mod validation_tests;
 
-pub use markdown::render_markdown;
+pub use markdown::{render_markdown, render_markdown_with_origin};
 pub use validation::{
     derive_summary, derive_title, derive_title_with_fallback, extract_title, generate_id,
     looks_like_id, normalize_alias, validate_id, AliasError, IdError,

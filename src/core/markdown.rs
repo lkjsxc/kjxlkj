@@ -3,22 +3,31 @@
 use ammonia::Builder;
 use pulldown_cmark::{html, Options, Parser};
 
+use super::markdown_embed_blocks;
 use super::markdown_links::{
     escape_attr, is_local_file_href, poster_href, replace_local_resource_cards, variant_href,
 };
 
 pub fn render_markdown(body: &str) -> String {
+    render_markdown_with_origin(body, None)
+}
+
+pub fn render_markdown_with_origin(body: &str, public_base_url: Option<&str>) -> String {
+    let (body, embed_blocks) = markdown_embed_blocks::extract(body, public_base_url);
     let mut html_out = String::new();
     let options =
         Options::ENABLE_TABLES | Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TASKLISTS;
-    html::push_html(&mut html_out, Parser::new_ext(body, options));
+    html::push_html(&mut html_out, Parser::new_ext(&body, options));
     let mut builder = Builder::default();
     builder.add_tags(["input", "video", "source"]);
     builder.add_tag_attributes("input", ["checked", "disabled", "type"]);
     builder.add_tag_attributes("video", ["controls", "src", "poster", "preload"]);
     builder.add_tag_attributes("video", ["muted", "loop", "autoplay", "playsinline"]);
     builder.add_tag_attributes("source", ["src", "type"]);
-    post_process_html(&builder.clean(&html_out).to_string())
+    markdown_embed_blocks::restore(
+        post_process_html(&builder.clean(&html_out).to_string()),
+        &embed_blocks,
+    )
 }
 
 fn post_process_html(html: &str) -> String {

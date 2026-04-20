@@ -7,7 +7,6 @@ use super::list_sections::{
 };
 use super::model::IndexItem;
 use super::popular_sections::home_popular_section;
-use crate::core::render_markdown;
 use crate::web::db::{AppSettings, PopularWindow};
 use crate::web::site::SiteContext;
 
@@ -16,6 +15,7 @@ const POPULAR_JS: &str = include_str!("popular_window.js");
 
 pub struct HomeView<'a> {
     pub settings: &'a AppSettings,
+    pub intro_html: &'a str,
     pub popular: &'a [IndexItem],
     pub recent: &'a [IndexItem],
     pub favorites: &'a [IndexItem],
@@ -34,7 +34,7 @@ pub fn home_page(view: HomeView<'_>) -> String {
     let rail_actions = rail_actions(view.is_admin, view.guest_login_href);
     let content = format!(
         "{}{}{}",
-        intro_block(&view.settings.home_intro_markdown),
+        intro_block(view.intro_html),
         quick_search_section(),
         home_sections(
             view.settings,
@@ -119,13 +119,13 @@ fn home_sections(
         .join("")
 }
 
-fn intro_block(markdown: &str) -> String {
-    if markdown.trim().is_empty() {
+fn intro_block(html: &str) -> String {
+    if html.trim().is_empty() {
         return String::new();
     }
     format!(
         r#"<section class="page-intro prose home-hero">{}</section>"#,
-        render_markdown(markdown)
+        html
     )
 }
 

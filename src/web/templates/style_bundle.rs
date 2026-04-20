@@ -4,6 +4,7 @@ use once_cell::sync::Lazy;
 
 const BASE_CSS: &str = include_str!("base.css");
 const CONTENT_CSS: &str = include_str!("content.css");
+const EXTERNAL_EMBEDS_CSS: &str = include_str!("external_embeds.css");
 const CONTROLS_CSS: &str = include_str!("controls.css");
 const SHELL_CSS: &str = include_str!("shell.css");
 const SURFACES_CSS: &str = include_str!("surfaces.css");
@@ -28,6 +29,7 @@ fn raw_css() -> String {
     [
         BASE_CSS,
         CONTENT_CSS,
+        EXTERNAL_EMBEDS_CSS,
         CONTROLS_CSS,
         SHELL_CSS,
         SURFACES_CSS,
