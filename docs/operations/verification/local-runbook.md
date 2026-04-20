@@ -47,8 +47,10 @@ curl -sS -X POST http://127.0.0.1:8080/resources/media \
 - Admin rails show `New note`, then `Open GitHub`.
 - Live note pages and live media pages show the same top-row `Prev` / `History` / `Next` strip.
 - The live-resource strip aligns to the same readable width as the note/media body instead of stretching wider than the content surface.
+- The live-resource metadata row is left-aligned and does not shift when the pill count changes.
 - Guest note and media pages widen `Prev` and `Next` to fill a balanced two-column strip when `History` is absent.
 - One longer title must not change the width ratio between `Prev`, `History`, and `Next`.
+- Standalone GitHub, YouTube, Pixiv, X, and generic external URLs render as deterministic Markdown embeds.
 - Live note and media headers show kind plus favorite/visibility state in the top metadata row when applicable.
 - Guest image media pages show the image plus rendered Markdown body.
 - Image media pages may serve WebP display variants while preserving the original file URL.

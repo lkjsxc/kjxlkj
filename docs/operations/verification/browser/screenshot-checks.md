@@ -27,6 +27,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Video media cards use a first-frame WebP poster when one was generated.
 - Guest note preview and guest note display both render inline images from Markdown image syntax.
 - Guest note preview and guest note display both render safe inline video embeds.
+- Guest and admin Markdown render deterministic external URL embeds without server-side metadata fetching.
 - Markdown video embeds stay contained inside the prose surface.
 - Local media URLs in Markdown may render as thumbnail cards.
 - Admin note pages expose `Upload media` beside `Show preview`.
@@ -34,11 +35,14 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Uploading media from a multibyte cursor position restores the caret at the server-confirmed insertion end.
 - Dashboard Favorites remain read-only while settings owns favorite reordering.
 - Settings search can filter visible settings items without leaving the page.
+- Settings page renders one flat list without boxed setting groups.
 - Home-section ordering on settings uses drag-only controls.
 - Site icon upload and reset work from `/admin/settings` without leaving the page.
 - Guest media pages expose `Download original` while inline image display may still prefer WebP.
 - Live note pages and live media pages both place `Prev`, `History`, and `Next` in the main pane rather than the rail.
 - The three live-resource cards keep visibly matched widths and heights.
+- Live-resource Created, Updated, and pill metadata stay left-aligned.
+- Root, admin, settings, search, resource, and history main content align to the same non-rail width.
 - Authenticated admin resource-page opens do not increment counted view totals.
 - Resource-to-resource shell transitions preserve rail scroll state.
 - Private file URLs do not leak to guest verification flows.

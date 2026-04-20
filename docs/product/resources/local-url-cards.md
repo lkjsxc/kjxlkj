@@ -2,15 +2,17 @@
 
 ## Scope
 
-- URL cards apply only to local media resource URLs served by this app.
-- External URL metadata fetching is out of scope.
-- The renderer must not perform server-side network requests to build URL cards.
+- URL cards apply to local resource URLs served by this app.
+- Root-relative local URLs and absolute URLs under configured `public_base_url` are equivalent.
+- External URL embed rules are owned by [external-url-embeds.md](external-url-embeds.md).
+- The renderer must not perform server-side network requests to build local or external cards.
 
 ## Recognized URLs
 
 - `/{ref}` renders as a card when `ref` resolves to accessible live media.
 - `/{snapshot_id}` renders as a card when it resolves to an accessible media saved snapshot.
 - `/{ref}/file` and `/{snapshot_id}/file` may render as cards when the renderer can safely derive the owning media page.
+- Absolute public-origin versions of the same paths follow the same rules.
 
 ## Rendering
 

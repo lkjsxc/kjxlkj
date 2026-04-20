@@ -4,7 +4,7 @@
 
 - ID, alias, and settings validation.
 - Title and summary derivation for notes and media.
-- Markdown sanitization and safe embed rendering.
+- Markdown sanitization, local embeds, and deterministic external URL embed rendering.
 - Object-storage key handling and snapshot retention rules.
 - Note-attachment upload preserves raw body text and falls back to append-at-end for stale selection ranges.
 - Note-attachment upload returns a server-confirmed UTF-8 cursor after insertion.
@@ -34,5 +34,6 @@
 - Browser checks cover note-editor upload against multibyte cursor positions.
 - Browser checks cover first-frame video posters, video card thumbnails, file-family cards, and prose-contained video embeds.
 - Browser checks cover partial shell navigation, browser back/forward, rail scroll preservation, and remembered Home/Search state from the rail.
-- Browser checks cover uploaded site icon delivery, icon reset, settings search, settings unsaved prompts, favorite reordering from settings, login return paths, local media URL cards, delete arming, and password flows.
+- Browser checks cover uploaded site icon delivery, icon reset, flat settings search, settings unsaved prompts, favorite reordering from settings, login return paths, local and external URL cards, delete arming, and password flows.
+- Browser checks cover unified main-pane width and left-aligned live-resource metadata.
 - Browser checks cover guest-counted views versus non-counted authenticated admin opens.

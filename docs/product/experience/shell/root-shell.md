@@ -24,6 +24,9 @@
 
 ## Main Pane
 
+- The non-rail main pane uses one shared maximum content width across root, admin, settings, search, resource, and history pages.
+- Page headers, setting rows, resource metadata, resource navigation strips, prose surfaces, and editor surfaces align to that shared width.
+- Individual media, prose, or editor elements may constrain their internal content, but their outer surface still aligns to the shared main width.
 - Root, admin, admin-settings, and search pages keep home, browse, settings, stats, and query work in the main pane.
 - Note and history pages keep document-focused content in the main pane.
 - The rail adds navigation and context without repeating explanatory copy that the main pane already makes obvious.

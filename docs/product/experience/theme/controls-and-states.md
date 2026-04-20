@@ -42,6 +42,7 @@
 - Search input, sort control, and submit button align on one clean row on wide screens.
 - Settings controls for section visibility, order, and limits stay aligned enough to scan as one system.
 - Settings section order uses direct drag handles rather than raw numeric order fields.
+- Settings page controls render as one flat row list without visible category panels.
 
 ## Section Chrome
 

@@ -1,5 +1,14 @@
 # Embed Rules
 
+## Standalone URL Blocks
+
+- A standalone URL block is a Markdown paragraph whose trimmed text is one `http`, `https`, or root-relative URL.
+- Standalone URL blocks may render as local URL cards or external URL embeds.
+- URLs inside ordinary prose, Markdown links, images, fenced code, indented code, or unsafe HTML remain normal Markdown text or links.
+- Local URL card rules are owned by [local-url-cards.md](local-url-cards.md).
+- External provider rules are owned by [external-url-embeds.md](external-url-embeds.md).
+- Admin preview and guest rendering must use the same standalone URL block detection.
+
 ## Images
 
 - Standard Markdown image syntax is the canonical inline image path.

@@ -7,22 +7,18 @@
 - The page also owns the canonical favorite-order management surface.
 - The page is reachable from the dashboard and the admin rail.
 
-## Form Groups
+## Flat Settings List
 
-- `Site identity` contains `Site name`, `Site description`, and `Public base URL`.
-- `Home hero` contains the editable intro Markdown field.
-- `Home sections` contains visibility, drag-only order, and item-count controls for mixed-resource sections.
-- `Favorites` contains the reorderable mixed-resource favorite list.
-- `Site icon` is its own top-level section and contains current-state, upload, and reset controls for the icon used across the site.
-- `Sessions` contains the future-login timeout field in minutes.
-- `Search` contains the default result-count control for `/search`.
-- `Media` contains the WebP quality value for future derivative generation.
-- `New resources` contains the default visibility control used when opening a fresh note or media resource.
-- `Password` contains the signed-in password change form.
+- Settings render as one continuous list under the page title.
+- Visible category headings and nested setting panels are omitted.
+- Every setting row uses the same visual weight and feels parallel to neighboring rows.
+- Multi-field rows may group closely related controls such as `Site name`, `Site description`, and `Public base URL`.
+- Home-section ordering, favorite ordering, site icon controls, password change, and save actions are rows in the same list.
+- Large controls such as Markdown textarea, favorite ordering, and password change may span the full list width without becoming separate groups.
 
 ## Behavior
 
-- The page exposes one client-side settings search input that filters headings, labels, and helper text in place.
+- The page exposes one client-side settings search input that filters labels, helper text, and row content in place.
 - Saving redirects back to `/admin/settings`.
 - Uploading the site icon opens a local file picker from an `Upload icon` button rather than exposing the file input as the primary control.
 - Uploading or resetting the site icon stays on `/admin/settings` and updates the visible icon state without a navigation.

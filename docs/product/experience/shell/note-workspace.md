@@ -10,6 +10,8 @@
 
 - Created and updated time.
 - The top metadata row also carries a compact semantic pill stack immediately after `Updated`.
+- Created, Updated, and the pill stack are left-aligned on the same content column.
+- The pill stack position must not shift horizontally when favorite or visibility pill count changes.
 - The pill stack must make resource kind, favorite state, and visibility obvious without opening editor controls.
 - Canonical pill order is: kind first, favorite second when active, visibility last.
 - Kind pills use the user-facing resource-family language: `Note`, `Image`, `Video`, or `File`.
