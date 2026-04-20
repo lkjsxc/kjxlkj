@@ -54,6 +54,8 @@ export async function captureAdminScreens(browser, fixtures) {
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await verifyAuthenticatedViewsStayFlat(page, note);
     await verifyEditorFormatting(browser, page, note, fixtures);
+    await page.locator('#editor-preview .external-embed-card').first().waitFor({ state: 'visible' });
+    await page.locator('#editor-preview .external-embed-frame iframe').first().waitFor({ state: 'visible' });
     await verifyPartialResourceNavigation(page, note, fixtures.oldest);
     await verifyRememberedRailNavigation(page, note);
     await verifyClipboardMediaPaste(page, note);

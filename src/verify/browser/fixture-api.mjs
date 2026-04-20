@@ -147,6 +147,10 @@ Current shared snapshot stretches across the list card with enough words to stre
 
 <video controls src="${media.video.fileHref}"></video>
 
+https://github.com/lkjsxc/kjxlkj/pull/12
+
+https://youtu.be/dQw4w9WgXcQ
+
 Follow-up detail keeps the summary ellipsis active.`,
     ];
 }

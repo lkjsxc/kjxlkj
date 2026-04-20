@@ -1,20 +1,17 @@
 use super::layout::html_escape;
-use super::sections::section_with_actions_attrs;
-use super::settings_panel::surface_panel;
+use super::settings_panel::settings_row;
 use crate::web::db::AppSettings;
 
 pub(super) fn home_hero_section(settings: &AppSettings) -> String {
-    section_with_actions_attrs(
+    settings_row(
         "Home hero",
-        None,
-        &surface_panel(&format!(
+        &format!(
             r#"<div class="settings-section-grid">
 <label class="form-group settings-wide" data-settings-item><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
 </div>"#,
             html_escape(&settings.home_intro_markdown),
-        )),
-        "settings-section",
-        "",
+        ),
+        "settings-home-hero-row",
     )
 }
 
@@ -43,10 +40,9 @@ pub(super) fn home_sections_section(settings: &AppSettings) -> String {
         ),
     ];
     rows.sort_by_key(|row| row.position);
-    section_with_actions_attrs(
+    settings_row(
         "Home sections",
-        None,
-        &surface_panel(&format!(
+        &format!(
             r#"<div class="settings-table">
 <div class="settings-row settings-row-head" data-settings-item><span>Section</span><span>Visible</span><span>Items</span></div>
 <div class="settings-table-body" data-settings-order-list>{}</div>
@@ -55,9 +51,8 @@ pub(super) fn home_sections_section(settings: &AppSettings) -> String {
                 .map(section_row)
                 .collect::<Vec<_>>()
                 .join("")
-        )),
-        "settings-section",
-        "",
+        ),
+        "settings-home-sections-row",
     )
 }
 

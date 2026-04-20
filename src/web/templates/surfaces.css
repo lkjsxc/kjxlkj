@@ -17,7 +17,7 @@
 }
 
 .page-column {
-    width: min(100%, 1060px);
+    width: min(100%, var(--main-column-width));
     min-width: 0;
 }
 
@@ -128,8 +128,7 @@
 }
 
 .resource-surface {
-    max-width: 1040px;
-    width: min(100%, 1040px);
+    width: 100%;
 }
 
 .search-surface {
@@ -137,9 +136,17 @@
 }
 
 .resource-head {
-    align-items: end;
-    width: min(100%, 1040px);
-    justify-self: start;
+    align-items: start;
+    width: 100%;
+}
+
+.resource-head .page-meta {
+    justify-items: start;
+    text-align: left;
+}
+
+.resource-head .page-badges {
+    justify-content: flex-start;
 }
 
 .page-intro {

@@ -93,6 +93,12 @@ async function assertLiveResourceMetadata(page) {
     await page.locator('.resource-head .status-pill').first().waitFor({ state: 'visible' });
     await card.getByText('Created', { exact: true }).waitFor({ state: 'visible' });
     await card.getByText('Updated', { exact: true }).waitFor({ state: 'visible' });
+    const alignment = await card.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        const badges = node.querySelector('.page-badges')?.getBoundingClientRect();
+        return { metaLeft: Math.round(rect.left), badgesLeft: Math.round(badges?.left ?? rect.left) };
+    });
+    assert.ok(Math.abs(alignment.metaLeft - alignment.badgesLeft) <= 4, 'resource metadata should stay left-aligned');
 }
 
 async function assertResourceStrip(page, expectedCount) {

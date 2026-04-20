@@ -15,15 +15,13 @@
     gap: 12px;
 }
 
-.settings-form {
+.settings-form,
+.settings-stack {
     width: 100%;
-    gap: 14px;
 }
 
-.settings-panel {
-    display: grid;
-    gap: 12px;
-    padding: 14px;
+.settings-form {
+    gap: 14px;
 }
 
 .settings-search-card {

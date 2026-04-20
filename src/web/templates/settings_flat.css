@@ -1,0 +1,40 @@
+.settings-row-block,
+.settings-row-content {
+    display: grid;
+}
+
+.settings-row-content {
+    gap: 12px;
+}
+
+.settings-row-block {
+    grid-template-columns: minmax(140px, 0.28fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+}
+
+.settings-row-title {
+    color: var(--text-soft);
+    font-weight: 600;
+    line-height: 1.35;
+    padding-top: 10px;
+}
+
+.settings-search-row {
+    display: grid;
+    gap: 10px;
+    padding-bottom: 2px;
+}
+
+@media (max-width: 640px) {
+    .settings-row-block {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .settings-row-title {
+        padding-top: 0;
+    }
+}

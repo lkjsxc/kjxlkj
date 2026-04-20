@@ -105,7 +105,8 @@ export async function expectSettingsPage(page) {
     await assertVisibleText(page, 'Search');
     await assertVisibleText(page, 'Media');
     await assertVisibleText(page, 'New resources');
-    await assertVisibleText(page, 'Security');
+    await assertVisibleText(page, 'Password');
+    assert.equal(await page.locator('.settings-section .section-head').count(), 0);
     await page.locator('[data-settings-order-list]').waitFor({ state: 'visible' });
     await page.locator('[data-favorite-order]').waitFor({ state: 'visible' });
     assert.equal(await page.getByText('Default Vim mode for editors', { exact: true }).count(), 0);

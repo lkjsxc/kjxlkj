@@ -3,7 +3,7 @@
 use super::layout::html_escape;
 use super::list_sections::{favorite_browse_card, note_grid_section};
 use super::model::IndexItem;
-use super::sections::section_with_actions_attrs;
+use super::settings_panel::settings_row;
 
 pub fn dashboard_favorites_section(favorites: &[IndexItem]) -> String {
     note_grid_section(
@@ -18,11 +18,11 @@ pub fn dashboard_favorites_section(favorites: &[IndexItem]) -> String {
 
 pub fn settings_favorite_order_section(favorites: &[IndexItem]) -> String {
     let body = if favorites.is_empty() {
-        r#"<div class="surface settings-panel"><p class="surface-empty favorite-order-empty" data-settings-item>No favorites yet.</p></div>"#
+        r#"<p class="surface-empty favorite-order-empty" data-settings-item>No favorites yet.</p>"#
             .to_string()
     } else {
         format!(
-            r#"<div class="surface settings-panel favorite-order-panel" data-settings-item>
+            r#"<div class="favorite-order-panel" data-settings-item>
 <p class="page-summary">Drag to reorder favorites. Changes save immediately.</p>
 <p class="favorite-order-error" data-favorite-order-error aria-live="polite"></p>
 <ol class="favorite-order-list" data-favorite-order>{}</ol>
@@ -34,13 +34,8 @@ pub fn settings_favorite_order_section(favorites: &[IndexItem]) -> String {
                 .join("")
         )
     };
-    section_with_actions_attrs(
-        "Favorites",
-        None,
-        &body,
-        "settings-section favorites-section",
-        r#"id="favorites-settings""#,
-    )
+    let row = settings_row("Favorites", &body, "favorites-section");
+    format!(r#"<div id="favorites-settings">{row}</div>"#)
 }
 
 fn favorite_item(note: &IndexItem) -> String {

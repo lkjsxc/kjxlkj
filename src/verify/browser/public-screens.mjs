@@ -76,6 +76,8 @@ export async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/${notes.middle.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${notes.middle.ref}`);
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
+    await page.locator('.prose .external-embed-card').first().waitFor({ state: 'visible' });
+    await page.locator('.prose .external-embed-frame iframe').first().waitFor({ state: 'visible' });
     await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await capture(page, 'desktop-guest-note.png');
 

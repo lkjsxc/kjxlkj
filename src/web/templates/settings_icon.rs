@@ -1,6 +1,5 @@
 use super::layout::html_escape;
-use super::sections::section;
-use super::settings_panel::surface_panel;
+use super::settings_panel::settings_row;
 use crate::web::db::AppSettings;
 
 pub fn site_icon_section(settings: &AppSettings) -> String {
@@ -9,9 +8,9 @@ pub fn site_icon_section(settings: &AppSettings) -> String {
         .as_deref()
         .map(|value| format!("Current icon: {}", html_escape(value)))
         .unwrap_or_else(|| "Current icon: bundled default".to_string());
-    section(
+    settings_row(
         "Site icon",
-        &surface_panel(&format!(
+        &format!(
             r#"<div class="settings-icon-grid" data-settings-item>
 <img src="/assets/site-icon" alt="" class="settings-icon-preview" data-site-icon-preview>
 <div class="settings-icon-copy">
@@ -29,7 +28,7 @@ pub fn site_icon_section(settings: &AppSettings) -> String {
             } else {
                 " hidden"
             },
-        )),
-        "settings-section",
+        ),
+        "settings-icon-row",
     )
 }
