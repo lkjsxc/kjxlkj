@@ -12,6 +12,7 @@ export async function assertListRailOrder(page) {
     if (newNoteTop !== null) assert.ok(newNoteTop < githubTop, 'New note should stay above Open GitHub');
     if (logoutTop !== null) assert.ok(githubTop < logoutTop, 'Open GitHub should stay above Logout');
     if (signInTop !== null) assert.ok(githubTop < signInTop, 'Open GitHub should stay above Admin sign in');
+    assert.ok(homeTop < searchTop && searchTop < liveTop, 'primary rail order should be Home, Search, Live');
     assert.ok(!(logoutTop !== null && signInTop !== null), 'list rail should not expose both Logout and Admin sign in');
 }
 
@@ -28,10 +29,10 @@ async function controlTop(page, label) {
 }
 
 async function namedControl(page, name) {
-    const button = page.getByRole('button', { name, exact: true });
+    const rail = page.locator('.shell-rail');
+    const button = rail.getByRole('button', { name, exact: true });
     if ((await button.count()) && (await button.first().isVisible())) return button.first();
-    const link = page.getByRole('link', { name, exact: true });
+    const link = rail.getByRole('link', { name, exact: true });
     if ((await link.count()) && (await link.first().isVisible())) return link.first();
     return null;
 }
-    assert.ok(homeTop < searchTop && searchTop < liveTop, 'primary rail order should be Home, Search, Live');
