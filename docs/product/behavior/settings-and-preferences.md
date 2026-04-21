@@ -3,6 +3,8 @@
 ## Global Settings
 
 - `site_name`, `site_description`, and `public_base_url` remain global.
+- `nostr_names` and `nostr_relays` control Nostr identifier discovery.
+- `live_ice_servers` controls browser WebRTC ICE server configuration for `/live`.
 - `default_new_resource_is_private` controls both new note and new media defaults.
 - `search_results_per_page` still controls the default `/search` page size.
 - `media_webp_quality` controls future image WebP and video poster generation quality.
@@ -15,7 +17,10 @@
 - `/admin/settings` is the canonical admin workspace for global settings plus favorite ordering.
 - The page exposes one browser-local settings search that filters visible settings rows without persisting anything.
 - Settings render as one flat list of parallel rows instead of visually grouped sections.
-- Row labels may name the setting, but category headings and boxed setting groups are not part of the page language.
+- Ordinary scalar settings each own one row.
+- Row labels use slash-path names such as `Site_identity/Site_name`.
+- Category headings and boxed setting groups are not part of the page language.
+- Complex rows are allowed only for list-like settings, ordering controls, action rows, and password fields.
 - Reordering home sections changes only the in-form pending state until `Save settings`.
 - Home-section ordering uses drag-and-drop only; explicit `Up` and `Down` controls are not part of the contract.
 - Favorite ordering and site icon upload/reset persist immediately through their own admin-only requests.
@@ -31,3 +36,5 @@
 - Uploading or resetting the site icon affects subsequent HTML head and shell icon rendering immediately.
 - Reordering favorites affects `/`, `/admin`, and `/search?scope=favorites` immediately.
 - Changing `public_base_url` affects later canonical URLs, `robots.txt`, and `sitemap.xml` without restart.
+- Changing Nostr settings affects later `/.well-known/nostr.json` responses without restart.
+- Changing `Live/ICE_servers_JSON` affects newly opened live pages without restart.

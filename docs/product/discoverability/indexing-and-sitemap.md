@@ -4,13 +4,14 @@
 
 - Only `GET /` and guest-readable current live resource pages are search-indexable.
 - `/search` is guest-readable but not search-indexable.
-- Setup, login, admin, settings, history, saved snapshots, fragments, health, write/API routes, and file routes are never search-indexable.
+- `/live` is guest-readable but not search-indexable.
+- Setup, login, admin, settings, history, saved snapshots, fragments, health, write/API routes, discovery JSON routes, and file routes are never search-indexable.
 
 ## `robots.txt`
 
 - `GET /robots.txt` exists only when `public_base_url` is non-blank and valid.
 - `robots.txt` allows crawling of `/` and current public resource routes.
-- `robots.txt` disallows `/search`, `/setup`, `/login`, `/admin`, `/resources`, `/_/`, and `/healthz`.
+- `robots.txt` disallows `/search`, `/live`, `/setup`, `/login`, `/admin`, `/resources`, `/_/`, `/.well-known/`, and `/healthz`.
 
 ## `sitemap.xml`
 

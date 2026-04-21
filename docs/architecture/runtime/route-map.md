@@ -5,8 +5,9 @@
 - `/admin` and `/admin/` -> admin dashboard handler.
 - `/admin/settings`, `/admin/password`, `/admin/site-icon`, and `/admin/site-icon/reset` -> admin settings, password, and icon handlers.
 - `/search` -> auth-aware browse/search handler.
+- `/live` and `/live/ws` -> live broadcast page and WebRTC signaling handlers.
 - `/favicon.ico`, `/assets/icon.svg`, and `/assets/site-icon` -> site asset handlers.
-- `/robots.txt` and `/sitemap.xml` -> conditional discovery handlers.
+- `/robots.txt`, `/sitemap.xml`, and `/.well-known/nostr.json` -> discovery handlers.
 - `/admin/markdown-preview` -> admin-only preview renderer.
 - `/{ref}` -> root resource handler for live resources and saved snapshots.
 - `/{ref}/history` -> history index handler.

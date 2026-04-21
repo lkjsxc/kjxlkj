@@ -12,8 +12,9 @@
 - Settings render as one continuous list under the page title.
 - Visible category headings and nested setting panels are omitted.
 - Every setting row uses the same visual weight and feels parallel to neighboring rows.
-- Multi-field rows may group closely related controls such as `Site name`, `Site description`, and `Public base URL`.
-- Home-section ordering, favorite ordering, site icon controls, password change, and save actions are rows in the same list.
+- Ordinary scalar settings are not grouped into multi-field rows.
+- Row labels use slash-path names such as `Site_identity/Site_name`.
+- Home-section ordering, favorite ordering, Nostr JSON settings, live ICE servers, site icon controls, password change, and save actions are rows in the same list.
 - Large controls such as Markdown textarea, favorite ordering, and password change may span the full list width without becoming separate groups.
 
 ## Behavior

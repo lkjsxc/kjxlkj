@@ -86,13 +86,38 @@
   "site_name": "kjxlkj",
   "site_description": "Markdown-first resource system for LLM-operated workflows.",
   "public_base_url": "https://notes.example.com",
+  "nostr_names": { "_": "7e7e9c42a91bfef19fa734ae08b1a69f3c4b5f0a74e7a9573c5d4be1f8f7f001" },
+  "nostr_relays": ["wss://relay.example.com"],
+  "live_ice_servers": [{ "urls": ["stun:stun.l.google.com:19302"] }],
   "media_webp_quality": 82,
   "default_new_resource_is_private": false
 }
 ```
 
 - `media_webp_quality` is an integer from `1` through `100`.
+- `nostr_names` accepts 64-character hex public keys or `npub...` input and stores lowercase hex.
+- `nostr_relays` accepts `wss://` relay URLs.
+- `live_ice_servers` is a JSON array compatible with browser `RTCIceServer[]`.
 - Site icon upload requests use `multipart/form-data` rather than JSON.
+
+## Nostr Discovery Response
+
+```json
+{
+  "names": {
+    "_": "7e7e9c42a91bfef19fa734ae08b1a69f3c4b5f0a74e7a9573c5d4be1f8f7f001"
+  },
+  "relays": {
+    "7e7e9c42a91bfef19fa734ae08b1a69f3c4b5f0a74e7a9573c5d4be1f8f7f001": [
+      "wss://relay.example.com"
+    ]
+  }
+}
+```
+
+- `GET /.well-known/nostr.json` returns all configured names when `name` is omitted.
+- `GET /.well-known/nostr.json?name=alice` returns only `alice` when configured.
+- Unknown names return `200` with an empty `names` object.
 
 ## Site Icon Response
 

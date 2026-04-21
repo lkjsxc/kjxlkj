@@ -7,6 +7,7 @@ Use this subtree for public site identity, HTML head metadata, search-engine ind
 - You need the canonical rules for `site_name`, `site_description`, or `public_base_url`.
 - You need to know which routes are indexable.
 - You need to update `<title>`, meta description, canonical, robots, or sitemap behavior.
+- You need Nostr identifier discovery behavior.
 
 ## Child Index
 
@@ -15,6 +16,7 @@ Use this subtree for public site identity, HTML head metadata, search-engine ind
 - [head-metadata.md](head-metadata.md): HTML head, canonical, description, and robots-meta rules
 - [social-cards.md](social-cards.md): Open Graph and Twitter card behavior for public resource pages
 - [indexing-and-sitemap.md](indexing-and-sitemap.md): indexing policy, `robots.txt`, `sitemap.xml`, and fallback behavior
+- [nostr-identifiers.md](nostr-identifiers.md): NIP-05-like Nostr identifier and relay discovery
 
 ## Start Here
 
@@ -23,3 +25,4 @@ Use this subtree for public site identity, HTML head metadata, search-engine ind
 - Page-level metadata rules: [head-metadata.md](head-metadata.md)
 - External paste-preview rules: [social-cards.md](social-cards.md)
 - Crawl policy and sitemap rules: [indexing-and-sitemap.md](indexing-and-sitemap.md)
+- Nostr identity discovery: [nostr-identifiers.md](nostr-identifiers.md)

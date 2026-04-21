@@ -10,6 +10,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 
 - Desktop homepage shell with mixed resource cards.
 - Desktop search page with `kind` filtering.
+- Desktop live page idle viewer state.
+- Desktop live page admin broadcast controls.
 - Desktop admin dashboard shell.
 - Desktop admin note page.
 - Desktop guest media page.
@@ -22,6 +24,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 ## Required Assertions
 
 - Admin rails keep `New note` above `Open GitHub`.
+- Side menus show `Live` directly after `Home` and `Search`.
 - Search, home, and dashboard cards can render notes and media in one shared visual language.
 - Image media cards use a fixed-height cropped thumbnail of `128px` without breaking shared card height rules.
 - Video media cards use a first-frame WebP poster when one was generated.
@@ -36,6 +39,9 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Dashboard Favorites remain read-only while settings owns favorite reordering.
 - Settings search can filter visible settings items without leaving the page.
 - Settings page renders one flat list without boxed setting groups.
+- Settings page exposes slash-path row labels for ordinary settings.
+- Nostr discovery settings validate and persist from settings.
+- Live ICE server settings validate and persist from settings.
 - Home-section ordering on settings uses drag-only controls.
 - Site icon upload and reset work from `/admin/settings` without leaving the page.
 - Guest media pages expose `Download original` while inline image display may still prefer WebP.

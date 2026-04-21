@@ -10,6 +10,7 @@
 - `src/web/db/`: PostgreSQL-backed persistence adapter and migrations.
 - `src/web/handlers/`: HTTP route handlers, including file delivery and media upload paths.
 - `src/web/templates/`: authored HTML, CSS, note/media shell rendering, and client-side behavior.
+- `src/web/live.rs`: in-memory live broadcast signaling hub.
 - `src/verify/browser/`: browser verification scripts and support.
 - `src/cli/`: docs and quality gate commands.
 

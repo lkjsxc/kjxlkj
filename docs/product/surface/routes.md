@@ -11,6 +11,7 @@
 - `GET /admin` and `GET /admin/`: admin dashboard.
 - `GET /admin/settings`: admin settings page.
 - `GET /search`: auth-aware browse/search page using `q`, `kind`, `direction`, `sort`, `scope`, `popular_window`, `cursor`, and `limit`.
+- `GET /live`: public live broadcast page with admin-only broadcast controls.
 - `GET /{ref}`: live note page, live media page, or saved-snapshot page.
 - `GET /{ref}/history`: history index for one live resource.
 - `GET /{ref}/file`: current media binary or `404` for note resources.
@@ -33,6 +34,7 @@
 - `POST /admin/site-icon` stores one uploaded image as the effective site icon and returns icon-state JSON.
 - `POST /admin/site-icon/reset` clears the uploaded site icon and returns icon-state JSON.
 - `GET /robots.txt` and `GET /sitemap.xml` still depend on persisted `public_base_url`.
+- `GET /.well-known/nostr.json` returns configured Nostr names and relays for identity discovery.
 - `POST /admin/markdown-preview` renders sanitized Markdown preview HTML for admins only.
 - `POST /admin/password` changes the signed-in admin password.
 
@@ -44,6 +46,12 @@
 - `PUT /resources/{id}`: admin-only JSON metadata and Markdown update for both resource kinds.
 - `DELETE /resources/{id}`: admin-only soft delete.
 - `PUT /resources/favorites/order`: admin-only favorite reorder across mixed resources.
+
+## Live Signaling
+
+- `GET /live/ws`: public WebSocket endpoint for WebRTC signaling.
+- A signed-in admin may connect as the single active broadcaster.
+- Guests and admins may connect as viewers.
 
 ## Resource History + Navigation JSON
 

@@ -9,6 +9,7 @@
 - `/admin`: admin dashboard.
 - `/admin/settings`: admin settings page.
 - `/search`: auth-aware browse and search page.
+- `/live`: public live broadcast page.
 - `/{ref}`: live note page, live media page, or saved-snapshot page.
 - `/{ref}/history`: admin-only history index for the live resource at `/{ref}`.
 

@@ -10,6 +10,7 @@
 
 - List rails cover home, search, dashboard, and settings pages.
 - Section order is primary navigation, optional `New note`, `Open GitHub`, then mode-specific actions.
+- Primary navigation order is `Home`, `Search`, `Live`, then admin-only entries.
 - Guest list rails place `Open GitHub` above `Admin sign in`.
 - Admin list rails place `Open GitHub` above `Logout`.
 
