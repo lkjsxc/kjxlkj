@@ -14,6 +14,8 @@ mod index_tests;
 mod layout;
 mod list_sections;
 mod live;
+#[cfg(test)]
+mod live_tests;
 mod model;
 mod popular_sections;
 #[cfg(test)]

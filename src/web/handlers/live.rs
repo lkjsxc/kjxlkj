@@ -32,7 +32,7 @@ pub async fn live_page(
         &site,
         is_admin,
         &session::login_url(&uri),
-        &settings.live_ice_servers,
+        &settings,
     )))
 }
 

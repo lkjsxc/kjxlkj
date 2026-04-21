@@ -30,3 +30,13 @@
 .file-media-panel .btn {
     justify-self: start;
 }
+
+.media-surface :is(img, video) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.media-surface video {
+    background: var(--bg-1);
+}
