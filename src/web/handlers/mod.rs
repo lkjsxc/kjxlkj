@@ -31,5 +31,7 @@ pub mod search;
 pub mod session;
 pub mod settings;
 mod settings_input;
+#[cfg(test)]
+mod settings_input_tests;
 pub mod setup;
 pub mod site_icon;

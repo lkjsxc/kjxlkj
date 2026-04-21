@@ -2,6 +2,9 @@
 
 use serde_json::Value;
 
+pub const LIVE_HEIGHTS: &[i64] = &[360, 480, 720, 1080, 1440, 2160];
+pub const LIVE_FPS_VALUES: &[i64] = &[15, 30, 45, 60, 120];
+
 pub fn normalize_ice_servers_json(value: &str) -> Result<Value, String> {
     let parsed: Value = serde_json::from_str(if value.trim().is_empty() { "[]" } else { value })
         .map_err(|_| "Live ICE servers must be a JSON array".to_string())?;
@@ -20,6 +23,31 @@ pub fn normalize_ice_servers_json(value: &str) -> Result<Value, String> {
         }
     }
     Ok(Value::Array(array.clone()))
+}
+
+pub fn normalize_live_source(value: &str) -> Result<String, String> {
+    let value = value.trim();
+    if matches!(value, "screen" | "camera") {
+        Ok(value.to_string())
+    } else {
+        Err("Live default source must be screen or camera".to_string())
+    }
+}
+
+pub fn validate_live_height(value: i64) -> Result<i64, String> {
+    if LIVE_HEIGHTS.contains(&value) {
+        Ok(value)
+    } else {
+        Err("Live default quality must use an approved height".to_string())
+    }
+}
+
+pub fn validate_live_fps(value: i64) -> Result<i64, String> {
+    if LIVE_FPS_VALUES.contains(&value) {
+        Ok(value)
+    } else {
+        Err("Live default frame rate must use an approved fps".to_string())
+    }
 }
 
 fn valid_urls(value: &Value) -> bool {

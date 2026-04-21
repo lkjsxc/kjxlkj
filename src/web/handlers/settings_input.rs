@@ -1,6 +1,8 @@
 //! Settings form parsing and validation
 
-use crate::core::live_settings::normalize_ice_servers_json;
+use crate::core::live_settings::{
+    normalize_ice_servers_json, normalize_live_source, validate_live_fps, validate_live_height,
+};
 use crate::core::nostr::{normalize_names_json, normalize_relays_json};
 use crate::error::AppError;
 use crate::web::db::AppSettings;
@@ -16,6 +18,10 @@ pub struct SettingsForm {
     pub nostr_names_json: String,
     pub nostr_relays_json: String,
     pub live_ice_servers_json: String,
+    pub live_default_source: String,
+    pub live_default_height: i64,
+    pub live_default_fps: i64,
+    pub live_default_microphone_enabled: Option<String>,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
@@ -43,6 +49,11 @@ pub fn validate_settings_form(
     let nostr_relays = normalize_relays_json(&form.nostr_relays_json).map_err(|e| invalid(&e))?;
     let live_ice_servers =
         normalize_ice_servers_json(&form.live_ice_servers_json).map_err(|e| invalid(&e))?;
+    let live_default_source =
+        normalize_live_source(&form.live_default_source).map_err(|e| invalid(&e))?;
+    let live_default_height =
+        validate_live_height(form.live_default_height).map_err(|e| invalid(&e))?;
+    let live_default_fps = validate_live_fps(form.live_default_fps).map_err(|e| invalid(&e))?;
     if site_name.is_empty() || site_name.len() > 80 {
         return Err(invalid("site name must be between 1 and 80 characters"));
     }
@@ -75,6 +86,10 @@ pub fn validate_settings_form(
         nostr_names,
         nostr_relays,
         live_ice_servers,
+        live_default_source,
+        live_default_height,
+        live_default_fps,
+        live_default_microphone_enabled: form.live_default_microphone_enabled.is_some(),
         home_recent_limit: form.home_recent_limit,
         home_favorite_limit: form.home_favorite_limit,
         home_popular_limit: form.home_popular_limit,
@@ -126,61 +141,4 @@ fn positions_are_valid(form: &SettingsForm) -> bool {
 
 fn invalid(message: &str) -> AppError {
     AppError::InvalidRequest(message.to_string())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{validate_settings_form, SettingsForm};
-    use crate::web::db::AppSettings;
-
-    fn sample_form() -> SettingsForm {
-        SettingsForm {
-            site_name: "Launchpad".to_string(),
-            site_description: "Search-friendly notes.".to_string(),
-            public_base_url: "https://example.com".to_string(),
-            nostr_names_json: "{}".to_string(),
-            nostr_relays_json: "[]".to_string(),
-            live_ice_servers_json: "[]".to_string(),
-            home_recent_limit: 5,
-            home_favorite_limit: 5,
-            home_popular_limit: 5,
-            home_intro_markdown: "# Home".to_string(),
-            home_recent_visible: Some("on".to_string()),
-            home_favorite_visible: Some("on".to_string()),
-            home_popular_visible: Some("on".to_string()),
-            home_recent_position: 1,
-            home_favorite_position: 2,
-            home_popular_position: 3,
-            search_results_per_page: 20,
-            session_timeout_minutes: 1440,
-            media_webp_quality: 82,
-            default_new_resource_is_private: None,
-        }
-    }
-
-    #[test]
-    fn validate_accepts_blank_public_origin() {
-        let mut form = sample_form();
-        form.public_base_url = "   ".to_string();
-        assert_eq!(
-            validate_settings_form(&form, &AppSettings::default())
-                .unwrap()
-                .public_base_url,
-            ""
-        );
-    }
-
-    #[test]
-    fn validate_rejects_invalid_public_origin() {
-        let mut form = sample_form();
-        form.public_base_url = "https://example.com/path".to_string();
-        assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
-    }
-
-    #[test]
-    fn validate_rejects_blank_site_name() {
-        let mut form = sample_form();
-        form.site_name = "   ".to_string();
-        assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
-    }
 }

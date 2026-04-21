@@ -36,6 +36,7 @@ mod sections;
 mod settings_core;
 mod settings_home;
 mod settings_icon;
+mod settings_live;
 mod settings_page;
 mod settings_panel;
 mod settings_security;

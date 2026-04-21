@@ -89,15 +89,6 @@ pub(super) fn session_timeout_row(settings: &AppSettings) -> String {
     )
 }
 
-pub(super) fn live_ice_servers_row(settings: &AppSettings) -> String {
-    json_textarea_row(
-        "Live/ICE_servers_JSON",
-        "live_ice_servers_json",
-        &settings.live_ice_servers,
-        "settings-live-ice-row",
-    )
-}
-
 pub(super) fn nostr_names_row(settings: &AppSettings) -> String {
     json_textarea_row(
         "Nostr/Names_JSON",
@@ -116,7 +107,7 @@ pub(super) fn nostr_relays_row(settings: &AppSettings) -> String {
     )
 }
 
-fn json_textarea_row(
+pub(super) fn json_textarea_row(
     label: &str,
     name: &str,
     value: &serde_json::Value,

@@ -11,7 +11,8 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
              home_recent_visible, home_favorite_visible, home_popular_visible, home_recent_position, \
              home_favorite_position, home_popular_position, search_results_per_page, session_timeout_minutes, \
              default_new_resource_is_private, media_webp_quality, site_name, site_description, public_base_url, \
-             nostr_names, nostr_relays, live_ice_servers, site_icon_key, site_icon_content_type \
+             nostr_names, nostr_relays, live_ice_servers, live_default_source, live_default_height, \
+             live_default_fps, live_default_microphone_enabled, site_icon_key, site_icon_content_type \
              FROM app_settings WHERE id = 1",
             &[],
         )
@@ -27,8 +28,9 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
             "INSERT INTO app_settings (id, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, \
              home_recent_visible, home_favorite_visible, home_popular_visible, home_recent_position, home_favorite_position, \
              home_popular_position, search_results_per_page, session_timeout_minutes, default_new_resource_is_private, media_webp_quality, site_name, \
-             site_description, public_base_url, nostr_names, nostr_relays, live_ice_servers, site_icon_key, site_icon_content_type) \
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) \
+             site_description, public_base_url, nostr_names, nostr_relays, live_ice_servers, live_default_source, live_default_height, \
+             live_default_fps, live_default_microphone_enabled, site_icon_key, site_icon_content_type) \
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26) \
              ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, home_favorite_limit = EXCLUDED.home_favorite_limit, \
              home_popular_limit = EXCLUDED.home_popular_limit, home_intro_markdown = EXCLUDED.home_intro_markdown, \
              home_recent_visible = EXCLUDED.home_recent_visible, home_favorite_visible = EXCLUDED.home_favorite_visible, \
@@ -38,6 +40,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              default_new_resource_is_private = EXCLUDED.default_new_resource_is_private, media_webp_quality = EXCLUDED.media_webp_quality, \
              site_name = EXCLUDED.site_name, site_description = EXCLUDED.site_description, public_base_url = EXCLUDED.public_base_url, \
              nostr_names = EXCLUDED.nostr_names, nostr_relays = EXCLUDED.nostr_relays, live_ice_servers = EXCLUDED.live_ice_servers, \
+             live_default_source = EXCLUDED.live_default_source, live_default_height = EXCLUDED.live_default_height, \
+             live_default_fps = EXCLUDED.live_default_fps, live_default_microphone_enabled = EXCLUDED.live_default_microphone_enabled, \
              site_icon_key = EXCLUDED.site_icon_key, site_icon_content_type = EXCLUDED.site_icon_content_type, \
              site_icon_updated_at = CASE WHEN app_settings.site_icon_key IS DISTINCT FROM EXCLUDED.site_icon_key THEN NOW() ELSE app_settings.site_icon_updated_at END, updated_at = NOW()",
             &[
@@ -61,6 +65,10 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
                 &settings.nostr_names,
                 &settings.nostr_relays,
                 &settings.live_ice_servers,
+                &settings.live_default_source,
+                &settings.live_default_height,
+                &settings.live_default_fps,
+                &settings.live_default_microphone_enabled,
                 &settings.site_icon_key,
                 &settings.site_icon_content_type,
             ],
@@ -129,6 +137,10 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
         nostr_names: row.get("nostr_names"),
         nostr_relays: row.get("nostr_relays"),
         live_ice_servers: row.get("live_ice_servers"),
+        live_default_source: row.get("live_default_source"),
+        live_default_height: row.get("live_default_height"),
+        live_default_fps: row.get("live_default_fps"),
+        live_default_microphone_enabled: row.get("live_default_microphone_enabled"),
         site_icon_key: row.get("site_icon_key"),
         site_icon_content_type: row.get("site_icon_content_type"),
     }

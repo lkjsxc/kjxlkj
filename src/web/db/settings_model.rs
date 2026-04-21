@@ -24,6 +24,10 @@ pub struct AppSettings {
     pub nostr_names: Value,
     pub nostr_relays: Value,
     pub live_ice_servers: Value,
+    pub live_default_source: String,
+    pub live_default_height: i64,
+    pub live_default_fps: i64,
+    pub live_default_microphone_enabled: bool,
     pub site_icon_key: Option<String>,
     pub site_icon_content_type: Option<String>,
 }
@@ -52,6 +56,10 @@ impl Default for AppSettings {
             nostr_names: json!({}),
             nostr_relays: json!([]),
             live_ice_servers: json!([{ "urls": ["stun:stun.l.google.com:19302"] }]),
+            live_default_source: "screen".to_string(),
+            live_default_height: 1080,
+            live_default_fps: 60,
+            live_default_microphone_enabled: false,
             site_icon_key: None,
             site_icon_content_type: None,
         }

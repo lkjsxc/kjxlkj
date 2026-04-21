@@ -5,12 +5,16 @@ use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, shell_page};
 use super::sections::page_header;
 use super::settings_core::{
-    live_ice_servers_row, media_quality_row, new_resources_private_row, nostr_names_row,
-    nostr_relays_row, public_base_url_row, search_page_size_row, session_timeout_row,
-    site_description_row, site_name_row,
+    media_quality_row, new_resources_private_row, nostr_names_row, nostr_relays_row,
+    public_base_url_row, search_page_size_row, session_timeout_row, site_description_row,
+    site_name_row,
 };
 use super::settings_home::{home_hero_section, home_sections_section};
 use super::settings_icon::site_icon_section;
+use super::settings_live::{
+    live_default_fps_row, live_default_microphone_row, live_default_quality_row,
+    live_default_source_row, live_ice_servers_row,
+};
 use super::settings_panel::settings_row;
 use super::settings_security::security_section;
 use super::IndexItem;
@@ -37,8 +41,7 @@ pub fn settings_page(
 </div>"#,
         "settings-save-row",
     );
-    let settings_form = format!(
-        "<form class=\"settings-form settings-stack\" method=\"POST\" action=\"/admin/settings\">{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}</form>",
+    let settings_rows = [
         site_name_row(settings),
         site_description_row(settings),
         public_base_url_row(settings),
@@ -49,11 +52,19 @@ pub fn settings_page(
         search_page_size_row(settings),
         media_quality_row(settings),
         live_ice_servers_row(settings),
+        live_default_source_row(settings),
+        live_default_quality_row(settings),
+        live_default_fps_row(settings),
+        live_default_microphone_row(settings),
         nostr_names_row(settings),
         nostr_relays_row(settings),
         site_icon_section(settings),
         new_resources_private_row(settings),
         save_row,
+    ]
+    .join("");
+    let settings_form = format!(
+        r#"<form class="settings-form settings-stack" method="POST" action="/admin/settings">{settings_rows}</form>"#
     );
     let search_root = format!(
         r#"<div class="settings-stack" data-settings-search-root>{settings_form}{}</div>"#,

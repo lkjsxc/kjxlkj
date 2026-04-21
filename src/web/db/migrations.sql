@@ -136,6 +136,10 @@ CREATE TABLE IF NOT EXISTS app_settings (
     nostr_names JSONB NOT NULL DEFAULT '{}'::JSONB,
     nostr_relays JSONB NOT NULL DEFAULT '[]'::JSONB,
     live_ice_servers JSONB NOT NULL DEFAULT '[{"urls":["stun:stun.l.google.com:19302"]}]'::JSONB,
+    live_default_source TEXT NOT NULL DEFAULT 'screen' CHECK (live_default_source IN ('screen', 'camera')),
+    live_default_height BIGINT NOT NULL DEFAULT 1080 CHECK (live_default_height IN (360, 480, 720, 1080, 1440, 2160)),
+    live_default_fps BIGINT NOT NULL DEFAULT 60 CHECK (live_default_fps IN (15, 30, 45, 60, 120)),
+    live_default_microphone_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     site_icon_key TEXT,
     site_icon_content_type TEXT,
     site_icon_updated_at TIMESTAMPTZ,
@@ -150,6 +154,10 @@ ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS media_webp_quality BIGINT NOT 
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS nostr_names JSONB NOT NULL DEFAULT '{}'::JSONB;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS nostr_relays JSONB NOT NULL DEFAULT '[]'::JSONB;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_ice_servers JSONB NOT NULL DEFAULT '[{"urls":["stun:stun.l.google.com:19302"]}]'::JSONB;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_source TEXT NOT NULL DEFAULT 'screen';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_height BIGINT NOT NULL DEFAULT 1080;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_fps BIGINT NOT NULL DEFAULT 60;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_microphone_enabled BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_key TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_content_type TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_updated_at TIMESTAMPTZ;
