@@ -40,6 +40,28 @@ async fn broadcaster_disconnect_ends_stream_for_viewers() {
     assert!(text(&mut viewer_rx).await.contains("stream_ended"));
 }
 
+#[tokio::test]
+async fn broadcaster_receives_viewer_count_updates() {
+    let hub = LiveHub::default();
+    let (broadcaster_tx, mut broadcaster_rx) = mpsc::unbounded_channel();
+    let (first_tx, _first_rx) = mpsc::unbounded_channel();
+    let (second_tx, _second_rx) = mpsc::unbounded_channel();
+
+    hub.register_broadcaster(broadcaster_tx).await.unwrap();
+    assert!(text(&mut broadcaster_rx).await.contains(r#""count":0"#));
+    let first = hub.register_viewer(first_tx).await;
+    let _ = text(&mut broadcaster_rx).await;
+    assert!(text(&mut broadcaster_rx).await.contains(r#""count":1"#));
+    let second = hub.register_viewer(second_tx).await;
+    let _ = text(&mut broadcaster_rx).await;
+    assert!(text(&mut broadcaster_rx).await.contains(r#""count":2"#));
+
+    hub.unregister(&first).await;
+    assert!(text(&mut broadcaster_rx).await.contains(r#""count":1"#));
+    hub.unregister(&second).await;
+    assert!(text(&mut broadcaster_rx).await.contains(r#""count":0"#));
+}
+
 async fn text(rx: &mut mpsc::UnboundedReceiver<Message>) -> String {
     match rx.recv().await.unwrap() {
         Message::Text(text) => text.to_string(),

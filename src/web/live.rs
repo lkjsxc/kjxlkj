@@ -47,6 +47,7 @@ impl LiveHub {
                 json!({ "type": "viewer_ready", "viewer_id": viewer_id }),
             );
         }
+        self.send_viewer_count_locked(&state);
         Ok(LiveRole::Broadcaster)
     }
 
@@ -60,6 +61,7 @@ impl LiveHub {
                 &state,
                 json!({ "type": "viewer_ready", "viewer_id": id }),
             );
+            self.send_viewer_count_locked(&state);
         }
         LiveRole::Viewer(id)
     }
@@ -73,6 +75,7 @@ impl LiveHub {
             }
             LiveRole::Viewer(id) => {
                 state.viewers.remove(id);
+                self.send_viewer_count_locked(&state);
             }
         }
     }
@@ -97,6 +100,13 @@ impl LiveHub {
         if let Some(broadcaster) = &state.broadcaster {
             send(&broadcaster.tx, message);
         }
+    }
+
+    fn send_viewer_count_locked(&self, state: &LiveState) {
+        self.send_to_broadcaster_locked(
+            state,
+            json!({ "type": "viewer_count", "count": state.viewers.len() }),
+        );
     }
 }
 
