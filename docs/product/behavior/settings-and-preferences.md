@@ -5,6 +5,9 @@
 - `site_name`, `site_description`, and `public_base_url` remain global.
 - `nostr_names` and `nostr_relays` control Nostr identifier discovery.
 - `live_ice_servers` controls browser WebRTC ICE server configuration for `/live`.
+- `live_default_source` controls whether new live pages default to screen or camera capture.
+- `live_default_height` and `live_default_fps` control the default live capture quality.
+- `live_default_microphone_enabled` controls whether new broadcasts request microphone audio by default.
 - `default_new_resource_is_private` controls both new note and new media defaults.
 - `search_results_per_page` still controls the default `/search` page size.
 - `media_webp_quality` controls future image WebP and video poster generation quality.
@@ -37,4 +40,5 @@
 - Reordering favorites affects `/`, `/admin`, and `/search?scope=favorites` immediately.
 - Changing `public_base_url` affects later canonical URLs, `robots.txt`, and `sitemap.xml` without restart.
 - Changing Nostr settings affects later `/.well-known/nostr.json` responses without restart.
-- Changing `Live/ICE_servers_JSON` affects newly opened live pages without restart.
+- Changing `Live/ICE_servers_JSON`, `Live/Default_source`, `Live/Default_quality`, `Live/Default_fps`, or `Live/Microphone_default` affects newly opened live pages without restart.
+- Existing `/live` pages may override live defaults for the current page session without persisting those overrides.

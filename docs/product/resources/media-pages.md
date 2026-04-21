@@ -22,6 +22,8 @@
 - The main pane starts with the shared top-row navigation followed by live-resource metadata.
 - Image pages render the primary image above the Markdown body.
 - Video pages render the primary video player above the Markdown body.
+- Video players expose browser-native controls.
+- Video players stay contained inside the media surface and never overflow the page column.
 - File-family pages render metadata plus `Download original` above the Markdown body.
 - Image media pages prefer a derived WebP display image when one exists.
 - Guest media pages render the same body HTML path used by note pages and admin preview.

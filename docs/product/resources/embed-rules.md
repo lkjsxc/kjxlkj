@@ -29,6 +29,7 @@
 - Snapshot-stable video embeds use `<video controls src="/{snapshot_id}/file"></video>`.
 - Rendering may add a stored WebP poster to local video embeds while preserving the authored video URL.
 - Inline videos must stay no wider than the prose surface and preserve their aspect ratio.
+- Inline videos must expose browser-native controls.
 - Admin preview and guest rendering must display the same video output for the same Markdown.
 
 ## Files

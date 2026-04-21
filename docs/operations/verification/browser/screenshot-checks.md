@@ -11,7 +11,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Desktop homepage shell with mixed resource cards.
 - Desktop search page with `kind` filtering.
 - Desktop live page idle viewer state.
-- Desktop live page admin broadcast controls.
+- Desktop live page admin broadcast controls with source, device, quality, frame-rate, microphone, and viewer-count UI.
 - Desktop admin dashboard shell.
 - Desktop admin note page.
 - Desktop guest media page.
@@ -32,6 +32,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Guest note preview and guest note display both render safe inline video embeds.
 - Guest and admin Markdown render deterministic external URL embeds without server-side metadata fetching.
 - Markdown video embeds stay contained inside the prose surface.
+- Live and media page videos expose native controls and stay contained inside their frames.
 - Local media URLs in Markdown may render as thumbnail cards.
 - Admin note pages expose `Upload media` beside `Show preview`.
 - Uploading media from a note creates direct embeds plus media resources.
@@ -42,6 +43,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Settings page exposes slash-path row labels for ordinary settings.
 - Nostr discovery settings validate and persist from settings.
 - Live ICE server settings validate and persist from settings.
+- Live default source, quality, frame-rate, and microphone settings validate and persist from settings.
 - Home-section ordering on settings uses drag-only controls.
 - Site icon upload and reset work from `/admin/settings` without leaving the page.
 - Guest media pages expose `Download original` while inline image display may still prefer WebP.
@@ -50,6 +52,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Live-resource Created, Updated, and pill metadata stay left-aligned.
 - Root, admin, settings, search, resource, and history main content align to the same non-rail width.
 - Authenticated admin resource-page opens do not increment counted view totals.
+- Leaving `/live` as an active admin broadcaster ends the stream and returns viewers to waiting.
 - Resource-to-resource shell transitions preserve rail scroll state.
 - Private file URLs do not leak to guest verification flows.
 - History list pages are admin-only, while known public snapshot URLs remain guest-readable.

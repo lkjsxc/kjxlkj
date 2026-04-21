@@ -74,6 +74,10 @@
 - `nostr_names`: JSON object of local Nostr names to lowercase hex public keys.
 - `nostr_relays`: JSON array of global Nostr relay URLs.
 - `live_ice_servers`: JSON array compatible with browser `RTCIceServer[]`.
+- `live_default_source`: default live video source, `screen` or `camera`.
+- `live_default_height`: default live video height preset.
+- `live_default_fps`: default live frame-rate preset.
+- `live_default_microphone_enabled`: default live microphone state.
 - `media_webp_quality`: quality value for future derivative WebP generation.
 - `site_icon_key`, `site_icon_content_type`, and `site_icon_updated_at`: optional uploaded site icon state.
 - `updated_at`: mutable UTC timestamp.

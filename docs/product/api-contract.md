@@ -89,6 +89,10 @@
   "nostr_names": { "_": "7e7e9c42a91bfef19fa734ae08b1a69f3c4b5f0a74e7a9573c5d4be1f8f7f001" },
   "nostr_relays": ["wss://relay.example.com"],
   "live_ice_servers": [{ "urls": ["stun:stun.l.google.com:19302"] }],
+  "live_default_source": "screen",
+  "live_default_height": 1080,
+  "live_default_fps": 60,
+  "live_default_microphone_enabled": false,
   "media_webp_quality": 82,
   "default_new_resource_is_private": false
 }
@@ -98,6 +102,10 @@
 - `nostr_names` accepts 64-character hex public keys or `npub...` input and stores lowercase hex.
 - `nostr_relays` accepts `wss://` relay URLs.
 - `live_ice_servers` is a JSON array compatible with browser `RTCIceServer[]`.
+- `live_default_source` is `screen` or `camera`.
+- `live_default_height` is one of `360`, `480`, `720`, `1080`, `1440`, or `2160`.
+- `live_default_fps` is one of `15`, `30`, `45`, `60`, or `120`.
+- `live_default_microphone_enabled` controls whether new broadcasts request audio by default.
 - Site icon upload requests use `multipart/form-data` rather than JSON.
 
 ## Nostr Discovery Response

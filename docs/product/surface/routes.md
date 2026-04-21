@@ -52,6 +52,8 @@
 - `GET /live/ws`: public WebSocket endpoint for WebRTC signaling.
 - A signed-in admin may connect as the single active broadcaster.
 - Guests and admins may connect as viewers.
+- Viewer-count signaling is sent only to the active broadcaster.
+- Broadcaster disconnect or `/live` page leave ends the active stream.
 
 ## Resource History + Navigation JSON
 
