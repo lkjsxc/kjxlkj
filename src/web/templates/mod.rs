@@ -32,6 +32,7 @@ mod search_form;
 #[cfg(test)]
 mod search_tests;
 mod sections;
+mod settings_core;
 mod settings_home;
 mod settings_icon;
 mod settings_page;

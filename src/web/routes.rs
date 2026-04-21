@@ -77,6 +77,7 @@ pub fn router(state: AppState) -> Router {
         .route("/assets/site-icon", get(assets::site_icon))
         .route("/robots.txt", get(discoverability::robots_txt))
         .route("/sitemap.xml", get(discoverability::sitemap_xml))
+        .route("/.well-known/nostr.json", get(discoverability::nostr_json))
         .route("/", get(home::home_page))
         .route("/admin", get(admin::admin_page))
         .route("/admin/", get(admin::admin_page))

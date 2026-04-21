@@ -5,9 +5,12 @@ use crate::web::db::{self, DbPool, SitemapResource};
 use crate::web::handlers::http;
 use crate::web::routes::AppState;
 use crate::web::site::normalize_public_base_url;
-use axum::extract::State;
-use axum::http::StatusCode;
+use axum::extract::{Query, State};
+use axum::http::{header, StatusCode};
 use axum::response::Response;
+use serde::{Deserialize, Serialize};
+use serde_json::{Map, Value};
+use std::collections::BTreeMap;
 
 pub async fn robots_txt(State(state): State<AppState>) -> Result<Response, AppError> {
     let Some(public_base_url) = public_base_url(&state.pool).await? else {
@@ -34,6 +37,30 @@ pub async fn sitemap_xml(State(state): State<AppState>) -> Result<Response, AppE
     ))
 }
 
+#[derive(Debug, Deserialize)]
+pub struct NostrQuery {
+    name: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+struct NostrResponse {
+    names: BTreeMap<String, String>,
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    relays: BTreeMap<String, Vec<String>>,
+}
+
+pub async fn nostr_json(
+    State(state): State<AppState>,
+    Query(query): Query<NostrQuery>,
+) -> Result<Response, AppError> {
+    let settings = db::get_settings(&state.pool).await?;
+    let names = selected_nostr_names(&settings.nostr_names, query.name.as_deref());
+    let relays = nostr_relays(&settings.nostr_relays, &names);
+    let mut response = http::json_status(StatusCode::OK, NostrResponse { names, relays });
+    http::set_header(&mut response, header::ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+    Ok(response)
+}
+
 async fn public_base_url(pool: &DbPool) -> Result<Option<String>, AppError> {
     Ok(normalize_public_base_url(
         &db::get_settings(pool).await?.public_base_url,
@@ -42,8 +69,49 @@ async fn public_base_url(pool: &DbPool) -> Result<Option<String>, AppError> {
 
 fn robots_body(public_base_url: &str) -> String {
     format!(
-        "User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /setup\nDisallow: /login\nDisallow: /admin\nDisallow: /resources\nDisallow: /_/\nDisallow: /healthz\nDisallow: /*/history\nSitemap: {public_base_url}/sitemap.xml\n"
+        "User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /live\nDisallow: /setup\nDisallow: /login\nDisallow: /admin\nDisallow: /resources\nDisallow: /_/\nDisallow: /.well-known/\nDisallow: /healthz\nDisallow: /*/history\nSitemap: {public_base_url}/sitemap.xml\n"
     )
+}
+
+fn selected_nostr_names(value: &Value, name: Option<&str>) -> BTreeMap<String, String> {
+    let Some(object) = value.as_object() else {
+        return BTreeMap::new();
+    };
+    match name.and_then(|name| crate::core::nostr::normalize_name(name).ok()) {
+        Some(name) => object
+            .get(&name)
+            .and_then(Value::as_str)
+            .map(|key| BTreeMap::from([(name, key.to_string())]))
+            .unwrap_or_default(),
+        None => object_to_names(object),
+    }
+}
+
+fn object_to_names(object: &Map<String, Value>) -> BTreeMap<String, String> {
+    object
+        .iter()
+        .filter_map(|(name, key)| key.as_str().map(|key| (name.clone(), key.to_string())))
+        .collect()
+}
+
+fn nostr_relays(value: &Value, names: &BTreeMap<String, String>) -> BTreeMap<String, Vec<String>> {
+    let relay_list = value
+        .as_array()
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(Value::as_str)
+                .map(str::to_string)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    if relay_list.is_empty() {
+        return BTreeMap::new();
+    }
+    names
+        .values()
+        .map(|key| (key.clone(), relay_list.clone()))
+        .collect()
 }
 
 fn sitemap_body(public_base_url: &str, resources: &[SitemapResource]) -> String {

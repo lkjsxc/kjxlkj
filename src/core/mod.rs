@@ -1,11 +1,15 @@
 //! Core domain models and validation
 
+pub mod live_settings;
 mod markdown;
 mod markdown_embed_blocks;
 mod markdown_embeds;
 mod markdown_links;
 #[cfg(test)]
 mod markdown_tests;
+pub mod nostr;
+#[cfg(test)]
+mod nostr_tests;
 mod validation;
 #[cfg(test)]
 mod validation_tests;

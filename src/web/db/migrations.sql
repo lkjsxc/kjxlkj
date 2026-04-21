@@ -133,6 +133,9 @@ CREATE TABLE IF NOT EXISTS app_settings (
     site_name TEXT NOT NULL DEFAULT 'kjxlkj',
     site_description TEXT NOT NULL DEFAULT 'Markdown-first resource system for LLM-operated workflows.',
     public_base_url TEXT NOT NULL DEFAULT '',
+    nostr_names JSONB NOT NULL DEFAULT '{}'::JSONB,
+    nostr_relays JSONB NOT NULL DEFAULT '[]'::JSONB,
+    live_ice_servers JSONB NOT NULL DEFAULT '[{"urls":["stun:stun.l.google.com:19302"]}]'::JSONB,
     site_icon_key TEXT,
     site_icon_content_type TEXT,
     site_icon_updated_at TIMESTAMPTZ,
@@ -144,6 +147,9 @@ ALTER TABLE resources ADD COLUMN IF NOT EXISTS owner_note_id CHAR(26) REFERENCES
 ALTER TABLE resource_snapshots ADD COLUMN IF NOT EXISTS media_variants JSONB;
 ALTER TABLE resource_snapshots ADD COLUMN IF NOT EXISTS owner_note_id CHAR(26) REFERENCES resources(id);
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS media_webp_quality BIGINT NOT NULL DEFAULT 82;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS nostr_names JSONB NOT NULL DEFAULT '{}'::JSONB;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS nostr_relays JSONB NOT NULL DEFAULT '[]'::JSONB;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_ice_servers JSONB NOT NULL DEFAULT '[{"urls":["stun:stun.l.google.com:19302"]}]'::JSONB;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_key TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_content_type TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_updated_at TIMESTAMPTZ;

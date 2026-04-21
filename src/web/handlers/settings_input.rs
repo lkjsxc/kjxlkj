@@ -1,5 +1,7 @@
 //! Settings form parsing and validation
 
+use crate::core::live_settings::normalize_ice_servers_json;
+use crate::core::nostr::{normalize_names_json, normalize_relays_json};
 use crate::error::AppError;
 use crate::web::db::AppSettings;
 use crate::web::site::normalize_public_base_url;
@@ -11,6 +13,9 @@ pub struct SettingsForm {
     pub site_name: String,
     pub site_description: String,
     pub public_base_url: String,
+    pub nostr_names_json: String,
+    pub nostr_relays_json: String,
+    pub live_ice_servers_json: String,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
@@ -34,6 +39,10 @@ pub fn validate_settings_form(
     let site_name = form.site_name.trim();
     let site_description = form.site_description.trim();
     let public_base_url = validate_public_base_url(&form.public_base_url)?;
+    let nostr_names = normalize_names_json(&form.nostr_names_json).map_err(|e| invalid(&e))?;
+    let nostr_relays = normalize_relays_json(&form.nostr_relays_json).map_err(|e| invalid(&e))?;
+    let live_ice_servers =
+        normalize_ice_servers_json(&form.live_ice_servers_json).map_err(|e| invalid(&e))?;
     if site_name.is_empty() || site_name.len() > 80 {
         return Err(invalid("site name must be between 1 and 80 characters"));
     }
@@ -63,6 +72,9 @@ pub fn validate_settings_form(
         site_name: site_name.to_string(),
         site_description: site_description.to_string(),
         public_base_url,
+        nostr_names,
+        nostr_relays,
+        live_ice_servers,
         home_recent_limit: form.home_recent_limit,
         home_favorite_limit: form.home_favorite_limit,
         home_popular_limit: form.home_popular_limit,
@@ -126,6 +138,9 @@ mod tests {
             site_name: "Launchpad".to_string(),
             site_description: "Search-friendly notes.".to_string(),
             public_base_url: "https://example.com".to_string(),
+            nostr_names_json: "{}".to_string(),
+            nostr_relays_json: "[]".to_string(),
+            live_ice_servers_json: "[]".to_string(),
             home_recent_limit: 5,
             home_favorite_limit: 5,
             home_popular_limit: 5,

@@ -26,6 +26,7 @@ mod resource_ids;
 mod resource_support;
 mod resources;
 mod settings;
+mod settings_model;
 mod snapshots;
 mod snapshots_cursor;
 mod write_support;
@@ -45,8 +46,8 @@ pub use listing::{
 pub use media::{create_media, MediaBlob};
 pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
 pub use models::{
-    AppSettings, ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot,
-    ResourceStats, ResourceViewStats, SitemapResource,
+    ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot, ResourceStats,
+    ResourceViewStats, SitemapResource,
 };
 pub use navigation::{get_next_resource, get_previous_resource};
 pub use password_reset::{
@@ -59,6 +60,7 @@ pub use resources::{
     update_resource,
 };
 pub use settings::{get_resource_stats, get_settings, update_settings};
+pub use settings_model::AppSettings;
 pub use snapshots::{get_snapshot_target, list_resource_snapshots, SnapshotTarget};
 
 use crate::error::AppError;

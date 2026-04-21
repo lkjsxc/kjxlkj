@@ -9,7 +9,7 @@ pub fn site_icon_section(settings: &AppSettings) -> String {
         .map(|value| format!("Current icon: {}", html_escape(value)))
         .unwrap_or_else(|| "Current icon: bundled default".to_string());
     settings_row(
-        "Site icon",
+        "Site_identity/Icon",
         &format!(
             r#"<div class="settings-icon-grid" data-settings-item>
 <img src="/assets/site-icon" alt="" class="settings-icon-preview" data-site-icon-preview>

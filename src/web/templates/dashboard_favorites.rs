@@ -34,7 +34,7 @@ pub fn settings_favorite_order_section(favorites: &[IndexItem]) -> String {
                 .join("")
         )
     };
-    let row = settings_row("Favorites", &body, "favorites-section");
+    let row = settings_row("Favorites/Order", &body, "favorites-section");
     format!(r#"<div id="favorites-settings">{row}</div>"#)
 }
 

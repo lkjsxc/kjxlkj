@@ -4,10 +4,10 @@ use crate::web::db::AppSettings;
 
 pub(super) fn home_hero_section(settings: &AppSettings) -> String {
     settings_row(
-        "Home hero",
+        "Home/Hero_markdown",
         &format!(
             r#"<div class="settings-section-grid">
-<label class="form-group settings-wide" data-settings-item><span>Home intro Markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
+<label class="form-group settings-wide" data-settings-item><span>Home/Hero_markdown</span><textarea name="home_intro_markdown" rows="7" placeholder="Optional homepage introduction">{}</textarea></label>
 </div>"#,
             html_escape(&settings.home_intro_markdown),
         ),
@@ -41,7 +41,7 @@ pub(super) fn home_sections_section(settings: &AppSettings) -> String {
     ];
     rows.sort_by_key(|row| row.position);
     settings_row(
-        "Home sections",
+        "Home/Section_order",
         &format!(
             r#"<div class="settings-table">
 <div class="settings-row settings-row-head" data-settings-item><span>Section</span><span>Visible</span><span>Items</span></div>
