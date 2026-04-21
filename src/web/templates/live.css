@@ -1,0 +1,36 @@
+.live-surface {
+    display: grid;
+    gap: 14px;
+}
+
+.live-video-wrap {
+    aspect-ratio: 16 / 9;
+    background: var(--surface-muted);
+    border: 1px solid var(--line);
+    display: grid;
+    place-items: center;
+}
+
+.live-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #05070a;
+}
+
+.live-status-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    align-items: baseline;
+}
+
+.live-status-row span {
+    color: var(--text-soft);
+}
+
+.live-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}

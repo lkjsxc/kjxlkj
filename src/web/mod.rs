@@ -3,6 +3,9 @@
 pub(crate) mod db;
 pub mod handlers;
 mod history_summary;
+mod live;
+#[cfg(test)]
+mod live_tests;
 mod markdown;
 mod routes;
 mod site;

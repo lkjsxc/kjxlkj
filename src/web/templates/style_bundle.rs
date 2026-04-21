@@ -11,6 +11,7 @@ const SURFACES_CSS: &str = include_str!("surfaces.css");
 const RESOURCE_LIST_CSS: &str = include_str!("resource_list.css");
 const SUMMARY_CARDS_CSS: &str = include_str!("summary_cards.css");
 const OVERVIEW_CSS: &str = include_str!("overview.css");
+const LIVE_CSS: &str = include_str!("live.css");
 const RESPONSIVE_CSS: &str = include_str!("responsive.css");
 const PAGE_CSS: &str = include_str!("page.css");
 const FAVORITES_CSS: &str = include_str!("favorites.css");
@@ -37,6 +38,7 @@ fn raw_css() -> String {
         RESOURCE_LIST_CSS,
         SUMMARY_CARDS_CSS,
         OVERVIEW_CSS,
+        LIVE_CSS,
         RESPONSIVE_CSS,
         PAGE_CSS,
         FAVORITES_CSS,

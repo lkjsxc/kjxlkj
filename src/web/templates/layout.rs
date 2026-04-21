@@ -87,6 +87,7 @@ pub fn primary_nav(active: &str, is_admin: bool) -> String {
     let mut links = vec![
         nav_link("/", "Home", active == "home", Some("home")),
         nav_link("/search", "Search", active == "search", Some("search")),
+        nav_link("/live", "Live", active == "live", None),
     ];
     if is_admin {
         links.push(nav_link("/admin", "Dashboard", active == "admin", None));

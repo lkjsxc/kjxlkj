@@ -7,6 +7,7 @@ export {
 } from './shell-assertions.mjs';
 export {
     expectAdminDashboard,
+    expectLivePage,
     expectPublicRoot,
     expectSearchPage,
     expectSettingsPage,

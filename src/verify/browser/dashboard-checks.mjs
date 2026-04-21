@@ -6,7 +6,7 @@ const uploadedIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64
 <circle cx="32" cy="32" r="20" fill="#7ec8ff"/>
 </svg>`;
 export async function verifyFavoriteReorder(page) {
-    const siteName = page.getByLabel('Site name');
+    const siteName = page.getByLabel('Site_identity/Site_name');
     const items = page.locator('[data-favorite-order] .favorite-order-item');
     const initialTitles = await favoriteTitles(items);
     assert.deepEqual(initialTitles, ['Orbit Ledger', 'Beacon Log']);
@@ -30,22 +30,22 @@ export async function verifyFavoriteReorder(page) {
 export async function verifySettingsSearch(page) {
     const input = page.getByLabel('Search settings');
     await input.fill('webp');
-    await expectVisibleSection(page, 'Media', true);
-    await expectVisibleSection(page, 'Search', false);
-    await expectVisibleSection(page, 'New resources', false);
+    await expectVisibleSection(page, 'Media/WebP_quality', true);
+    await expectVisibleSection(page, 'Search/Results_per_page', false);
+    await expectVisibleSection(page, 'Resources/New_resources_start_private', false);
     await input.fill('future uploads');
-    await expectVisibleSection(page, 'Media', true);
-    await input.fill('site icon');
-    await expectVisibleSection(page, 'Site icon', true);
+    await expectVisibleSection(page, 'Media/WebP_quality', true);
+    await input.fill('icon');
+    await expectVisibleSection(page, 'Site_identity/Icon', true);
     await input.fill('zzz-no-match');
     await page.getByText('No matching settings.', { exact: true }).waitFor({ state: 'visible' });
-    await expectVisibleSection(page, 'Site identity', false);
+    await expectVisibleSection(page, 'Site_identity/Site_name', false);
     await input.fill('');
-    await expectVisibleSection(page, 'Site identity', true);
+    await expectVisibleSection(page, 'Site_identity/Site_name', true);
     assert.equal(await page.getByText('No matching settings.', { exact: true }).isHidden(), true);
 }
 export async function verifySiteIconControls(page) {
-    const siteName = page.getByLabel('Site name');
+    const siteName = page.getByLabel('Site_identity/Site_name');
     const prompt = page.evaluate(() => {
         return new Promise((resolve) => {
             document
@@ -79,24 +79,24 @@ export async function verifySiteIconControls(page) {
     await siteName.fill('kjxlkj');
 }
 export async function applySettingsScenario(page) {
-    assert.equal(await page.getByLabel('Site name').inputValue(), 'kjxlkj');
-    assert.equal(await page.getByLabel('Public base URL').inputValue(), '');
-    assert.equal(await page.getByLabel('Search page size').inputValue(), '20');
-    assert.equal(await page.getByLabel('Media WebP quality').inputValue(), '82');
+    assert.equal(await page.getByLabel('Site_identity/Site_name').inputValue(), 'kjxlkj');
+    assert.equal(await page.getByLabel('Site_identity/Public_base_URL').inputValue(), '');
+    assert.equal(await page.getByLabel('Search/Results_per_page').inputValue(), '20');
+    assert.equal(await page.getByLabel('Media/WebP_quality').inputValue(), '82');
     assert.equal(await page.locator('input[name="home_popular_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_recent_limit"]').inputValue(), '5');
     assert.equal(await page.locator('input[name="home_favorite_limit"]').inputValue(), '5');
-    assert.equal(await page.getByLabel('Session timeout (minutes)').inputValue(), '1440');
-    assert.equal(await page.getByLabel('New resources start private').isChecked(), false);
+    assert.equal(await page.getByLabel('Session/Timeout_minutes').inputValue(), '1440');
+    assert.equal(await page.getByLabel('Resources/New_resources_start_private').isChecked(), false);
     assert.equal(await page.getByRole('button', { name: /Move .* (up|down)/ }).count(), 0);
     assert.deepEqual(await settingsOrder(page), ['Recently updated', 'Favorites', 'Popular']);
-    await page.getByLabel('Site name').fill('Launchpad');
-    await page.getByLabel('Site description').fill('Launchpad search surface for public resources.');
-    await page.getByLabel('Public base URL').fill(appUrl);
-    await page.getByLabel('Home intro Markdown').fill('# Launchpad\n\nWelcome to **Launchpad**.');
-    await page.getByLabel('Session timeout (minutes)').fill('720');
-    await page.getByLabel('Search page size').fill('12');
-    await page.getByLabel('Media WebP quality').fill('67');
+    await page.getByLabel('Site_identity/Site_name').fill('Launchpad');
+    await page.getByLabel('Site_identity/Site_description').fill('Launchpad search surface for public resources.');
+    await page.getByLabel('Site_identity/Public_base_URL').fill(appUrl);
+    await page.getByLabel('Home/Hero_markdown').fill('# Launchpad\n\nWelcome to **Launchpad**.');
+    await page.getByLabel('Session/Timeout_minutes').fill('720');
+    await page.getByLabel('Search/Results_per_page').fill('12');
+    await page.getByLabel('Media/WebP_quality').fill('67');
     await reorderHomeSections(page);
     await page.locator('input[name="home_recent_visible"]').uncheck();
     const responsePromise = page.waitForResponse((response) => {
@@ -111,18 +111,18 @@ export async function applySettingsScenario(page) {
         const sitemap = await fetch('/sitemap.xml');
         return { robotsStatus: robots.status, sitemapStatus: sitemap.status };
     });
-    assert.equal(await page.getByLabel('Site name').inputValue(), 'Launchpad');
-    assert.equal(await page.getByLabel('Public base URL').inputValue(), appUrl);
-    assert.equal(await page.getByLabel('Search page size').inputValue(), '12');
-    assert.equal(await page.getByLabel('Media WebP quality').inputValue(), '67');
-    assert.equal(await page.getByLabel('Session timeout (minutes)').inputValue(), '720');
-    assert.equal(await page.getByLabel('New resources start private').isChecked(), false);
+    assert.equal(await page.getByLabel('Site_identity/Site_name').inputValue(), 'Launchpad');
+    assert.equal(await page.getByLabel('Site_identity/Public_base_URL').inputValue(), appUrl);
+    assert.equal(await page.getByLabel('Search/Results_per_page').inputValue(), '12');
+    assert.equal(await page.getByLabel('Media/WebP_quality').inputValue(), '67');
+    assert.equal(await page.getByLabel('Session/Timeout_minutes').inputValue(), '720');
+    assert.equal(await page.getByLabel('Resources/New_resources_start_private').isChecked(), false);
     assert.equal(discovery.robotsStatus, 200);
     assert.equal(discovery.sitemapStatus, 200);
     assert.deepEqual(await settingsOrder(page), ['Favorites', 'Recently updated', 'Popular']);
 }
 export async function verifySettingsLeaveGuard(page) {
-    await page.getByLabel('Site name').fill('Unsaved Launchpad');
+    await page.getByLabel('Site_identity/Site_name').fill('Unsaved Launchpad');
     const linkDialog = page.waitForEvent('dialog', { timeout: 1500 }).catch(() => null);
     const linkClick = page.getByRole('link', { name: 'Home', exact: true }).click();
     const leaveLinkDialog = await linkDialog;
@@ -143,7 +143,7 @@ export async function verifySettingsLeaveGuard(page) {
     await backAttempt;
     await page.waitForTimeout(300);
     assert.equal(new URL(page.url()).pathname, '/admin/settings');
-    await page.getByLabel('Site name').fill('kjxlkj');
+    await page.getByLabel('Site_identity/Site_name').fill('kjxlkj');
 }
 async function reorderHomeSections(page) {
     const items = page.locator('[data-settings-order-item]');

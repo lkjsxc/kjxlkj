@@ -13,6 +13,7 @@ mod index;
 mod index_tests;
 mod layout;
 mod list_sections;
+mod live;
 mod model;
 mod popular_sections;
 #[cfg(test)]
@@ -45,6 +46,7 @@ pub use dashboard::admin_page;
 pub use history::{history_page, snapshot_page, HistoryPage};
 pub use home::home_page;
 pub use layout::{not_found_page, render_time};
+pub use live::live_page;
 pub use model::{HistoryLink, IndexItem, IndexMetric, NavLink, ResourceAnalytics, ResourceChrome};
 pub use popular_sections::{admin_popular_section, home_popular_section};
 pub use resource::resource_page;

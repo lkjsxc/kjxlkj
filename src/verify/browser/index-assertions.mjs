@@ -61,6 +61,22 @@ export async function expectSearchPage(page, hasQueryCard = false) {
     await assertListRailOrder(page);
 }
 
+export async function expectLivePage(page, isAdmin = false) {
+    await expectFlatShell(page, isAdmin ? ['New note', 'Logout'] : []);
+    await assertVisibleText(page, 'Open GitHub');
+    await assertVisibleText(page, 'Live');
+    await assertVisibleText(page, 'Waiting for broadcast');
+    await page.locator('[data-live-video]').waitFor({ state: 'visible' });
+    if (isAdmin) {
+        await page.getByRole('button', { name: 'Start broadcast', exact: true }).waitFor({ state: 'visible' });
+        await page.getByRole('button', { name: 'Stop broadcast', exact: true }).waitFor({ state: 'visible' });
+    } else {
+        await page.getByRole('link', { name: 'Admin sign in', exact: true }).waitFor({ state: 'visible' });
+    }
+    await assertNoHeaderButtons(page);
+    await assertListRailOrder(page);
+}
+
 export async function expectAdminDashboard(page) {
     await expectFlatShell(page, ['New note', 'Logout']);
     await assertVisibleText(page, 'Open GitHub');
@@ -76,7 +92,7 @@ export async function expectAdminDashboard(page) {
     assert.equal(await page.locator('[data-favorite-order]').count(), 0);
     assert.equal(await page.getByRole('heading', { name: 'Library', exact: true }).count(), 0);
     assert.equal(await page.getByText('Default Vim mode for editors', { exact: true }).count(), 0);
-    assert.equal(await page.getByLabel('Home intro Markdown').count(), 0);
+    assert.equal(await page.getByLabel('Home/Hero_markdown').count(), 0);
     assert.equal(await page.locator('.page-summary').count(), 0);
     await assertNoHeaderButtons(page);
     await assertStableMetadata(page, 'Orbit Ledger');
@@ -90,21 +106,21 @@ export async function expectSettingsPage(page) {
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Settings');
     await page.getByLabel('Search settings').waitFor({ state: 'visible' });
-    await page.getByLabel('Site name').waitFor({ state: 'visible' });
-    await page.getByLabel('Site description').waitFor({ state: 'visible' });
-    await page.getByLabel('Public base URL').waitFor({ state: 'visible' });
+    await page.getByLabel('Site_identity/Site_name').waitFor({ state: 'visible' });
+    await page.getByLabel('Site_identity/Site_description').waitFor({ state: 'visible' });
+    await page.getByLabel('Site_identity/Public_base_URL').waitFor({ state: 'visible' });
     await page.getByRole('button', { name: 'Upload icon', exact: true }).waitFor({ state: 'visible' });
-    await page.getByLabel('Home intro Markdown').waitFor({ state: 'visible' });
-    await page.getByLabel('Session timeout (minutes)').waitFor({ state: 'visible' });
-    await page.getByLabel('Search page size').waitFor({ state: 'visible' });
-    await page.getByLabel('Media WebP quality').waitFor({ state: 'visible' });
-    await page.getByLabel('New resources start private').waitFor({ state: 'visible' });
-    await assertVisibleText(page, 'Home sections');
+    await page.getByLabel('Home/Hero_markdown').waitFor({ state: 'visible' });
+    await page.getByLabel('Session/Timeout_minutes').waitFor({ state: 'visible' });
+    await page.getByLabel('Search/Results_per_page').waitFor({ state: 'visible' });
+    await page.getByLabel('Media/WebP_quality').waitFor({ state: 'visible' });
+    await page.getByLabel('Resources/New_resources_start_private').waitFor({ state: 'visible' });
+    await assertVisibleText(page, 'Home/Section_order');
     await assertVisibleText(page, 'Favorites');
-    await assertVisibleText(page, 'Sessions');
+    await assertVisibleText(page, 'Session/Timeout_minutes');
     await assertVisibleText(page, 'Search');
     await assertVisibleText(page, 'Media');
-    await assertVisibleText(page, 'New resources');
+    await assertVisibleText(page, 'Resources/New_resources_start_private');
     await assertVisibleText(page, 'Password');
     assert.equal(await page.locator('.settings-section .section-head').count(), 0);
     await page.locator('[data-settings-order-list]').waitFor({ state: 'visible' });

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { assertVisibleText, expectAdminDashboard, expectAdminNote, expectSettingsPage } from './assertions.mjs';
+import { assertVisibleText, expectAdminDashboard, expectAdminNote, expectLivePage, expectSettingsPage } from './assertions.mjs';
 import {
     applySettingsScenario,
     verifyFavoriteReorder,
@@ -41,6 +41,10 @@ export async function captureAdminScreens(browser, fixtures) {
     await verifySiteIconControls(page);
     await applySettingsScenario(page);
     await assertBrandName(page, 'Launchpad');
+
+    await page.goto(`${appUrl}/live`, { waitUntil: 'networkidle' });
+    await expectLivePage(page, true);
+    await assertHead(page, { title: 'Live | Launchpad', descriptionIncludes: 'Public live broadcast.', robots: 'noindex,nofollow', canonical: null });
 
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await assertAdminHomeConfiguration(page);

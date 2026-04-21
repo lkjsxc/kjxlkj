@@ -5,10 +5,11 @@ use crate::error::AppError;
 use crate::storage::Storage;
 use crate::web::db;
 use crate::web::handlers::{
-    admin, assets, discoverability, favorites, health, history, home, login, logout, media,
+    admin, assets, discoverability, favorites, health, history, home, live, login, logout, media,
     media_attachments, password_reset, popular_sections, preview, resource, resource_file,
     resource_history, resources, search, settings, setup, site_icon,
 };
+use crate::web::live::LiveHub;
 use axum::extract::DefaultBodyLimit;
 use axum::routing::{get, post, put};
 use axum::Router;
@@ -21,6 +22,7 @@ pub struct AppState {
     pub pool: db::DbPool,
     pub storage: Storage,
     pub setup_code: setup::SetupCode,
+    pub live_hub: LiveHub,
     pub media_upload_max_bytes: usize,
     pub site_icon_upload_max_bytes: usize,
 }
@@ -42,6 +44,7 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
         pool,
         storage,
         setup_code,
+        live_hub: LiveHub::default(),
         media_upload_max_bytes: config.media_upload_max_bytes,
         site_icon_upload_max_bytes: config.site_icon_upload_max_bytes,
     };
@@ -100,6 +103,8 @@ pub fn router(state: AppState) -> Router {
             post(preview::render_markdown_preview),
         )
         .route("/search", get(search::search_page))
+        .route("/live", get(live::live_page))
+        .route("/live/ws", get(live::live_ws))
         .route("/{reference}/file", get(resource_file::current_file))
         .route("/{id}/history", get(history::history_page))
         .route(

@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 
 export async function assertListRailOrder(page) {
     const newNoteTop = await controlTop(page, 'New note');
+    const homeTop = await requiredControlTop(page, 'Home');
+    const searchTop = await requiredControlTop(page, 'Search');
+    const liveTop = await requiredControlTop(page, 'Live');
     const githubTop = await requiredControlTop(page, 'Open GitHub');
     const logoutTop = await controlTop(page, 'Logout');
     const signInTop = await controlTop(page, 'Admin sign in');
@@ -31,3 +34,4 @@ async function namedControl(page, name) {
     if ((await link.count()) && (await link.first().isVisible())) return link.first();
     return null;
 }
+    assert.ok(homeTop < searchTop && searchTop < liveTop, 'primary rail order should be Home, Search, Live');

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { assertVisibleText, expectGuestNote, expectPublicRoot, expectSearchPage } from './assertions.mjs';
+import { assertVisibleText, expectGuestNote, expectLivePage, expectPublicRoot, expectSearchPage } from './assertions.mjs';
 import { assertBrandName, assertDiscoveryDisabled, assertHead } from './discoverability-checks.mjs';
 import { assertHomeBrowseLinks, assertPopularWindowSwitch, popularTitles } from './home-checks.mjs';
 import { assertIconAssets } from './icon-checks.mjs';
@@ -33,6 +33,10 @@ export async function capturePublicScreens(browser, notes) {
     assert.equal(await page.getByText('Atlas Entry', { exact: true }).count(), 0);
     await assertVisibleText(page, 'Beacon Log');
     await assertVisibleText(page, 'Orbit Ledger');
+
+    await page.goto(`${appUrl}/live`, { waitUntil: 'networkidle' });
+    await expectLivePage(page, false);
+    await assertHead(page, { title: 'Live | kjxlkj', descriptionIncludes: 'Public live broadcast.', robots: 'noindex,nofollow', canonical: null });
 
     await page.goto(`${appUrl}/search?limit=2`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, false);
