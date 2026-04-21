@@ -70,11 +70,11 @@ export async function expectLivePage(page, isAdmin = false) {
     await video.waitFor({ state: 'visible' });
     assert.equal(await video.getAttribute('controls'), '');
     if (isAdmin) {
-        await page.getByLabel('Source').waitFor({ state: 'visible' });
-        await page.getByLabel('Camera').waitFor({ state: 'visible' });
-        await page.getByLabel('Quality').waitFor({ state: 'visible' });
-        await page.getByLabel('Frame rate').waitFor({ state: 'visible' });
-        await page.getByLabel('Microphone').waitFor({ state: 'visible' });
+        await page.locator('[data-live-source]').waitFor({ state: 'visible' });
+        await page.locator('[data-live-camera]').waitFor({ state: 'visible' });
+        await page.locator('[data-live-height]').waitFor({ state: 'visible' });
+        await page.locator('[data-live-fps]').waitFor({ state: 'visible' });
+        await page.locator('[data-live-mic]').waitFor({ state: 'visible' });
         await page.locator('[data-live-viewer-count]').waitFor({ state: 'visible' });
         await page.getByRole('button', { name: 'Start broadcast', exact: true }).waitFor({ state: 'visible' });
         await page.getByRole('button', { name: 'Stop broadcast', exact: true }).waitFor({ state: 'visible' });

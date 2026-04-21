@@ -48,10 +48,10 @@ export async function configureLiveDefaults(page) {
 }
 
 export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
-    assert.equal(await adminPage.getByLabel('Source').inputValue(), 'camera');
-    assert.equal(await adminPage.getByLabel('Quality').inputValue(), '1440');
-    assert.equal(await adminPage.getByLabel('Frame rate').inputValue(), '45');
-    assert.equal(await adminPage.getByLabel('Microphone').isChecked(), true);
+    assert.equal(await adminPage.locator('[data-live-source]').inputValue(), 'camera');
+    assert.equal(await adminPage.locator('[data-live-height]').inputValue(), '1440');
+    assert.equal(await adminPage.locator('[data-live-fps]').inputValue(), '45');
+    assert.equal(await adminPage.locator('[data-live-mic]').isChecked(), true);
     await adminPage.getByRole('button', { name: 'Start broadcast', exact: true }).click();
     await adminPage.getByText('Broadcasting live', { exact: true }).waitFor({ state: 'visible' });
     await adminPage.getByText('0 viewers', { exact: true }).waitFor({ state: 'visible' });
@@ -62,10 +62,10 @@ export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
     await viewer.goto(`${appUrl}/live`, { waitUntil: 'networkidle' });
     await adminPage.getByText('1 viewer', { exact: true }).waitFor({ state: 'visible' });
 
-    await adminPage.getByLabel('Source').selectOption('screen');
-    await adminPage.getByLabel('Quality').selectOption('720');
-    await adminPage.getByLabel('Frame rate').selectOption('30');
-    await adminPage.getByLabel('Microphone').uncheck();
+    await adminPage.locator('[data-live-source]').selectOption('screen');
+    await adminPage.locator('[data-live-height]').selectOption('720');
+    await adminPage.locator('[data-live-fps]').selectOption('30');
+    await adminPage.locator('[data-live-mic]').uncheck();
     await adminPage.getByText('Screen active.', { exact: true }).waitFor({ state: 'visible' });
 
     await Promise.all([
