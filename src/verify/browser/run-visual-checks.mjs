@@ -6,7 +6,9 @@ import { prepareEnvironment, prepareState } from './support.mjs';
 
 const ARTIFACTS = [
     'desktop-public-root.png',
+    'desktop-live-public.png',
     'desktop-search.png',
+    'desktop-live-admin.png',
     'desktop-admin-dashboard.png',
     'desktop-admin-note.png',
     'desktop-history-index.png',

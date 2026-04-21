@@ -12,18 +12,19 @@ import { verifyDeleteArming } from './delete-checks.mjs';
 import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
+import { configureLiveDefaults, installLiveMediaMocks, verifyLiveBroadcastLifecycle } from './live-checks.mjs';
 import { assertAdminMediaPage, assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
 import { verifyPartialResourceNavigation, verifyRememberedRailNavigation } from './navigation-checks.mjs';
 import { appUrl, capture, login, newContext, submitLogin } from './support.mjs';
 
 export async function captureAdminScreens(browser, fixtures) {
     const context = await newContext(browser, { width: 1440, height: 1100 });
+    await installLiveMediaMocks(context);
     const page = await context.newPage();
     const note = fixtures.middle;
     await page.goto(`${appUrl}/login`, { waitUntil: 'networkidle' });
     await assertHead(page, { title: 'Login | kjxlkj', descriptionIncludes: 'Sign in to manage kjxlkj.', robots: 'noindex,nofollow', canonical: null });
     await login(page);
-
     await page.goto(`${appUrl}/admin`, { waitUntil: 'networkidle' });
     await expectAdminDashboard(page);
     await assertHead(page, { title: 'Dashboard | kjxlkj', descriptionIncludes: 'Admin dashboard for kjxlkj.', robots: 'noindex,nofollow', canonical: null });
@@ -39,19 +40,19 @@ export async function captureAdminScreens(browser, fixtures) {
     await verifySettingsSearch(page);
     await verifyFavoriteReorder(page);
     await verifySiteIconControls(page);
+    await configureLiveDefaults(page);
     await applySettingsScenario(page);
     await assertBrandName(page, 'Launchpad');
-
     await page.goto(`${appUrl}/live`, { waitUntil: 'networkidle' });
     await expectLivePage(page, true);
     await assertHead(page, { title: 'Live | Launchpad', descriptionIncludes: 'Public live broadcast.', robots: 'noindex,nofollow', canonical: null });
-
+    await capture(page, 'desktop-live-admin.png');
+    await verifyLiveBroadcastLifecycle(browser, page);
     await page.goto(`${appUrl}/`, { waitUntil: 'networkidle' });
     await assertAdminHomeConfiguration(page);
     await assertHead(page, { title: 'Home | Launchpad', descriptionIncludes: 'Launchpad search surface for public resources.', robots: 'noindex,nofollow', canonical: null });
     await verifyUiCreatedDraft(page, false);
     await verifyDeleteArming(page);
-
     await page.goto(`${appUrl}/${note.id}`, { waitUntil: 'networkidle' });
     assert.equal(new URL(page.url()).pathname, `/${note.ref}`);
     await expectAdminNote(page, fixtures.oldest.title, fixtures.newest.title);
@@ -66,7 +67,6 @@ export async function captureAdminScreens(browser, fixtures) {
     await capture(page, 'desktop-admin-note.png');
     await assertAdminMediaPage(page, fixtures.image);
     await assertAdminMediaPage(page, fixtures.file);
-
     const historyJson = await page.evaluate(async (id) => {
         const response = await fetch(`/resources/${id}/history?limit=2`);
         return response.json();

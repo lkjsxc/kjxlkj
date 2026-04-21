@@ -37,6 +37,7 @@ export async function capturePublicScreens(browser, notes) {
     await page.goto(`${appUrl}/live`, { waitUntil: 'networkidle' });
     await expectLivePage(page, false);
     await assertHead(page, { title: 'Live | kjxlkj', descriptionIncludes: 'Public live broadcast.', robots: 'noindex,nofollow', canonical: null });
+    await capture(page, 'desktop-live-public.png');
 
     await page.goto(`${appUrl}/search?limit=2`, { waitUntil: 'networkidle' });
     await expectSearchPage(page, false);

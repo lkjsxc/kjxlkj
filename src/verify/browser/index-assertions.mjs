@@ -66,12 +66,21 @@ export async function expectLivePage(page, isAdmin = false) {
     await assertVisibleText(page, 'Open GitHub');
     await assertVisibleText(page, 'Live');
     await assertVisibleText(page, 'Waiting for broadcast');
-    await page.locator('[data-live-video]').waitFor({ state: 'visible' });
+    const video = page.locator('[data-live-video]');
+    await video.waitFor({ state: 'visible' });
+    assert.equal(await video.getAttribute('controls'), '');
     if (isAdmin) {
+        await page.getByLabel('Source').waitFor({ state: 'visible' });
+        await page.getByLabel('Camera').waitFor({ state: 'visible' });
+        await page.getByLabel('Quality').waitFor({ state: 'visible' });
+        await page.getByLabel('Frame rate').waitFor({ state: 'visible' });
+        await page.getByLabel('Microphone').waitFor({ state: 'visible' });
+        await page.locator('[data-live-viewer-count]').waitFor({ state: 'visible' });
         await page.getByRole('button', { name: 'Start broadcast', exact: true }).waitFor({ state: 'visible' });
         await page.getByRole('button', { name: 'Stop broadcast', exact: true }).waitFor({ state: 'visible' });
     } else {
         await page.getByRole('link', { name: 'Admin sign in', exact: true }).waitFor({ state: 'visible' });
+        assert.equal(await page.locator('[data-live-viewer-count]').count(), 0);
     }
     await assertNoHeaderButtons(page);
     await assertListRailOrder(page);
@@ -114,12 +123,17 @@ export async function expectSettingsPage(page) {
     await page.getByLabel('Session/Timeout_minutes').waitFor({ state: 'visible' });
     await page.getByLabel('Search/Results_per_page').waitFor({ state: 'visible' });
     await page.getByLabel('Media/WebP_quality').waitFor({ state: 'visible' });
+    await page.getByLabel('Live/Default_source').waitFor({ state: 'visible' });
+    await page.getByLabel('Live/Default_quality').waitFor({ state: 'visible' });
+    await page.getByLabel('Live/Default_fps').waitFor({ state: 'visible' });
+    await page.getByLabel('Live/Microphone_default').waitFor({ state: 'visible' });
     await page.getByLabel('Resources/New_resources_start_private').waitFor({ state: 'visible' });
     await assertVisibleText(page, 'Home/Section_order');
     await assertVisibleText(page, 'Favorites');
     await assertVisibleText(page, 'Session/Timeout_minutes');
     await assertVisibleText(page, 'Search');
     await assertVisibleText(page, 'Media');
+    await assertVisibleText(page, 'Live/Default_source');
     await assertVisibleText(page, 'Resources/New_resources_start_private');
     await assertVisibleText(page, 'Password');
     assert.equal(await page.locator('.settings-section .section-head').count(), 0);
