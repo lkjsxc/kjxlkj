@@ -64,7 +64,8 @@ fn spotify(url: &Url) -> Option<String> {
     let parts = segments(url);
     matches!(
         parts.as_slice(),
-        [kind @ ("track" | "album" | "playlist" | "episode" | "show" | "artist"), id, ..] if !id.is_empty()
+        ["track" | "album" | "playlist" | "episode" | "show" | "artist", id, ..]
+            if !id.is_empty()
     )
     .then(|| {
         frame_card(
