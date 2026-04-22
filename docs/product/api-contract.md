@@ -93,6 +93,7 @@
   "live_default_height": 1080,
   "live_default_fps": 60,
   "live_default_microphone_enabled": false,
+  "google_maps_embed_api_key": "",
   "media_webp_quality": 82,
   "default_new_resource_is_private": false
 }
@@ -106,6 +107,8 @@
 - `live_default_height` is one of `360`, `480`, `720`, `1080`, `1440`, or `2160`.
 - `live_default_fps` is one of `15`, `30`, `45`, `60`, or `120`.
 - `live_default_microphone_enabled` controls whether new broadcasts request audio by default.
+- `google_maps_embed_api_key` is optional and enables generated Google Maps iframe embeds.
+- Blank `google_maps_embed_api_key` disables generated Google Maps embeds.
 - Site icon upload requests use `multipart/form-data` rather than JSON.
 
 ## Nostr Discovery Response

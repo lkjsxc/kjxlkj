@@ -13,17 +13,22 @@
 
 - `kjxlkj`: local or configured public-origin resource pages and file URLs.
 - `github.com`: repositories, issues, pull requests, commits, trees, blobs, releases, and discussions.
-- `youtube.com`, `youtu.be`, and `youtube-nocookie.com`: videos, shorts, and playlists.
-- `vimeo.com`: public videos.
-- `soundcloud.com`: public tracks, sets, and profile URLs.
+- Video players: YouTube, Vimeo, TikTok, Dailymotion, and Twitch videos or clips.
+- Audio players: Spotify and SoundCloud.
+- Map viewers: Google Maps when the persisted Maps Embed API key is non-blank.
+- Code and document frames: CodePen and direct PDF-like URLs.
 - `x.com` and `twitter.com`: profiles and status URLs.
+- `instagram.com`: public posts, reels, and profiles.
 - `pixiv.net`: artworks and user pages.
 - `bsky.app`: profile and post URLs.
 - Mastodon-style ActivityPub web URLs: `@user` profiles and post-like numeric paths on non-denied hosts.
 - `npmjs.com`: package pages.
 - `crates.io`: crate pages.
 - `docs.rs`: crate documentation pages.
+- `pypi.org`, `hub.docker.com`, `developer.mozilla.org`, and `gist.github.com`: static rich cards.
 - Direct image URLs ending in a browser image extension render as contained images.
+- Direct video URLs ending in a browser video extension render as contained native video.
+- Direct audio URLs ending in a browser audio extension render as contained native audio.
 - Other absolute URLs render as generic external cards.
 
 ## Rendering Rules
@@ -36,7 +41,10 @@
 - YouTube embeds use `https://www.youtube-nocookie.com/embed/{video_id}`.
 - Vimeo embeds use `https://player.vimeo.com/video/{video_id}`.
 - SoundCloud embeds use `https://w.soundcloud.com/player/?url={encoded_url}`.
+- Google Maps embeds use the persisted Maps Embed API key and never guess a key.
+- Script-backed social embeds render inert blockquote/card markup first, then hydrate through a page-level lazy loader.
 - Direct image embeds use the original image URL as `src` and keep `loading="lazy"`.
+- Direct video and audio embeds use native controls and never autoplay.
 - Unrecognized or malformed provider-specific URLs fall back to a generic external card.
 
 ## Privacy and Failure Rules

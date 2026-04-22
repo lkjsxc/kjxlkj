@@ -78,6 +78,7 @@
 - `live_default_height`: default live video height preset.
 - `live_default_fps`: default live frame-rate preset.
 - `live_default_microphone_enabled`: default live microphone state.
+- `google_maps_embed_api_key`: optional Maps Embed API key used in generated Google Maps iframes.
 - `media_webp_quality`: quality value for future derivative WebP generation.
 - `site_icon_key`, `site_icon_content_type`, and `site_icon_updated_at`: optional uploaded site icon state.
 - `updated_at`: mutable UTC timestamp.

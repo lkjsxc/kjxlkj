@@ -31,6 +31,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Guest note preview and guest note display both render inline images from Markdown image syntax.
 - Guest note preview and guest note display both render safe inline video embeds.
 - Guest and admin Markdown render deterministic external URL embeds without server-side metadata fetching.
+- Guest and admin Markdown render allowlisted rich external embeds without overflowing the prose column.
+- Local note and media URL cards render the same resource-card language used by Home and Search.
 - Markdown video embeds stay contained inside the prose surface.
 - Live and media page videos expose native controls and stay contained inside their frames.
 - Local media URLs in Markdown may render as thumbnail cards.

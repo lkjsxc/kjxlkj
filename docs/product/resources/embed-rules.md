@@ -24,13 +24,23 @@
 
 ## Videos
 
-- The canonical inline video path is safe HTML video markup.
-- The canonical current-file pattern is `<video controls src="/{ref}/file"></video>`.
-- Snapshot-stable video embeds use `<video controls src="/{snapshot_id}/file"></video>`.
+- Standard Markdown standalone URL blocks are the canonical external video embed path.
+- Local file videos may still use safe HTML video markup.
+- The canonical current local-file pattern is `<video controls src="/{ref}/file"></video>`.
+- Snapshot-stable local-file video embeds use `<video controls src="/{snapshot_id}/file"></video>`.
 - Rendering may add a stored WebP poster to local video embeds while preserving the authored video URL.
+- Standalone provider video URLs render as embedded players when their provider is allowlisted.
+- Standalone direct video file URLs render as contained native `<video controls>` output.
 - Inline videos must stay no wider than the prose surface and preserve their aspect ratio.
 - Inline videos must expose browser-native controls.
 - Admin preview and guest rendering must display the same video output for the same Markdown.
+
+## Audio And Documents
+
+- Standalone direct audio URLs render as contained native `<audio controls>` output.
+- Standalone PDF-like URLs may render in a contained browser frame when the URL is absolute and allowlisted by type.
+- Native audio, video, document, and provider frames must lazy-load when the browser supports it.
+- Generated media controls must not autoplay.
 
 ## Files
 

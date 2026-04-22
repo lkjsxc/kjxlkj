@@ -4,7 +4,7 @@
 
 - `src/main.rs`: binary entrypoint and startup wiring.
 - `src/config.rs`: environment and object-storage configuration parsing.
-- `src/core/`: Markdown rendering and shared validation helpers.
+- `src/core/`: Markdown rendering, embed provider parsing, and shared validation helpers.
 - `src/storage/`: SeaweedFS S3 media object client and metadata helpers.
 - `src/media/`: media type detection, derivative generation, and derivative metadata helpers.
 - `src/web/db/`: PostgreSQL-backed persistence adapter and migrations.
