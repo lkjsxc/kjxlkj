@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { assertVisibleText, expectGuestNote, expectLivePage, expectPublicRoot, expectSearchPage } from './assertions.mjs';
 import { assertBrandName, assertDiscoveryDisabled, assertHead } from './discoverability-checks.mjs';
+import { assertGuestEmbeds } from './embed-checks.mjs';
 import { assertHomeBrowseLinks, assertPopularWindowSwitch, popularTitles } from './home-checks.mjs';
 import { assertIconAssets } from './icon-checks.mjs';
 import { assertMediaSearchFilter, assertPublicMediaPage } from './media-checks.mjs';
@@ -83,6 +84,7 @@ export async function capturePublicScreens(browser, notes) {
     await expectGuestNote(page, notes.oldest.title, notes.newest.title);
     await page.locator('.prose .external-embed-card').first().waitFor({ state: 'visible' });
     await page.locator('.prose .external-embed-frame iframe').first().waitFor({ state: 'visible' });
+    await assertGuestEmbeds(page);
     await assertHead(page, { title: `${notes.middle.title} | kjxlkj`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await capture(page, 'desktop-guest-note.png');
 

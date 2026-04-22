@@ -84,6 +84,7 @@ async function renderPreview() {
         if (requestId !== editorState.latestPreview || !editorState.previewRoot) return;
         editorState.lastPreviewBody = body;
         editorState.previewRoot.innerHTML = payload.html || '';
+        window.kjxlkj?.hydrateExternalEmbeds?.(editorState.previewRoot);
     } catch (_) {
         if (requestId !== editorState.latestPreview || !editorState.previewRoot) return;
         editorState.previewRoot.innerHTML = '<p class="surface-empty">Preview unavailable.</p>';

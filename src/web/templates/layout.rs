@@ -6,6 +6,7 @@ use crate::web::site::PageMeta;
 const SHELL_JS: &str = include_str!("shell.js");
 const SHELL_MEMORY_JS: &str = include_str!("shell_memory.js");
 const SHELL_NAV_JS: &str = include_str!("shell_nav.js");
+const EXTERNAL_EMBEDS_JS: &str = include_str!("external_embeds.js");
 
 pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str) -> String {
     format!(
@@ -21,7 +22,7 @@ pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str
 {extra_head}
 <style>{}</style>
 </head>
-<body>{content}<script>{SHELL_JS}</script><script>{SHELL_NAV_JS}</script><script>{SHELL_MEMORY_JS}</script>{extra_script}</body>
+<body>{content}<script>{SHELL_JS}</script><script>{SHELL_NAV_JS}</script><script>{SHELL_MEMORY_JS}</script><script>{EXTERNAL_EMBEDS_JS}</script>{extra_script}</body>
 </html>"#,
         html_escape(&meta.full_title()),
         meta.head_tags(),

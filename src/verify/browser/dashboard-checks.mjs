@@ -97,6 +97,7 @@ export async function applySettingsScenario(page) {
     await page.getByLabel('Session/Timeout_minutes').fill('720');
     await page.getByLabel('Search/Results_per_page').fill('12');
     await page.getByLabel('Media/WebP_quality').fill('67');
+    await page.getByLabel('Embeds/Google_Maps_API_key').fill('visual-maps-key');
     await reorderHomeSections(page);
     await page.locator('input[name="home_recent_visible"]').uncheck();
     const responsePromise = page.waitForResponse((response) => {
@@ -115,6 +116,7 @@ export async function applySettingsScenario(page) {
     assert.equal(await page.getByLabel('Site_identity/Public_base_URL').inputValue(), appUrl);
     assert.equal(await page.getByLabel('Search/Results_per_page').inputValue(), '12');
     assert.equal(await page.getByLabel('Media/WebP_quality').inputValue(), '67');
+    assert.equal(await page.getByLabel('Embeds/Google_Maps_API_key').inputValue(), 'visual-maps-key');
     assert.equal(await page.getByLabel('Session/Timeout_minutes').inputValue(), '720');
     assert.equal(await page.getByLabel('Resources/New_resources_start_private').isChecked(), false);
     assert.equal(discovery.robotsStatus, 200);

@@ -11,6 +11,7 @@ import { verifyClipboardMediaPaste } from './clipboard-checks.mjs';
 import { verifyDeleteArming } from './delete-checks.mjs';
 import { assertBrandName, assertDiscoveryRoutes, assertHead } from './discoverability-checks.mjs';
 import { verifyEditorFormatting, verifyUiCreatedDraft } from './editor-checks.mjs';
+import { assertAdminEmbeds } from './embed-checks.mjs';
 import { assertAdminHomeConfiguration, assertPopularWindowSwitch } from './home-checks.mjs';
 import { configureLiveDefaults, installLiveMediaMocks, verifyLiveBroadcastLifecycle } from './live-checks.mjs';
 import { assertAdminMediaPage, assertPublicMediaPage, verifyUiCreatedMedia } from './media-checks.mjs';
@@ -59,8 +60,7 @@ export async function captureAdminScreens(browser, fixtures) {
     await assertHead(page, { title: `${note.title} | Launchpad`, descriptionIncludes: 'Current shared snapshot stretches across the list card', robots: 'noindex,nofollow', canonical: null });
     await verifyAuthenticatedViewsStayFlat(page, note);
     await verifyEditorFormatting(browser, page, note, fixtures);
-    await page.locator('#editor-preview .external-embed-card').first().waitFor({ state: 'visible' });
-    await page.locator('#editor-preview .external-embed-frame iframe').first().waitFor({ state: 'visible' });
+    await assertAdminEmbeds(page);
     await verifyPartialResourceNavigation(page, note, fixtures.oldest);
     await verifyRememberedRailNavigation(page, note);
     await verifyClipboardMediaPaste(page, note);

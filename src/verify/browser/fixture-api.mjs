@@ -19,6 +19,7 @@ export const fileUpload = {
     bytes: Buffer.from(syntheticGraphic, 'utf8'),
     text: syntheticGraphic,
 };
+const richEmbedBlocks = "\n\n/atlas-entry\n\n/orbital-archive\n\nhttps://open.spotify.com/track/abc123\n\nhttps://www.tiktok.com/@demo/video/1234567890\n\nhttps://x.com/lkjsxc/status/1234567890\n\nhttps://www.google.com/maps/place/Tokyo\n\nhttps://example.com/interview.mp3";
 
 export async function buildVideoUpload(page, name = 'launch-clip.webm') {
     return {
@@ -150,6 +151,8 @@ Current shared snapshot stretches across the list card with enough words to stre
 https://github.com/lkjsxc/kjxlkj/pull/12
 
 https://youtu.be/dQw4w9WgXcQ
+
+${richEmbedBlocks}
 
 Follow-up detail keeps the summary ellipsis active.`,
     ];

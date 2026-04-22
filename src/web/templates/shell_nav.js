@@ -74,6 +74,7 @@
             app.setupDrawer?.();
             document.body.classList.toggle('rail-open', drawerOpen);
             app.formatLocalTimes?.();
+            app.hydrateExternalEmbeds?.();
             app.runPageScripts?.(nextDocument);
             await restoreRailScroll(railScroll);
             syncHistory(url, historyMode);
