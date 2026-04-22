@@ -103,7 +103,15 @@ export async function prepareState(browser) {
 }
 
 export async function newContext(browser, viewport, options = {}) {
-    return browser.newContext({ viewport, timezoneId, ...options });
+    const context = await browser.newContext({ viewport, timezoneId, ...options });
+    await context.route('**/*', (route) => {
+        const url = route.request().url();
+        if (url.startsWith(appUrl) || url.startsWith('data:') || url === 'about:blank') {
+            return route.continue();
+        }
+        return route.abort();
+    });
+    return context;
 }
 
 export async function login(page) {
