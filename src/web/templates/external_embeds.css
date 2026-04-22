@@ -68,3 +68,15 @@
 .external-embed-image figcaption {
     padding: 0 4px 2px;
 }
+
+.external-embed-native {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+}
+
+.external-embed-native :is(video, audio) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}

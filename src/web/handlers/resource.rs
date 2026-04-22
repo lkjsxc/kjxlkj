@@ -86,12 +86,14 @@ async fn render_current_resource(
         db::count_resource_view(pool, &resource.id).await?;
     }
     let chrome = view::resource_chrome(pool, resource, is_admin).await?;
+    let maps_key = db::get_settings(pool).await?.google_maps_embed_api_key;
     let body_html = markdown::render_markdown_page(
         pool,
         &resource.body,
         Some(&resource.id),
         is_admin,
         site.public_base_url.as_deref(),
+        Some(&maps_key),
     )
     .await?;
     let analytics = if is_admin {
@@ -121,12 +123,14 @@ async fn render_snapshot(
         return Ok(not_found(site));
     }
     let chrome = view::resource_chrome(pool, &target.resource, is_admin).await?;
+    let maps_key = db::get_settings(pool).await?.google_maps_embed_api_key;
     let body_html = markdown::render_markdown_page(
         pool,
         &target.snapshot.body,
         Some(&target.resource.id),
         is_admin,
         site.public_base_url.as_deref(),
+        Some(&maps_key),
     )
     .await?;
     Ok(http::html(templates::snapshot_page(

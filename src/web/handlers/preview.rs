@@ -40,6 +40,7 @@ pub async fn render_markdown_preview(
                 body.current_resource_id.as_deref(),
                 true,
                 site.public_base_url.as_deref(),
+                Some(&settings.google_maps_embed_api_key),
             )
             .await?,
         },

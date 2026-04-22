@@ -166,3 +166,18 @@
 .local-url-card-page a {
     grid-template-columns: 1fr;
 }
+
+.prose .local-resource-card {
+    text-decoration: none;
+    color: var(--text);
+}
+
+.local-resource-card .card-cover {
+    grid-column: 1 / -1;
+}
+
+.local-resource-card .card-cover-media {
+    width: 100%;
+    height: 128px;
+    object-fit: cover;
+}

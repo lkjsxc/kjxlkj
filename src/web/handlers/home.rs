@@ -51,6 +51,7 @@ pub async fn home_page(
         None,
         is_admin,
         site.public_base_url.as_deref(),
+        Some(&settings.google_maps_embed_api_key),
     )
     .await?;
     Ok(http::html(templates::home_page(HomeView {

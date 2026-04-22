@@ -7,6 +7,7 @@ mod live;
 #[cfg(test)]
 mod live_tests;
 mod markdown;
+mod markdown_cards;
 mod routes;
 mod site;
 #[cfg(test)]
