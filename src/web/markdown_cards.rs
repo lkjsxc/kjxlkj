@@ -82,50 +82,56 @@ fn apply_cards(html: &str, cards: &HashMap<String, Option<String>>) -> String {
 }
 
 fn live_card(resource: &Resource) -> String {
-    resource_card(
-        &view::resource_href(resource),
-        &resource.id,
-        &view::kind_badge(resource.media_family),
-        &resource.title,
-        &resource.summary,
-        &templates::render_time(&resource.created_at),
-        &templates::render_time(&resource.updated_at),
-        resource.is_favorite,
-        media_card_href(resource.media_family, || {
+    resource_card(CardView {
+        href: view::resource_href(resource),
+        id: resource.id.clone(),
+        kind: view::kind_badge(resource.media_family),
+        title: resource.title.clone(),
+        summary: resource.summary.clone(),
+        created: templates::render_time(&resource.created_at),
+        updated: templates::render_time(&resource.updated_at),
+        favorite: resource.is_favorite,
+        media_href: media_card_href(resource.media_family, || {
             view_media::card_file_href(resource)
         }),
-    )
+    })
 }
 
 fn snapshot_card(snapshot: &ResourceSnapshot) -> String {
-    resource_card(
-        &view::snapshot_href(snapshot),
-        &snapshot.id,
-        &view::kind_badge(snapshot.media_family),
-        &format!("Saved snapshot {}", snapshot.snapshot_number),
-        &snapshot.summary,
-        &templates::render_time(&snapshot.created_at),
-        &view::visibility_label(snapshot.is_private).to_string(),
-        false,
-        media_card_href(snapshot.media_family, || {
+    resource_card(CardView {
+        href: view::snapshot_href(snapshot),
+        id: snapshot.id.clone(),
+        kind: view::kind_badge(snapshot.media_family),
+        title: format!("Saved snapshot {}", snapshot.snapshot_number),
+        summary: snapshot.summary.clone(),
+        created: templates::render_time(&snapshot.created_at),
+        updated: view::visibility_label(snapshot.is_private).to_string(),
+        favorite: false,
+        media_href: media_card_href(snapshot.media_family, || {
             format!("/{}/file?variant=card", snapshot.id)
         }),
-    )
+    })
 }
 
-fn resource_card(
-    href: &str,
-    id: &str,
-    kind: &str,
-    title: &str,
-    summary: &str,
-    created: &str,
-    updated: &str,
+struct CardView<'a> {
+    href: String,
+    id: String,
+    kind: &'a str,
+    title: String,
+    summary: String,
+    created: String,
+    updated: String,
     favorite: bool,
     media_href: Option<String>,
-) -> String {
-    let favorite = favorite.then(|| pill("Favorite")).unwrap_or_default();
-    let cover = media_href.map_or_else(String::new, |src| {
+}
+
+fn resource_card(card: CardView<'_>) -> String {
+    let favorite = if card.favorite {
+        pill("Favorite")
+    } else {
+        String::new()
+    };
+    let cover = card.media_href.map_or_else(String::new, |src| {
         format!(
             r#"<div class="card-cover"><img class="card-cover-media" src="{}" alt=""></div>"#,
             esc(&src)
@@ -133,16 +139,16 @@ fn resource_card(
     });
     format!(
         r#"<a href="{}" class="index-card resource-row local-resource-card" data-note-id="{}" data-card-title="{}">{}<div class="card-body"><p class="card-title">{}</p><p class="card-summary">{}</p></div><div class="card-meta"><div class="card-badges">{}{}</div><small><span>Created</span>{}</small><small><span>Updated</span>{}</small></div></a>"#,
-        esc(href),
-        esc(id),
-        esc(title),
+        esc(&card.href),
+        esc(&card.id),
+        esc(&card.title),
         cover,
-        esc(title),
-        esc(summary),
-        pill(kind),
+        esc(&card.title),
+        esc(&card.summary),
+        pill(card.kind),
         favorite,
-        created,
-        updated
+        card.created,
+        card.updated
     )
 }
 
