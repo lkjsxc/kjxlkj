@@ -1,4 +1,4 @@
-use super::render_markdown;
+use super::{render_markdown, render_markdown_with_options, MarkdownOptions};
 
 #[test]
 fn render_markdown_keeps_safe_media_embeds() {
@@ -86,4 +86,42 @@ fn render_markdown_embeds_direct_images_and_local_urls() {
     assert!(html.contains("src=\"https://example.com/chart.webp\""));
     assert!(html.contains("local-url-card"));
     assert!(html.contains("/demo/file?variant=card"));
+}
+
+#[test]
+fn render_markdown_embeds_broad_provider_frames() {
+    let html = render_markdown_with_options(
+        "https://open.spotify.com/track/abc123\n\nhttps://www.tiktok.com/@demo/video/1234567890",
+        MarkdownOptions::default(),
+    );
+
+    assert!(html.contains("https://open.spotify.com/embed/track/abc123"));
+    assert!(html.contains("https://www.tiktok.com/player/v1/1234567890"));
+}
+
+#[test]
+fn render_markdown_embeds_maps_only_with_key() {
+    let without_key = render_markdown("https://www.google.com/maps/place/Tokyo");
+    let with_key = render_markdown_with_options(
+        "https://www.google.com/maps/place/Tokyo",
+        MarkdownOptions {
+            public_base_url: None,
+            google_maps_embed_api_key: Some("maps-key"),
+        },
+    );
+
+    assert!(without_key.contains("external-embed-card"));
+    assert!(!without_key.contains("maps/embed/v1"));
+    assert!(with_key.contains("https://www.google.com/maps/embed/v1/search"));
+    assert!(with_key.contains("key=maps-key"));
+}
+
+#[test]
+fn render_markdown_embeds_native_audio_and_social_placeholders() {
+    let html =
+        render_markdown("https://example.com/interview.mp3\n\nhttps://x.com/user/status/123");
+
+    assert!(html.contains("<audio controls"));
+    assert!(html.contains("data-embed-provider=\"x\""));
+    assert!(html.contains("data-embed-url=\"https://x.com/user/status/123\""));
 }

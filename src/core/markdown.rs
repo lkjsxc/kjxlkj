@@ -7,13 +7,24 @@ use super::markdown_embed_blocks;
 use super::markdown_links::{
     escape_attr, is_local_file_href, poster_href, replace_local_resource_cards, variant_href,
 };
+use super::MarkdownOptions;
 
 pub fn render_markdown(body: &str) -> String {
     render_markdown_with_origin(body, None)
 }
 
 pub fn render_markdown_with_origin(body: &str, public_base_url: Option<&str>) -> String {
-    let (body, embed_blocks) = markdown_embed_blocks::extract(body, public_base_url);
+    render_markdown_with_options(
+        body,
+        MarkdownOptions {
+            public_base_url,
+            google_maps_embed_api_key: None,
+        },
+    )
+}
+
+pub fn render_markdown_with_options(body: &str, options: MarkdownOptions<'_>) -> String {
+    let (body, embed_blocks) = markdown_embed_blocks::extract(body, options);
     let mut html_out = String::new();
     let options =
         Options::ENABLE_TABLES | Options::ENABLE_STRIKETHROUGH | Options::ENABLE_TASKLISTS;

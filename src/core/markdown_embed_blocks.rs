@@ -1,11 +1,12 @@
 use super::markdown_embeds::render_url_embed;
+use super::MarkdownOptions;
 
 pub struct EmbedBlock {
     pub token: String,
     pub html: String,
 }
 
-pub fn extract(body: &str, public_base_url: Option<&str>) -> (String, Vec<EmbedBlock>) {
+pub fn extract(body: &str, options: MarkdownOptions<'_>) -> (String, Vec<EmbedBlock>) {
     let mut out = String::new();
     let mut blocks = Vec::new();
     let mut para = Vec::new();
@@ -13,7 +14,7 @@ pub fn extract(body: &str, public_base_url: Option<&str>) -> (String, Vec<EmbedB
     for line in body.lines() {
         let trimmed = line.trim();
         if fence_marker(trimmed) {
-            flush_para(&mut out, &mut para, &mut blocks, public_base_url);
+            flush_para(&mut out, &mut para, &mut blocks, options);
             in_fence = !in_fence;
             push_line(&mut out, line);
             continue;
@@ -21,13 +22,13 @@ pub fn extract(body: &str, public_base_url: Option<&str>) -> (String, Vec<EmbedB
         if in_fence {
             push_line(&mut out, line);
         } else if trimmed.is_empty() {
-            flush_para(&mut out, &mut para, &mut blocks, public_base_url);
+            flush_para(&mut out, &mut para, &mut blocks, options);
             out.push('\n');
         } else {
             para.push(line.to_string());
         }
     }
-    flush_para(&mut out, &mut para, &mut blocks, public_base_url);
+    flush_para(&mut out, &mut para, &mut blocks, options);
     (out, blocks)
 }
 
@@ -43,7 +44,7 @@ fn flush_para(
     out: &mut String,
     para: &mut Vec<String>,
     blocks: &mut Vec<EmbedBlock>,
-    public_base_url: Option<&str>,
+    options: MarkdownOptions<'_>,
 ) {
     if para.is_empty() {
         return;
@@ -51,9 +52,9 @@ fn flush_para(
     if para.len() == 1 {
         let line = &para[0];
         if !line.starts_with(char::is_whitespace) {
-            if let Some(url) = standalone_url(line.trim(), public_base_url) {
+            if let Some(url) = standalone_url(line.trim(), options.public_base_url) {
                 let token = format!("KJXLKJ_EMBED_TOKEN_{}", blocks.len());
-                if let Some(html) = render_url_embed(&url) {
+                if let Some(html) = render_url_embed(&url, options) {
                     push_line(out, &token);
                     blocks.push(EmbedBlock { token, html });
                     para.clear();
