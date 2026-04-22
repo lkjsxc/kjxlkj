@@ -140,6 +140,7 @@ CREATE TABLE IF NOT EXISTS app_settings (
     live_default_height BIGINT NOT NULL DEFAULT 1080 CHECK (live_default_height IN (360, 480, 720, 1080, 1440, 2160)),
     live_default_fps BIGINT NOT NULL DEFAULT 60 CHECK (live_default_fps IN (15, 30, 45, 60, 120)),
     live_default_microphone_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    google_maps_embed_api_key TEXT NOT NULL DEFAULT '',
     site_icon_key TEXT,
     site_icon_content_type TEXT,
     site_icon_updated_at TIMESTAMPTZ,
@@ -158,6 +159,7 @@ ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_source TEXT NOT N
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_height BIGINT NOT NULL DEFAULT 1080;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_fps BIGINT NOT NULL DEFAULT 60;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_microphone_enabled BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS google_maps_embed_api_key TEXT NOT NULL DEFAULT '';
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_key TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_content_type TEXT;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS site_icon_updated_at TIMESTAMPTZ;

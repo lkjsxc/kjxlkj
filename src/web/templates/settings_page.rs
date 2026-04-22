@@ -5,9 +5,9 @@ use super::index::{admin_create_actions, list_rail};
 use super::layout::{base, shell_page};
 use super::sections::page_header;
 use super::settings_core::{
-    media_quality_row, new_resources_private_row, nostr_names_row, nostr_relays_row,
-    public_base_url_row, search_page_size_row, session_timeout_row, site_description_row,
-    site_name_row,
+    google_maps_key_row, media_quality_row, new_resources_private_row, nostr_names_row,
+    nostr_relays_row, public_base_url_row, search_page_size_row, session_timeout_row,
+    site_description_row, site_name_row,
 };
 use super::settings_home::{home_hero_section, home_sections_section};
 use super::settings_icon::site_icon_section;
@@ -51,6 +51,7 @@ pub fn settings_page(
         session_timeout_row(settings),
         search_page_size_row(settings),
         media_quality_row(settings),
+        google_maps_key_row(settings),
         live_ice_servers_row(settings),
         live_default_source_row(settings),
         live_default_quality_row(settings),

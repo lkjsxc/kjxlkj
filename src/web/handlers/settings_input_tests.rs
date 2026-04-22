@@ -13,6 +13,7 @@ fn sample_form() -> SettingsForm {
         live_default_height: 1080,
         live_default_fps: 60,
         live_default_microphone_enabled: None,
+        google_maps_embed_api_key: String::new(),
         home_recent_limit: 5,
         home_favorite_limit: 5,
         home_popular_limit: 5,
@@ -80,5 +81,20 @@ fn validate_rejects_invalid_live_defaults() {
     assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
     form = sample_form();
     form.live_default_fps = 24;
+    assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
+}
+
+#[test]
+fn validate_trims_google_maps_key() {
+    let mut form = sample_form();
+    form.google_maps_embed_api_key = "  maps-key  ".to_string();
+    let settings = validate_settings_form(&form, &AppSettings::default()).unwrap();
+    assert_eq!(settings.google_maps_embed_api_key, "maps-key");
+}
+
+#[test]
+fn validate_rejects_invalid_google_maps_key() {
+    let mut form = sample_form();
+    form.google_maps_embed_api_key = "maps\0key".to_string();
     assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
 }

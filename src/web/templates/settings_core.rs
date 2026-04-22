@@ -61,6 +61,18 @@ pub(super) fn media_quality_row(settings: &AppSettings) -> String {
     )
 }
 
+pub(super) fn google_maps_key_row(settings: &AppSettings) -> String {
+    settings_row(
+        "Embeds/Google_Maps_API_key",
+        &format!(
+            r#"<label class="form-group" data-settings-item><span>Embeds/Google_Maps_API_key</span><input type="text" name="google_maps_embed_api_key" maxlength="255" value="{}"></label>
+<p class="page-summary" data-settings-item>Leave blank to render Google Maps URLs as static cards instead of generated map iframes.</p>"#,
+            html_escape(&settings.google_maps_embed_api_key),
+        ),
+        "settings-embeds-row",
+    )
+}
+
 pub(super) fn new_resources_private_row(settings: &AppSettings) -> String {
     settings_row(
         "Resources/New_resources_start_private",

@@ -12,7 +12,8 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
              home_favorite_position, home_popular_position, search_results_per_page, session_timeout_minutes, \
              default_new_resource_is_private, media_webp_quality, site_name, site_description, public_base_url, \
              nostr_names, nostr_relays, live_ice_servers, live_default_source, live_default_height, \
-             live_default_fps, live_default_microphone_enabled, site_icon_key, site_icon_content_type \
+             live_default_fps, live_default_microphone_enabled, google_maps_embed_api_key, \
+             site_icon_key, site_icon_content_type \
              FROM app_settings WHERE id = 1",
             &[],
         )
@@ -29,8 +30,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              home_recent_visible, home_favorite_visible, home_popular_visible, home_recent_position, home_favorite_position, \
              home_popular_position, search_results_per_page, session_timeout_minutes, default_new_resource_is_private, media_webp_quality, site_name, \
              site_description, public_base_url, nostr_names, nostr_relays, live_ice_servers, live_default_source, live_default_height, \
-             live_default_fps, live_default_microphone_enabled, site_icon_key, site_icon_content_type) \
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26) \
+             live_default_fps, live_default_microphone_enabled, google_maps_embed_api_key, site_icon_key, site_icon_content_type) \
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) \
              ON CONFLICT (id) DO UPDATE SET home_recent_limit = EXCLUDED.home_recent_limit, home_favorite_limit = EXCLUDED.home_favorite_limit, \
              home_popular_limit = EXCLUDED.home_popular_limit, home_intro_markdown = EXCLUDED.home_intro_markdown, \
              home_recent_visible = EXCLUDED.home_recent_visible, home_favorite_visible = EXCLUDED.home_favorite_visible, \
@@ -42,7 +43,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              nostr_names = EXCLUDED.nostr_names, nostr_relays = EXCLUDED.nostr_relays, live_ice_servers = EXCLUDED.live_ice_servers, \
              live_default_source = EXCLUDED.live_default_source, live_default_height = EXCLUDED.live_default_height, \
              live_default_fps = EXCLUDED.live_default_fps, live_default_microphone_enabled = EXCLUDED.live_default_microphone_enabled, \
-             site_icon_key = EXCLUDED.site_icon_key, site_icon_content_type = EXCLUDED.site_icon_content_type, \
+             google_maps_embed_api_key = EXCLUDED.google_maps_embed_api_key, site_icon_key = EXCLUDED.site_icon_key, \
+             site_icon_content_type = EXCLUDED.site_icon_content_type, \
              site_icon_updated_at = CASE WHEN app_settings.site_icon_key IS DISTINCT FROM EXCLUDED.site_icon_key THEN NOW() ELSE app_settings.site_icon_updated_at END, updated_at = NOW()",
             &[
                 &settings.home_recent_limit,
@@ -69,6 +71,7 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
                 &settings.live_default_height,
                 &settings.live_default_fps,
                 &settings.live_default_microphone_enabled,
+                &settings.google_maps_embed_api_key,
                 &settings.site_icon_key,
                 &settings.site_icon_content_type,
             ],
@@ -141,6 +144,7 @@ fn row_to_settings(row: tokio_postgres::Row) -> AppSettings {
         live_default_height: row.get("live_default_height"),
         live_default_fps: row.get("live_default_fps"),
         live_default_microphone_enabled: row.get("live_default_microphone_enabled"),
+        google_maps_embed_api_key: row.get("google_maps_embed_api_key"),
         site_icon_key: row.get("site_icon_key"),
         site_icon_content_type: row.get("site_icon_content_type"),
     }

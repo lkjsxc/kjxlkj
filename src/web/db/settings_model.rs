@@ -28,6 +28,7 @@ pub struct AppSettings {
     pub live_default_height: i64,
     pub live_default_fps: i64,
     pub live_default_microphone_enabled: bool,
+    pub google_maps_embed_api_key: String,
     pub site_icon_key: Option<String>,
     pub site_icon_content_type: Option<String>,
 }
@@ -60,6 +61,7 @@ impl Default for AppSettings {
             live_default_height: 1080,
             live_default_fps: 60,
             live_default_microphone_enabled: false,
+            google_maps_embed_api_key: String::new(),
             site_icon_key: None,
             site_icon_content_type: None,
         }

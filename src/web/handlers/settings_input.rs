@@ -22,6 +22,7 @@ pub struct SettingsForm {
     pub live_default_height: i64,
     pub live_default_fps: i64,
     pub live_default_microphone_enabled: Option<String>,
+    pub google_maps_embed_api_key: String,
     pub home_recent_limit: i64,
     pub home_favorite_limit: i64,
     pub home_popular_limit: i64,
@@ -54,6 +55,7 @@ pub fn validate_settings_form(
     let live_default_height =
         validate_live_height(form.live_default_height).map_err(|e| invalid(&e))?;
     let live_default_fps = validate_live_fps(form.live_default_fps).map_err(|e| invalid(&e))?;
+    let google_maps_embed_api_key = validate_maps_key(&form.google_maps_embed_api_key)?;
     if site_name.is_empty() || site_name.len() > 80 {
         return Err(invalid("site name must be between 1 and 80 characters"));
     }
@@ -90,6 +92,7 @@ pub fn validate_settings_form(
         live_default_height,
         live_default_fps,
         live_default_microphone_enabled: form.live_default_microphone_enabled.is_some(),
+        google_maps_embed_api_key,
         home_recent_limit: form.home_recent_limit,
         home_favorite_limit: form.home_favorite_limit,
         home_popular_limit: form.home_popular_limit,
@@ -117,6 +120,16 @@ fn validate_public_base_url(value: &str) -> Result<String, AppError> {
     normalize_public_base_url(trimmed)
         .filter(|normalized| normalized.len() <= 255)
         .ok_or_else(|| invalid("public base URL must be a bare http or https origin"))
+}
+
+fn validate_maps_key(value: &str) -> Result<String, AppError> {
+    let trimmed = value.trim();
+    if trimmed.len() > 255 || trimmed.chars().any(char::is_control) {
+        return Err(invalid(
+            "Google Maps API key must be blank or 255 visible characters or fewer",
+        ));
+    }
+    Ok(trimmed.to_string())
 }
 
 fn counts_are_valid(form: &SettingsForm) -> bool {
