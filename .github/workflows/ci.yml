@@ -33,7 +33,7 @@ jobs:
       - name: Build compose images
         run: |
           set -euo pipefail
-          docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify
+          docker compose -f docker-compose.yml -f docker-compose.verify.yml build app coturn nginx verify visual-verify
 
       - name: Start application services
         run: |
