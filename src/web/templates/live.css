@@ -5,7 +5,7 @@
 
 .live-video-wrap {
     aspect-ratio: 16 / 9;
-    background: var(--surface-muted);
+    background: var(--bg-2);
     border: 1px solid var(--line);
     overflow: hidden;
     display: grid;
