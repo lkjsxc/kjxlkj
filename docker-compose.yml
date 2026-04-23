@@ -1,5 +1,3 @@
-name: kjxlkj
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -87,8 +85,6 @@ services:
       - "5349:5349/tcp"
       - "5349:5349/udp"
       - "49152-65535:49152-65535/udp"
-    volumes:
-      - ./nginx/ssl:/etc/coturn/ssl:ro
     environment:
       PUBLIC_HOST: ${PUBLIC_HOST:-localhost}
       TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET:-kjxlkj-turn-secret-change-me}
