@@ -34,6 +34,16 @@ Expected:
 - `seaweedfs` becomes healthy.
 - `app` becomes running.
 
+## Verification Bootstrap
+
+```bash
+cp .env.example .env
+docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
+```
+
+Expected: the verify container exits `0` after the Rust, docs, and line-limit
+gates pass.
+
 ## Confirm Health
 
 ```bash

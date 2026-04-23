@@ -74,6 +74,7 @@
 ## Browse Query Parameters
 
 - `/search` accepts `q`, `kind`, `sort`, `cursor`, `limit`, `direction`, and `scope`.
+- `/api/resources/search` accepts the same query parameters and returns JSON.
 - `kind=all` is the default.
 - `kind=note` narrows to notes only.
 - `kind=media` narrows to media only.
@@ -185,7 +186,18 @@
 ## Shared Update Rules
 
 - `PUT /resources/{id}` accepts JSON updates for `body`, `alias`, `is_favorite`, and `is_private`.
+- `PUT /api/resources/{id}` accepts the same JSON update shape.
 - Every successful live-resource update creates one new immutable saved snapshot.
+
+## Machine-Facing Routes
+
+- `GET /api/resources/search` is the canonical assistant-facing search route.
+- `GET /api/resources/{id}` returns the same resource payload used by browser
+  create and update responses.
+- `GET /api/resources/{id}/history` returns the same JSON snapshot history shape
+  as `/resources/{id}/history`.
+- `POST /api/resources/notes` mirrors `POST /resources/notes`.
+- `POST /api/resources/media` mirrors `POST /resources/media`.
 
 ## Note Media Attachment Result
 
