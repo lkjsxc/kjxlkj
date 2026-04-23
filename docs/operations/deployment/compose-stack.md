@@ -9,6 +9,8 @@
 
 ## Services
 
+- `nginx`: edge reverse proxy; binds host 80/443, terminates TLS for app, SNI-passthrough for coturn
+- `coturn`: STUN/TURN/TURNS server for WebRTC ICE
 - `postgres`: PostgreSQL database for resources, snapshots, settings, analytics, and sessions
 - `seaweedfs`: SeaweedFS S3 gateway for media binaries
 - `app`: Rust runtime service
@@ -18,9 +20,11 @@
 ## Service Dependencies
 
 - `app` depends on healthy `postgres` and healthy `seaweedfs`.
+- `coturn` depends on healthy `app`.
+- `nginx` depends on healthy `app` and healthy `coturn`.
 - `verify` depends on healthy `app`.
 - `visual-verify` depends on healthy `app`.
-- Default `docker compose up` starts `postgres`, `seaweedfs`, and `app`.
+- Default `docker compose up` starts `postgres`, `seaweedfs`, `app`, `coturn`, and `nginx`.
 
 ## Runtime Environment
 

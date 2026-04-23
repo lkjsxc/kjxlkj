@@ -2,7 +2,8 @@
 
 ## Compose Environment
 
-- `.env` owns host port exposure, bind address, PostgreSQL credentials, SeaweedFS S3 settings, upload byte limits, and optional `SETUP_CODE`.
+- `.env` owns PostgreSQL credentials, SeaweedFS S3 settings, upload byte limits, `PUBLIC_HOST`, `TURN_STATIC_AUTH_SECRET`, and optional `SETUP_CODE`.
+- Host port exposure is owned by the `nginx` and `coturn` services; `app` is internal-only.
 - Compose assembles `DATABASE_URL` and SeaweedFS S3 environment for the runtime container.
 - `docker-compose.yml` treats `.env` as authoritative rather than relying on inline fallback defaults.
 - CI must create `.env` from `.env.example` before running compose-backed verification.
@@ -12,6 +13,7 @@
 
 - `/admin/settings` owns `site_name`, `site_description`, and `public_base_url`.
 - `/admin/settings` owns homepage intro, section visibility and order, section limits, search page size, default new-resource visibility, media WebP quality, favorite ordering, site icon, and session timeout.
+- `/admin/settings` owns `Live/ICE_servers_JSON`, which controls browser WebRTC ICE server configuration.
 
 ## Bootstrap Sequence
 

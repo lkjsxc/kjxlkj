@@ -1,4 +1,4 @@
-# Live Page Contract
+# Live Page States and Controls
 
 ## Route
 
@@ -16,22 +16,6 @@
 - `Live` is visible to guests and admins.
 - The active state is `Live` when the current page is `/live`.
 
-## Admin Broadcast Controls
-
-- Admins can start a broadcast from `/live`.
-- Admins choose screen or camera as the single active video source.
-- Admins can choose camera device, target quality, target frame rate, and microphone state.
-- Persisted defaults come from `/admin/settings`.
-- `/live` controls may override the persisted defaults for the current page session.
-- Default quality is `1080p` at `60 fps`.
-- Default microphone state is off.
-- Capture details are owned by [capture.md](capture.md).
-- The browser may require HTTPS or localhost for capture APIs.
-- Stopping the broadcast ends all local tracks and notifies viewers.
-- Navigating away from `/live` while broadcasting ends the stream.
-- Leave and cleanup rules are owned by [lifecycle.md](lifecycle.md).
-- Viewer count is visible only to the admin broadcaster.
-
 ## Viewer States
 
 - When no broadcast is active, viewers see an idle waiting state.
@@ -40,6 +24,7 @@
 - Viewers do not need an account to watch.
 - Viewers see native video controls for volume, fullscreen, and playback UI.
 - Viewers do not see viewer count.
+- Video must remain contained inside its wrapper and preserve aspect ratio; overflow is hidden.
 
 ## Non-Goals
 

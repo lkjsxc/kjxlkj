@@ -1,4 +1,4 @@
-# Live Signaling Contract
+# Live Signaling Messages
 
 ## Transport
 
@@ -42,10 +42,3 @@
 - Viewer joins and disconnects update the admin-only viewer count.
 - Server restart clears all live state.
 - Browser refresh reconnects as a new viewer or broadcaster.
-
-## ICE Servers
-
-- `Live/ICE_servers_JSON` is the persisted settings source of truth.
-- The setting stores a JSON array compatible with browser `RTCIceServer[]`.
-- The default is one public STUN server.
-- Admins may replace the array or clear it.

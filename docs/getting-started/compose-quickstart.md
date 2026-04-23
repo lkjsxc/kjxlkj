@@ -16,15 +16,17 @@ cp .env.example .env
 
 - Set PostgreSQL credentials.
 - Set SeaweedFS S3 credentials.
-- Set `APP_PORT` if the host should expose something other than `8080`.
+- Set `PUBLIC_HOST` to `localhost` for local testing or your real domain for deployment.
+- Set `TURN_STATIC_AUTH_SECRET` to a random string.
 - Leave `MEDIA_UPLOAD_MAX_BYTES=536870912` unless a different upload cap is required.
 - Do not look for session timeout or discovery public origin in `.env`; those live in `/admin/settings`.
 
 ## Build and Start
 
 ```bash
-docker compose build app
-docker compose up -d postgres seaweedfs app
+./scripts/generate-local-certs.sh
+docker compose build app coturn nginx
+docker compose up -d postgres seaweedfs app coturn nginx
 docker compose ps
 ```
 
@@ -47,7 +49,7 @@ gates pass.
 ## Confirm Health
 
 ```bash
-curl -sS http://127.0.0.1:${APP_PORT:-8080}/healthz
+curl -sS -k https://127.0.0.1/healthz
 ```
 
 Expected: body `ok`.

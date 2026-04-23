@@ -9,7 +9,8 @@
 
 - Linux host with Docker Engine and Docker Compose plugin installed.
 - Git installed.
-- Host app port available unless `.env` changes it.
+- Host ports 80 and 443 available for nginx.
+- Host UDP 3478 available unless `.env` changes it.
 - Enough disk for `kjxlkj-postgres-data` and `kjxlkj-seaweedfs-data`.
 
 ## Prepare the Checkout
@@ -24,15 +25,18 @@ cp .env.example .env
 
 - Set PostgreSQL credentials to deployment-specific values.
 - Set SeaweedFS S3 credentials.
+- Set `PUBLIC_HOST` to the final domain or public IP (used for ICE server URLs and TLS realm).
+- Set `TURN_STATIC_AUTH_SECRET` to a strong random secret.
 - Set `MEDIA_UPLOAD_MAX_BYTES` when media uploads should allow more or less than `536870912` bytes.
-- Set `APP_PORT` if the host should expose something other than `8080`.
-- Keep `BIND_HOST=0.0.0.0` unless the host should only bind locally.
+- Keep `BIND_HOST=0.0.0.0` and `BIND_PORT=8080`; the app is no longer exposed directly on the host.
+- Keep `APP_PORT=8080` for internal binding only.
 
 ## Start the Runtime Stack
 
 ```bash
-docker compose build app
-docker compose up -d postgres seaweedfs app
+./scripts/generate-local-certs.sh
+docker compose build app coturn nginx
+docker compose up -d postgres seaweedfs app coturn nginx
 docker compose ps
 ```
 
@@ -45,7 +49,7 @@ Expected:
 ## Confirm Boot Health
 
 ```bash
-curl -sS http://127.0.0.1:${APP_PORT:-8080}/healthz
+curl -sS -k https://127.0.0.1/healthz
 ```
 
 Expected: body `ok`.
@@ -53,8 +57,8 @@ Expected: body `ok`.
 ## Run Full Verification
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify
-docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app
+docker compose -f docker-compose.yml -f docker-compose.verify.yml build app coturn nginx verify visual-verify
+docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app coturn nginx
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visual-verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v

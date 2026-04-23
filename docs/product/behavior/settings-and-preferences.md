@@ -5,6 +5,9 @@
 - `site_name`, `site_description`, and `public_base_url` remain global.
 - `nostr_names` and `nostr_relays` control Nostr identifier discovery.
 - `live_ice_servers` controls browser WebRTC ICE server configuration for `/live`.
+  - Supports `stun:`, `turn:`, and `turns:` URL schemes.
+  - TURN entries should include `username` and `credential`.
+  - Default includes local coturn STUN, TURN UDP, TURN TCP, and TURN TLS entries.
 - `live_default_source` controls whether new live pages default to screen or camera capture.
 - `live_default_height` and `live_default_fps` control the default live capture quality.
 - `live_default_microphone_enabled` controls whether new broadcasts request microphone audio by default.

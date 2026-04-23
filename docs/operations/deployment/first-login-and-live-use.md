@@ -17,8 +17,9 @@
 5. Set `Media WebP quality`.
 6. Set `New resources start private` based on deployment policy.
 7. Set `Session timeout (minutes)`.
-8. Reorder favorites when desired.
-9. Upload or reset the site icon.
+8. Verify `Live/ICE_servers_JSON` points to the correct `PUBLIC_HOST` and coturn credentials.
+9. Reorder favorites when desired.
+10. Upload or reset the site icon.
 
 ## Create the First Real Resources
 
