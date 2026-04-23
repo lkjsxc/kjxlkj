@@ -47,8 +47,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "${APP_PORT}:${BIND_PORT}"
+    expose:
+      - "${BIND_PORT}"
     environment:
       BIND_HOST: ${BIND_HOST}
       BIND_PORT: ${BIND_PORT}
@@ -62,6 +62,8 @@ services:
       MEDIA_UPLOAD_MAX_BYTES: ${MEDIA_UPLOAD_MAX_BYTES}
       SITE_ICON_UPLOAD_MAX_BYTES: ${SITE_ICON_UPLOAD_MAX_BYTES}
       SETUP_CODE: ${SETUP_CODE:-visual-setup-code}
+      PUBLIC_HOST: ${PUBLIC_HOST:-localhost}
+      TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET:-kjxlkj-turn-secret-change-me}
     depends_on:
       postgres:
         condition: service_healthy
@@ -74,6 +76,39 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+
+  coturn:
+    build:
+      context: ./coturn
+      dockerfile: Dockerfile
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+    expose:
+      - "5349"
+    volumes:
+      - ./nginx/ssl:/etc/coturn/ssl:ro
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:-localhost}
+      TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET:-kjxlkj-turn-secret-change-me}
+      EXTERNAL_IP: ${EXTERNAL_IP:-auto}
+    depends_on:
+      app:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      app:
+        condition: service_healthy
+      coturn:
+        condition: service_started
 
 volumes:
   postgres-data:

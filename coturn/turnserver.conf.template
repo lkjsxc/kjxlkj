@@ -1,0 +1,15 @@
+listening-port=3478
+tls-listening-port=5349
+listening-ip=0.0.0.0
+external-ip=${EXTERNAL_IP}
+min-port=49152
+max-port=65535
+fingerprint
+lt-cred-mech
+static-auth-secret=${TURN_STATIC_AUTH_SECRET}
+realm=${PUBLIC_HOST}
+cert=/etc/coturn/ssl/cert.pem
+pkey=/etc/coturn/ssl/key.pem
+no-cli
+no-tlsv1
+no-tlsv1_1
