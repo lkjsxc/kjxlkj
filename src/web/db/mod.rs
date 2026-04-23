@@ -59,7 +59,7 @@ pub use resources::{
     create_resource, delete_resource, get_resource, get_resource_by_alias, get_resource_by_ref,
     update_resource,
 };
-pub use settings::{get_resource_stats, get_settings, update_settings};
+pub use settings::{get_resource_stats, get_settings, init_default_settings, update_settings};
 pub use settings_model::AppSettings;
 pub use snapshots::{get_snapshot_target, list_resource_snapshots, SnapshotTarget};
 
