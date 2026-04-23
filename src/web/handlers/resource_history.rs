@@ -48,6 +48,30 @@ pub async fn history(
     Ok(http::json_status(StatusCode::OK, page))
 }
 
+pub async fn api_history(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(reference): Path<String>,
+    Query(params): Query<HistoryParams>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    session::require_session(&headers, pool).await?;
+    let resource = db::get_resource_by_ref(pool, &reference)
+        .await?
+        .ok_or_else(|| AppError::NotFound(format!("resource '{reference}' not found")))?;
+    let settings = db::get_settings(pool).await?;
+    let page = db::list_resource_snapshots(
+        pool,
+        &resource.id,
+        true,
+        params.limit.unwrap_or(settings.search_results_per_page),
+        &ListDirection::resolve(params.direction.as_deref(), params.cursor.as_deref()),
+        params.cursor.as_deref(),
+    )
+    .await?;
+    Ok(http::json_status(StatusCode::OK, page))
+}
+
 pub async fn previous(
     State(state): State<AppState>,
     headers: HeaderMap,

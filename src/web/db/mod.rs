@@ -65,6 +65,8 @@ pub use snapshots::{get_snapshot_target, list_resource_snapshots, SnapshotTarget
 
 use crate::error::AppError;
 use deadpool_postgres::{Manager, Pool, Runtime};
+use std::time::Duration;
+use tokio::time::sleep;
 use tokio_postgres::NoTls;
 
 pub type DbPool = Pool;
@@ -73,14 +75,23 @@ pub async fn create_pool(database_url: &str) -> Result<DbPool, AppError> {
     let config: tokio_postgres::Config = database_url
         .parse()
         .map_err(|e| AppError::DatabaseError(format!("Invalid database URL: {e}")))?;
-
-    let manager = Manager::new(config, NoTls);
-    let pool = Pool::builder(manager)
-        .max_size(16)
-        .runtime(Runtime::Tokio1)
-        .build()
-        .map_err(|e| AppError::DatabaseError(format!("Pool creation failed: {e}")))?;
-
-    migrations::run_migrations(&pool).await?;
-    Ok(pool)
+    let mut last_error = String::new();
+    for _ in 0..30 {
+        let manager = Manager::new(config.clone(), NoTls);
+        let pool = Pool::builder(manager)
+            .max_size(16)
+            .runtime(Runtime::Tokio1)
+            .build()
+            .map_err(|e| AppError::DatabaseError(format!("Pool creation failed: {e}")))?;
+        match migrations::run_migrations(&pool).await {
+            Ok(()) => return Ok(pool),
+            Err(error) => {
+                last_error = error.to_string();
+                sleep(Duration::from_secs(1)).await;
+            }
+        }
+    }
+    Err(AppError::DatabaseError(format!(
+        "Connection failed: {last_error}"
+    )))
 }

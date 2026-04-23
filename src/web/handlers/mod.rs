@@ -22,6 +22,7 @@ pub mod password_reset;
 pub mod popular_sections;
 pub mod preview;
 pub mod resource;
+pub mod resource_api;
 pub mod resource_file;
 mod resource_file_support;
 pub mod resource_history;

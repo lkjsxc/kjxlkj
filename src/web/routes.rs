@@ -6,8 +6,8 @@ use crate::storage::Storage;
 use crate::web::db;
 use crate::web::handlers::{
     admin, assets, discoverability, favorites, health, history, home, live, login, logout, media,
-    media_attachments, password_reset, popular_sections, preview, resource, resource_file,
-    resource_history, resources, search, settings, setup, site_icon,
+    media_attachments, password_reset, popular_sections, preview, resource, resource_api,
+    resource_file, resource_history, resources, search, settings, setup, site_icon,
 };
 use crate::web::live::LiveHub;
 use axum::extract::DefaultBodyLimit;
@@ -103,10 +103,28 @@ pub fn router(state: AppState) -> Router {
             post(preview::render_markdown_preview),
         )
         .route("/search", get(search::search_page))
+        .route("/api/resources/search", get(resource_api::search))
+        .route(
+            "/api/resources/preview-markdown",
+            post(preview::render_markdown_preview),
+        )
         .route("/live", get(live::live_page))
         .route("/live/ws", get(live::live_ws))
         .route("/{reference}/file", get(resource_file::current_file))
         .route("/{id}/history", get(history::history_page))
+        .route(
+            "/api/resources/media",
+            post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
+        )
+        .route("/api/resources/notes", post(resources::create))
+        .route(
+            "/api/resources/{reference}/history",
+            get(resource_history::api_history),
+        )
+        .route(
+            "/api/resources/{reference}",
+            get(resource_api::fetch).put(resources::api_update),
+        )
         .route(
             "/resources/media",
             post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),

@@ -83,6 +83,37 @@ pub async fn update(
     }
 }
 
+pub async fn api_update(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(reference): Path<String>,
+    Json(body): Json<UpdateInput>,
+) -> Result<Response, AppError> {
+    let pool = &state.pool;
+    session::require_session(&headers, pool).await?;
+    let resource = db::get_resource_by_ref(pool, &reference)
+        .await?
+        .ok_or_else(|| AppError::NotFound(format!("resource '{reference}' not found")))?;
+    match db::update_resource(
+        pool,
+        &resource.id,
+        normalize_alias(body.alias.as_deref())?.as_deref(),
+        &body.body,
+        body.is_favorite,
+        body.is_private,
+    )
+    .await?
+    {
+        Some(resource) => Ok(http::json_status(
+            StatusCode::OK,
+            ResourcePayload::from_resource(resource),
+        )),
+        None => Err(AppError::NotFound(format!(
+            "resource '{reference}' not found"
+        ))),
+    }
+}
+
 pub async fn remove(
     State(state): State<AppState>,
     headers: HeaderMap,
