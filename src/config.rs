@@ -29,6 +29,8 @@ pub struct Config {
     pub media_upload_max_bytes: usize,
     pub site_icon_upload_max_bytes: usize,
     pub setup_code: Option<String>,
+    pub public_host: String,
+    pub turn_static_auth_secret: String,
 }
 
 impl Config {
@@ -48,6 +50,9 @@ impl Config {
             setup_code: env::var("SETUP_CODE")
                 .ok()
                 .filter(|value| !value.is_empty()),
+            public_host: env::var("PUBLIC_HOST").unwrap_or_else(|_| "localhost".to_string()),
+            turn_static_auth_secret: env::var("TURN_STATIC_AUTH_SECRET")
+                .unwrap_or_else(|_| "kjxlkj-turn-secret-change-me".to_string()),
         })
     }
 

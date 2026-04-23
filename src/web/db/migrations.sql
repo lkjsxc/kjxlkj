@@ -178,5 +178,5 @@ CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_active
     ON password_reset_tokens(expires_at)
     WHERE used_at IS NULL;
 
-INSERT INTO app_settings (id) VALUES (1)
-ON CONFLICT (id) DO NOTHING;
+-- Default settings are inserted at runtime by init_default_settings if no row exists.
+-- This allows environment-based defaults for live_ice_servers and other fields.

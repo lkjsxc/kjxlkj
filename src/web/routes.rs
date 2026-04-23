@@ -30,6 +30,7 @@ pub struct AppState {
 pub async fn run_server(config: Config) -> Result<(), AppError> {
     let pool = db::create_pool(&config.database_url).await?;
     let storage = Storage::from_config(&config).await?;
+    db::init_default_settings(&pool).await?;
     let setup_code = setup::SetupCode::new(config.setup_code.clone());
     if !db::is_setup(&pool).await? {
         warn!(

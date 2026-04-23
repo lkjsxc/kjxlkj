@@ -22,6 +22,20 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
     Ok(row.map_or_else(AppSettings::default, row_to_settings))
 }
 
+pub async fn init_default_settings(pool: &DbPool) -> Result<(), AppError> {
+    let client = client(pool).await?;
+    let exists: bool = client
+        .query_one("SELECT EXISTS(SELECT 1 FROM app_settings WHERE id = 1)", &[])
+        .await
+        .map_err(|e| AppError::DatabaseError(e.to_string()))?
+        .get(0);
+    if !exists {
+        let defaults = AppSettings::default();
+        update_settings(pool, &defaults).await?;
+    }
+    Ok(())
+}
+
 pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<(), AppError> {
     client(pool)
         .await?
