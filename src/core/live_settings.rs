@@ -27,11 +27,11 @@ pub fn normalize_ice_servers_json(value: &str) -> Result<Value, String> {
             let has_user = object
                 .get("username")
                 .and_then(Value::as_str)
-                .map_or(false, |s| !s.is_empty());
+                .is_some_and(|s| !s.is_empty());
             let has_cred = object
                 .get("credential")
                 .and_then(Value::as_str)
-                .map_or(false, |s| !s.is_empty());
+                .is_some_and(|s| !s.is_empty());
             if has_user && !has_cred {
                 return Err("Live ICE TURN servers with username require credential".to_string());
             }
