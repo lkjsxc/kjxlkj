@@ -19,11 +19,19 @@ pub fn normalize_ice_servers_json(value: &str) -> Result<Value, String> {
             .get("urls")
             .ok_or_else(|| "Live ICE servers require urls".to_string())?;
         if !valid_urls(urls) {
-            return Err("Live ICE server urls must be non-empty strings with known schemes".to_string());
+            return Err(
+                "Live ICE server urls must be non-empty strings with known schemes".to_string(),
+            );
         }
         if has_turn_url(urls) {
-            let has_user = object.get("username").and_then(Value::as_str).map_or(false, |s| !s.is_empty());
-            let has_cred = object.get("credential").and_then(Value::as_str).map_or(false, |s| !s.is_empty());
+            let has_user = object
+                .get("username")
+                .and_then(Value::as_str)
+                .map_or(false, |s| !s.is_empty());
+            let has_cred = object
+                .get("credential")
+                .and_then(Value::as_str)
+                .map_or(false, |s| !s.is_empty());
             if has_user && !has_cred {
                 return Err("Live ICE TURN servers with username require credential".to_string());
             }
@@ -75,7 +83,7 @@ fn valid_url_str(url: &str) -> bool {
 
 fn has_turn_url(value: &Value) -> bool {
     match value {
-        Value::String(url) => url.trim().starts_with("turn:" ) || url.trim().starts_with("turns:"),
+        Value::String(url) => url.trim().starts_with("turn:") || url.trim().starts_with("turns:"),
         Value::Array(urls) => urls.iter().any(has_turn_url),
         _ => false,
     }

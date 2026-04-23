@@ -25,7 +25,10 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
 pub async fn init_default_settings(pool: &DbPool) -> Result<(), AppError> {
     let client = client(pool).await?;
     let exists: bool = client
-        .query_one("SELECT EXISTS(SELECT 1 FROM app_settings WHERE id = 1)", &[])
+        .query_one(
+            "SELECT EXISTS(SELECT 1 FROM app_settings WHERE id = 1)",
+            &[],
+        )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?
         .get(0);
