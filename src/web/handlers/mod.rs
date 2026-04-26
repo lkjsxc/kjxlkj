@@ -12,8 +12,6 @@ pub mod favorites;
 pub mod health;
 #[path = "system/history.rs"]
 pub mod history;
-#[path = "resources/resource_history.rs"]
-pub mod resource_history;
 #[path = "system/home.rs"]
 pub mod home;
 #[path = "system/http.rs"]
@@ -52,6 +50,8 @@ pub mod resource_api;
 pub mod resource_file;
 #[path = "resources/resource_file_support.rs"]
 mod resource_file_support;
+#[path = "resources/resource_history.rs"]
+pub mod resource_history;
 #[path = "resources/resource_payload.rs"]
 mod resource_payload;
 #[path = "resources/resources.rs"]
