@@ -5,7 +5,8 @@
 - `Live/ICE_servers_JSON` is the persisted settings source of truth.
 - The setting stores a JSON array compatible with browser `RTCIceServer[]`.
 - Admins may replace the array or clear it.
-- An empty array disables ICE servers entirely.
+- An empty array disables configured ICE servers.
+- Fresh installs default to an empty array.
 
 ## Object Format
 
@@ -17,20 +18,17 @@
 
 ## Supported URL Schemes
 
-- `stun:host:port` — Session Traversal Utilities for NAT. UDP only. No credentials.
-- `turn:host:port` — TURN relay. Defaults to UDP. May include `?transport=tcp` or `?transport=udp`.
-- `turns:host:port` — TURN relay over TLS. Always uses TCP. May include `?transport=tcp`.
+- `stun:host:port` identifies a STUN service.
+- `turn:host:port` identifies a TURN relay.
+- `turn:host:port?transport=tcp` identifies TURN over TCP.
+- `turns:host:port` identifies TURN over TLS.
 - Unknown schemes are rejected during validation.
 
-## Default Array
+## External Ownership
 
-- The default includes the local coturn instance:
-  - `stun:$PUBLIC_HOST:3478`
-  - `turn:$PUBLIC_HOST:3478` with static username and credential
-  - `turn:$PUBLIC_HOST:3478?transport=tcp` with static username and credential
-  - `turns:$PUBLIC_HOST:443` with static username and credential
-- `$PUBLIC_HOST` and credentials come from the Compose environment.
-- If local coturn is unavailable, admins may replace the array with public STUN/TURN services.
+- The repo does not bundle a STUN or TURN service.
+- Compose does not derive ICE entries from environment variables.
+- Operators configure external providers through `/admin/settings`.
 
 ## Validation Rules
 

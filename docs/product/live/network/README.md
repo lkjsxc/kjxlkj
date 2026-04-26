@@ -1,8 +1,8 @@
 # Live Network
 
-Network topology, firewall rules, and deployment wiring for live streaming.
+Local network topology and firewall ownership for live streaming.
 
 ## Child Index
 
-- [topology.md](topology.md): SNI-based edge proxy, TLS passthrough, and service map
-- [firewall-rules.md](firewall-rules.md): minimum and recommended open ports
+- [topology.md](topology.md): compose service map and external edge ownership
+- [firewall-rules.md](firewall-rules.md): local and external port ownership

@@ -3,7 +3,6 @@
 ## Verification Command
 
 ```bash
-cp .env.example .env
 docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify
 docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app
 docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify
@@ -18,6 +17,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
 - Any failing command propagates non-zero exit code.
 - CI uses the same bundle rather than a weaker host-only shortcut.
 - The final `down -v` removes PostgreSQL state, SeaweedFS state, and verification caches.
+- The canonical bundle does not require `.env`.
 
 ## Acceptance Conditions
 

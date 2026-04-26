@@ -3,7 +3,6 @@
 ## Required Root Entries
 
 - `.gitignore`
-- `.env.example`
 - `.github/`
 - `LICENSE`
 - `README.md`
@@ -23,7 +22,7 @@
 - Authored code, authored tests, browser verification, and site-owned static assets live under `src/`.
 - Root stays limited to entrypoint manifests, containers, docs, and disposable runtime state.
 - The root `LICENSE` file is the single in-repo license text location for project licensing and bundled notice text.
-- No root-level compatibility copies of `tests/`, `visual/`, or `vendor/` remain.
+- No root-level compatibility copies of `tests/`, `visual/`, `vendor/`, proxy config, or TURN config remain.
 
 ## Runtime State Entries
 

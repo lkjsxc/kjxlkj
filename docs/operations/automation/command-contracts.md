@@ -9,7 +9,6 @@
 
 ## Compose Command Bundle
 
-- `cp .env.example .env` when `.env` is absent in CI or a fresh checkout
 - `docker compose -f docker-compose.yml -f docker-compose.verify.yml build app verify visual-verify`
 - `docker compose -f docker-compose.yml -f docker-compose.verify.yml up -d postgres seaweedfs app`
 - `docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm verify`

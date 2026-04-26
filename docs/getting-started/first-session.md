@@ -2,7 +2,7 @@
 
 ## Create the First Admin
 
-1. Open `http://127.0.0.1:${APP_PORT:-8080}/setup`.
+1. Open `http://127.0.0.1:8080/setup`.
 2. Copy the one-time setup code from the app server console.
 3. Create the first admin account with the setup code.
 4. Confirm redirect to `/login`.

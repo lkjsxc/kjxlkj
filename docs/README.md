@@ -17,6 +17,7 @@
 
 - First orientation: [getting-started/README.md](getting-started/README.md)
 - Product surface and shared resource model: [product/README.md](product/README.md)
+- Product API payloads: [product/api/README.md](product/api/README.md)
 - Media and embedding canon: [product/resources/README.md](product/resources/README.md)
 - Storage and schema canon: [architecture/README.md](architecture/README.md)
 - Object storage canon: [architecture/storage/README.md](architecture/storage/README.md)
@@ -26,7 +27,7 @@
 
 - [getting-started/README.md](getting-started/README.md): orientation, compose boot, and verification entrypoints
 - [vision/README.md](vision/README.md): product intent and LLM-first documentation rules
-- [product/README.md](product/README.md): routes, resources, behavior, and UI contracts
+- [product/README.md](product/README.md): routes, APIs, resources, behavior, and UI contracts
 - [architecture/README.md](architecture/README.md): runtime, data, storage, and integration contracts
 - [operations/README.md](operations/README.md): deployment, backup, verification, and quality gates
 - [repository/README.md](repository/README.md): repo layout, authoring rules, and change workflow
@@ -37,9 +38,10 @@
 2. [repository/layout/root-layout.md](repository/layout/root-layout.md)
 3. [product/resources/resource-kinds.md](product/resources/resource-kinds.md)
 4. [product/surface/routes.md](product/surface/routes.md)
-5. [product/resources/embed-rules.md](product/resources/embed-rules.md)
-6. [architecture/runtime/stack.md](architecture/runtime/stack.md)
-7. [architecture/data/postgres-schema.md](architecture/data/postgres-schema.md)
-8. [architecture/storage/object-storage.md](architecture/storage/object-storage.md)
-9. [operations/deployment/single-host-compose.md](operations/deployment/single-host-compose.md)
-10. [operations/verification/compose-pipeline.md](operations/verification/compose-pipeline.md)
+5. [product/api/README.md](product/api/README.md)
+6. [product/resources/embed-rules.md](product/resources/embed-rules.md)
+7. [architecture/runtime/stack.md](architecture/runtime/stack.md)
+8. [architecture/data/postgres-schema.md](architecture/data/postgres-schema.md)
+9. [architecture/storage/object-storage.md](architecture/storage/object-storage.md)
+10. [operations/deployment/single-host-compose.md](operations/deployment/single-host-compose.md)
+11. [operations/verification/compose-pipeline.md](operations/verification/compose-pipeline.md)

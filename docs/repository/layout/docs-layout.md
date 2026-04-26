@@ -17,3 +17,4 @@ Every docs directory has one `README.md` TOC plus multiple children.
 
 - `docs/getting-started/` is the canonical first-stop entry path.
 - Deeper sections own stable contracts and runbooks after onboarding hands off.
+- API contracts live under `docs/product/api/`.

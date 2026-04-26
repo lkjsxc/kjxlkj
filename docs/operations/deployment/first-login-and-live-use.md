@@ -2,7 +2,7 @@
 
 ## Create the Admin Account
 
-1. Open `http://127.0.0.1:${APP_PORT:-8080}/setup`.
+1. Open `http://127.0.0.1:8080/setup`.
 2. Read the one-time setup code from the app server console.
 3. Create the first admin account with the setup code.
 4. Confirm redirect to `/login`.
@@ -17,7 +17,7 @@
 5. Set `Media WebP quality`.
 6. Set `New resources start private` based on deployment policy.
 7. Set `Session timeout (minutes)`.
-8. Verify `Live/ICE_servers_JSON` points to the correct `PUBLIC_HOST` and coturn credentials.
+8. Configure `Live/ICE_servers_JSON` only when external STUN or TURN services are required.
 9. Reorder favorites when desired.
 10. Upload or reset the site icon.
 

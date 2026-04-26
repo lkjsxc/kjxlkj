@@ -19,3 +19,4 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml down -v
 - `verify` exits `0` only when formatting, clippy, tests, release build, docs topology, docs links, docs term collection, and line-limit checks all pass.
 - `visual-verify` exits `0` only when browser-rendered desktop and compact screenshots pass.
 - Compose health checks stay enabled for both runtime and verification flows.
+- No `.env` file is required for the canonical compose verification path.

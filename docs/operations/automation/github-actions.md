@@ -10,7 +10,7 @@
 - Default-branch pushes run the same verification bundle.
 - Workflow logic must not replace compose verification with a weaker direct-host shortcut.
 - The workflow layers `docker-compose.verify.yml` on top of `docker-compose.yml`.
-- The workflow copies `.env.example` to `.env` before the first Compose build or run command.
+- The workflow uses compose defaults directly and does not create `.env`.
 - The workflow starts `postgres`, `seaweedfs`, and `app` explicitly before verification.
 - The workflow must not depend on a tracked `.env` file or repository secrets for local verification defaults.
 

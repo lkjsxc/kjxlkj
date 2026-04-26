@@ -18,12 +18,13 @@ Use this subtree for user-visible canon: routes, APIs, resource behavior, and UI
 - [behavior/README.md](behavior/README.md): lifecycle, listing, analytics, history, settings, and errors
 - [experience/README.md](experience/README.md): layout, shell, editor, theme, and responsive contracts
 - [discoverability/README.md](discoverability/README.md): site identity, metadata, indexing, robots, and sitemap contracts
-- [api-contract.md](api-contract.md): payload shapes and shared field semantics
+- [api/README.md](api/README.md): payload shapes, machine routes, upload rules, and saved-snapshot schemas
 
 ## Start Here
 
 - Resource model: [resources/resource-kinds.md](resources/resource-kinds.md)
 - Route map: [surface/routes.md](surface/routes.md)
+- API payloads: [api/README.md](api/README.md)
 - Live broadcast: [live/page/README.md](live/page/README.md)
 - Listing behavior: [behavior/list-and-fetch.md](behavior/list-and-fetch.md)
 - UI map: [experience/README.md](experience/README.md)

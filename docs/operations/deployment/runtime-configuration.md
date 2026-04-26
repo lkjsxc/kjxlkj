@@ -1,27 +1,37 @@
 # Runtime Configuration Ownership
 
-## Compose Environment
+## Compose Defaults
 
-- `.env` owns PostgreSQL credentials, SeaweedFS S3 settings, upload byte limits, `PUBLIC_HOST`, `TURN_STATIC_AUTH_SECRET`, and optional `SETUP_CODE`.
-- Host port exposure is owned by the `nginx` and `coturn` services; `app` is internal-only.
-- Compose assembles `DATABASE_URL` and SeaweedFS S3 environment for the runtime container.
-- `docker-compose.yml` treats `.env` as authoritative rather than relying on inline fallback defaults.
-- CI must create `.env` from `.env.example` before running compose-backed verification.
-- Compose environment does not own site identity, search defaults, session timeout, home section ordering, or discovery public-origin state.
+- Compose owns local development and verification defaults.
+- Compose does not require `.env`.
+- Local app URL is `http://localhost:8080`.
+- Local PostgreSQL credentials are literal compose-only values.
+- Local SeaweedFS S3 settings are literal compose-only values.
+- Upload limits are literal compose defaults.
+- Verification uses deterministic `SETUP_CODE=visual-setup-code`.
+
+## Direct App Environment
+
+- Direct non-compose runs may set `BIND_HOST` and `BIND_PORT`.
+- Direct non-compose runs must set `DATABASE_URL`.
+- Direct non-compose runs must set required SeaweedFS S3 variables.
+- Direct non-compose runs may set upload byte limits and `SETUP_CODE`.
+- Direct app environment does not configure public URLs or live ICE servers.
 
 ## Persisted Operator Settings
 
 - `/admin/settings` owns `site_name`, `site_description`, and `public_base_url`.
 - `/admin/settings` owns homepage intro, section visibility and order, section limits, search page size, default new-resource visibility, media WebP quality, favorite ordering, site icon, and session timeout.
 - `/admin/settings` owns `Live/ICE_servers_JSON`, which controls browser WebRTC ICE server configuration.
+- Persisted settings must not require process restart.
 
 ## Bootstrap Sequence
 
-1. Start the compose stack with database, SeaweedFS, upload limit, and bind settings only.
+1. Start the compose stack with database, object storage, upload limits, bind address, and setup code.
 2. Complete `/setup` and `/login`.
 3. Open `/admin/settings`.
 4. Save site identity, `public_base_url`, and default new-resource visibility.
-5. Set media WebP quality, favorite ordering, and the site icon when desired.
+5. Set media WebP quality, favorite ordering, site icon, and live ICE servers when desired.
 6. Create at least one note and one media resource before handoff.
 
 ## Discovery Rule
