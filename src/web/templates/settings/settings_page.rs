@@ -21,11 +21,11 @@ use super::IndexItem;
 use crate::web::db::AppSettings;
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("resource_actions.js");
-const FAVORITE_ORDER_JS: &str = include_str!("favorite_order.js");
-const SETTINGS_ICON_JS: &str = include_str!("settings_icon.js");
-const SETTINGS_ORDER_JS: &str = include_str!("settings_order.js");
-const SETTINGS_SEARCH_JS: &str = include_str!("settings_search.js");
+const ACTIONS_JS: &str = include_str!("../scripts/resource_actions.js");
+const FAVORITE_ORDER_JS: &str = include_str!("../scripts/favorite_order.js");
+const SETTINGS_ICON_JS: &str = include_str!("../scripts/settings_icon.js");
+const SETTINGS_ORDER_JS: &str = include_str!("../scripts/settings_order.js");
+const SETTINGS_SEARCH_JS: &str = include_str!("../scripts/settings_search.js");
 
 pub fn settings_page(
     settings: &AppSettings,

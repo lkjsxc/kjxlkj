@@ -2,11 +2,11 @@ use super::layout::html_escape;
 use super::model::ResourceChrome;
 use crate::web::db::{Resource, ResourceKind};
 
-const EDITOR_CORE_JS: &str = include_str!("editor.js");
-const EDITOR_SYNC_JS: &str = include_str!("editor_sync.js");
-const EDITOR_UI_JS: &str = include_str!("editor_ui.js");
-const EDITOR_UPLOAD_JS: &str = include_str!("editor_upload.js");
-const NOTE_ACTIONS_JS: &str = include_str!("resource_actions.js");
+const EDITOR_CORE_JS: &str = include_str!("../scripts/editor.js");
+const EDITOR_SYNC_JS: &str = include_str!("../scripts/editor_sync.js");
+const EDITOR_UI_JS: &str = include_str!("../scripts/editor_ui.js");
+const EDITOR_UPLOAD_JS: &str = include_str!("../scripts/editor_upload.js");
+const NOTE_ACTIONS_JS: &str = include_str!("../scripts/resource_actions.js");
 
 pub fn editor_script(
     resource: &Resource,

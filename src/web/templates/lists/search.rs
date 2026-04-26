@@ -7,7 +7,7 @@ use super::search_form::search_section;
 use super::sections::{page_header, section};
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("resource_actions.js");
+const ACTIONS_JS: &str = include_str!("../scripts/resource_actions.js");
 
 pub struct SearchView<'a> {
     pub notes: &'a [IndexItem],

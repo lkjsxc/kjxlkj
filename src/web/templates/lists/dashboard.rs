@@ -10,8 +10,8 @@ use super::sections::{page_header, section};
 use crate::web::db::{AppSettings, PopularWindow, ResourceStats};
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("resource_actions.js");
-const POPULAR_JS: &str = include_str!("popular_window.js");
+const ACTIONS_JS: &str = include_str!("../scripts/resource_actions.js");
+const POPULAR_JS: &str = include_str!("../scripts/popular_window.js");
 
 pub fn admin_page(
     stats: &ResourceStats,

@@ -11,8 +11,8 @@ use axum::response::Response;
 use tracing::warn;
 
 const CACHE_CONTROL: &str = "public, max-age=31536000, immutable";
-const FAVICON_ICO: &[u8] = include_bytes!("../assets/favicon.ico");
-const ICON_SVG: &str = include_str!("../assets/icon.svg");
+const FAVICON_ICO: &[u8] = include_bytes!("../../assets/favicon.ico");
+const ICON_SVG: &str = include_str!("../../assets/icon.svg");
 
 pub async fn favicon(State(state): State<AppState>) -> Result<Response, AppError> {
     Ok(match uploaded_icon(&state.pool, &state.storage).await? {

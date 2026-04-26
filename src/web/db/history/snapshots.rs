@@ -5,6 +5,7 @@ use super::DbPool;
 use crate::error::AppError;
 use serde::Serialize;
 
+#[path = "snapshots/row.rs"]
 mod row;
 use row::{row_to_snapshot, row_to_snapshot_target};
 

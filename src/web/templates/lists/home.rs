@@ -10,8 +10,8 @@ use super::popular_sections::home_popular_section;
 use crate::web::db::{AppSettings, PopularWindow};
 use crate::web::site::SiteContext;
 
-const ACTIONS_JS: &str = include_str!("resource_actions.js");
-const POPULAR_JS: &str = include_str!("popular_window.js");
+const ACTIONS_JS: &str = include_str!("../scripts/resource_actions.js");
+const POPULAR_JS: &str = include_str!("../scripts/popular_window.js");
 
 pub struct HomeView<'a> {
     pub settings: &'a AppSettings,

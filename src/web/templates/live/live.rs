@@ -7,10 +7,10 @@ use crate::web::db::AppSettings;
 use crate::web::site::SiteContext;
 use serde_json::json;
 
-const LIVE_STATE_JS: &str = include_str!("live_state.js");
-const LIVE_CAPTURE_JS: &str = include_str!("live_capture.js");
-const LIVE_PEER_JS: &str = include_str!("live_peer.js");
-const LIVE_JS: &str = include_str!("live.js");
+const LIVE_STATE_JS: &str = include_str!("../scripts/live_state.js");
+const LIVE_CAPTURE_JS: &str = include_str!("../scripts/live_capture.js");
+const LIVE_PEER_JS: &str = include_str!("../scripts/live_peer.js");
+const LIVE_JS: &str = include_str!("../scripts/live.js");
 
 pub fn live_page(
     site: &SiteContext,

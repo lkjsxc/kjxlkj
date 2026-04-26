@@ -2,24 +2,24 @@
 
 use once_cell::sync::Lazy;
 
-const BASE_CSS: &str = include_str!("base.css");
-const CONTENT_CSS: &str = include_str!("content.css");
-const EXTERNAL_EMBEDS_CSS: &str = include_str!("external_embeds.css");
-const CONTROLS_CSS: &str = include_str!("controls.css");
-const SHELL_CSS: &str = include_str!("shell.css");
-const SURFACES_CSS: &str = include_str!("surfaces.css");
-const RESOURCE_LIST_CSS: &str = include_str!("resource_list.css");
-const SUMMARY_CARDS_CSS: &str = include_str!("summary_cards.css");
-const OVERVIEW_CSS: &str = include_str!("overview.css");
-const LIVE_CSS: &str = include_str!("live.css");
-const RESPONSIVE_CSS: &str = include_str!("responsive.css");
-const PAGE_CSS: &str = include_str!("page.css");
-const FAVORITES_CSS: &str = include_str!("favorites.css");
-const EDITOR_CSS: &str = include_str!("editor.css");
-const EDITOR_EXTRA_CSS: &str = include_str!("editor_extra.css");
-const RESOURCE_FOCUS_CSS: &str = include_str!("resource_focus.css");
-const SETTINGS_FLAT_CSS: &str = include_str!("settings_flat.css");
-const SETTINGS_CSS: &str = include_str!("settings.css");
+const BASE_CSS: &str = include_str!("../styles/base.css");
+const CONTENT_CSS: &str = include_str!("../styles/content.css");
+const EXTERNAL_EMBEDS_CSS: &str = include_str!("../styles/external_embeds.css");
+const CONTROLS_CSS: &str = include_str!("../styles/controls.css");
+const SHELL_CSS: &str = include_str!("../styles/shell.css");
+const SURFACES_CSS: &str = include_str!("../styles/surfaces.css");
+const RESOURCE_LIST_CSS: &str = include_str!("../styles/resource_list.css");
+const SUMMARY_CARDS_CSS: &str = include_str!("../styles/summary_cards.css");
+const OVERVIEW_CSS: &str = include_str!("../styles/overview.css");
+const LIVE_CSS: &str = include_str!("../styles/live.css");
+const RESPONSIVE_CSS: &str = include_str!("../styles/responsive.css");
+const PAGE_CSS: &str = include_str!("../styles/page.css");
+const FAVORITES_CSS: &str = include_str!("../styles/favorites.css");
+const EDITOR_CSS: &str = include_str!("../styles/editor.css");
+const EDITOR_EXTRA_CSS: &str = include_str!("../styles/editor_extra.css");
+const RESOURCE_FOCUS_CSS: &str = include_str!("../styles/resource_focus.css");
+const SETTINGS_FLAT_CSS: &str = include_str!("../styles/settings_flat.css");
+const SETTINGS_CSS: &str = include_str!("../styles/settings.css");
 
 static STYLESHEET: Lazy<String> = Lazy::new(|| minify_css(raw_css()));
 

@@ -3,10 +3,10 @@
 use super::style_bundle::stylesheet;
 use crate::web::site::PageMeta;
 
-const SHELL_JS: &str = include_str!("shell.js");
-const SHELL_MEMORY_JS: &str = include_str!("shell_memory.js");
-const SHELL_NAV_JS: &str = include_str!("shell_nav.js");
-const EXTERNAL_EMBEDS_JS: &str = include_str!("external_embeds.js");
+const SHELL_JS: &str = include_str!("../scripts/shell.js");
+const SHELL_MEMORY_JS: &str = include_str!("../scripts/shell_memory.js");
+const SHELL_NAV_JS: &str = include_str!("../scripts/shell_nav.js");
+const EXTERNAL_EMBEDS_JS: &str = include_str!("../scripts/external_embeds.js");
 
 pub fn base(meta: &PageMeta, content: &str, extra_head: &str, extra_script: &str) -> String {
     format!(

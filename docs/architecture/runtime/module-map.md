@@ -7,9 +7,9 @@
 - `src/core/`: Markdown rendering, embed provider parsing, and shared validation helpers.
 - `src/storage/`: SeaweedFS S3 media object client and metadata helpers.
 - `src/media/`: media type detection, derivative generation, and derivative metadata helpers.
-- `src/web/db/`: PostgreSQL-backed persistence adapter and migrations.
-- `src/web/handlers/`: HTTP route handlers, including file delivery and media upload paths.
-- `src/web/templates/`: authored HTML, CSS, note/media shell rendering, and client-side behavior.
+- `src/web/db/`: grouped PostgreSQL persistence adapter, migrations, and query modules.
+- `src/web/handlers/`: grouped HTTP route handlers, including file delivery and media upload paths.
+- `src/web/templates/`: grouped HTML templates plus CSS and browser JavaScript assets.
 - `src/web/live.rs`: in-memory live broadcast signaling hub.
 - `src/verify/browser/`: browser verification scripts and support.
 - `src/cli/`: docs and quality gate commands.
