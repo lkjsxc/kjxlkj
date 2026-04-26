@@ -31,6 +31,5 @@ EXPOSE 8080
 
 ENV BIND_HOST=0.0.0.0
 ENV BIND_PORT=8080
-ENV DATA_ROOT=/app/data
 
 CMD ["/app/kjxlkj"]

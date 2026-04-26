@@ -1,7 +1,6 @@
 //! App settings model
 
 use serde_json::{json, Value};
-use std::env;
 
 #[derive(Debug, Clone)]
 pub struct AppSettings {
@@ -57,7 +56,7 @@ impl Default for AppSettings {
             public_base_url: String::new(),
             nostr_names: json!({}),
             nostr_relays: json!([]),
-            live_ice_servers: default_ice_servers(),
+            live_ice_servers: json!([]),
             live_default_source: "screen".to_string(),
             live_default_height: 1080,
             live_default_fps: 60,
@@ -67,16 +66,4 @@ impl Default for AppSettings {
             site_icon_content_type: None,
         }
     }
-}
-
-fn default_ice_servers() -> Value {
-    let host = env::var("PUBLIC_HOST").unwrap_or_else(|_| "localhost".to_string());
-    let secret = env::var("TURN_STATIC_AUTH_SECRET")
-        .unwrap_or_else(|_| "kjxlkj-turn-secret-change-me".to_string());
-    json!([
-        { "urls": [format!("stun:{}:3478", host)] },
-        { "urls": [format!("turn:{}:3478", host)], "username": "kjxlkj", "credential": &secret },
-        { "urls": [format!("turn:{}:3478?transport=tcp", host)], "username": "kjxlkj", "credential": &secret },
-        { "urls": [format!("turns:{}:443", host)], "username": "kjxlkj", "credential": &secret }
-    ])
 }

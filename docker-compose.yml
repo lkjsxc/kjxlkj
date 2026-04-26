@@ -2,17 +2,13 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: kjxlkj
+      POSTGRES_PASSWORD: kjxlkjchange123
+      POSTGRES_DB: kjxlkj
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U kjxlkj -d kjxlkj"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -23,12 +19,9 @@ services:
     command:
       - |
         cat > /tmp/s3.json <<EOF
-        {"identities":[{"name":"app","credentials":[{"accessKey":"$${SEAWEEDFS_S3_ACCESS_KEY}","secretKey":"$${SEAWEEDFS_S3_SECRET_KEY}"}],"actions":["Admin","Read","Write"]}]}
+        {"identities":[{"name":"app","credentials":[{"accessKey":"kjxlkj","secretKey":"kjxlkjseaweedfschange123"}],"actions":["Admin","Read","Write"]}]}
         EOF
         exec weed server -dir=/data -filer -s3 -s3.port=8333 -s3.config=/tmp/s3.json -volume.fileSizeLimitMB=1024 -filer.concurrentUploadLimitMB=1024 -volume.concurrentUploadLimitMB=1024
-    environment:
-      SEAWEEDFS_S3_ACCESS_KEY: ${SEAWEEDFS_S3_ACCESS_KEY}
-      SEAWEEDFS_S3_SECRET_KEY: ${SEAWEEDFS_S3_SECRET_KEY}
     volumes:
       - seaweedfs-data:/data
     healthcheck:
@@ -45,53 +38,32 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    expose:
-      - "${BIND_PORT}"
+    ports:
+      - "8080:8080"
     environment:
-      BIND_HOST: ${BIND_HOST}
-      BIND_PORT: ${BIND_PORT}
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      SEAWEEDFS_S3_ENDPOINT: ${SEAWEEDFS_S3_ENDPOINT}
-      SEAWEEDFS_S3_REGION: ${SEAWEEDFS_S3_REGION}
-      SEAWEEDFS_S3_BUCKET: ${SEAWEEDFS_S3_BUCKET}
-      SEAWEEDFS_S3_ACCESS_KEY: ${SEAWEEDFS_S3_ACCESS_KEY}
-      SEAWEEDFS_S3_SECRET_KEY: ${SEAWEEDFS_S3_SECRET_KEY}
-      SEAWEEDFS_S3_PATH_STYLE: ${SEAWEEDFS_S3_PATH_STYLE}
-      MEDIA_UPLOAD_MAX_BYTES: ${MEDIA_UPLOAD_MAX_BYTES}
-      SITE_ICON_UPLOAD_MAX_BYTES: ${SITE_ICON_UPLOAD_MAX_BYTES}
-      SETUP_CODE: ${SETUP_CODE:-visual-setup-code}
-      PUBLIC_HOST: ${PUBLIC_HOST:-localhost}
-      TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET:-kjxlkj-turn-secret-change-me}
+      BIND_HOST: 0.0.0.0
+      BIND_PORT: "8080"
+      DATABASE_URL: postgres://kjxlkj:kjxlkjchange123@postgres:5432/kjxlkj
+      SEAWEEDFS_S3_ENDPOINT: http://seaweedfs:8333
+      SEAWEEDFS_S3_REGION: us-east-1
+      SEAWEEDFS_S3_BUCKET: kjxlkj-media
+      SEAWEEDFS_S3_ACCESS_KEY: kjxlkj
+      SEAWEEDFS_S3_SECRET_KEY: kjxlkjseaweedfschange123
+      SEAWEEDFS_S3_PATH_STYLE: "true"
+      MEDIA_UPLOAD_MAX_BYTES: "536870912"
+      SITE_ICON_UPLOAD_MAX_BYTES: "2097152"
+      SETUP_CODE: visual-setup-code
     depends_on:
       postgres:
         condition: service_healthy
       seaweedfs:
         condition: service_healthy
     healthcheck:
-      test:
-        ["CMD", "curl", "-fs", "http://localhost:${BIND_PORT}/healthz"]
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/healthz"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
-
-  coturn:
-    build:
-      context: ./coturn
-      dockerfile: Dockerfile
-    ports:
-      - "3478:3478/udp"
-      - "3478:3478/tcp"
-      - "5349:5349/tcp"
-      - "5349:5349/udp"
-      - "49152-65535:49152-65535/udp"
-    environment:
-      PUBLIC_HOST: ${PUBLIC_HOST:-localhost}
-      TURN_STATIC_AUTH_SECRET: ${TURN_STATIC_AUTH_SECRET:-kjxlkj-turn-secret-change-me}
-      EXTERNAL_IP: ${EXTERNAL_IP:-auto}
-    depends_on:
-      app:
-        condition: service_healthy
 
 volumes:
   postgres-data:
