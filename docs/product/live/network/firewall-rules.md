@@ -14,12 +14,11 @@
 - The port must be reachable from remote broadcaster and viewer browsers.
 - Docker, Incus, and edge NAT must preserve UDP traffic for this port.
 
-## Optional TURN
+## Excluded Relay Paths
 
-- `3478/udp` may reach edge coturn.
-- `3478/tcp` may reach edge coturn.
-- `49152-65535/udp` may reach edge coturn relay ports.
-- TURN TLS on `5349/tcp` is optional, not required for the target setup.
+- Browser live media does not use coturn in the target setup.
+- `3478/tcp`, `3478/udp`, `5349/tcp`, and coturn relay ranges are not required for `/live`.
+- Opening extra relay ports must not replace `${LIVE_ICE_UDP_PORT}/udp`.
 
 ## Incus Ownership
 

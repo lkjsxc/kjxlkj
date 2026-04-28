@@ -4,8 +4,6 @@
 
 - `site_name`, `site_description`, and `public_base_url` remain global.
 - `nostr_names` and `nostr_relays` control Nostr identifier discovery.
-- `live_ice_servers` controls browser and server WebRTC ICE server configuration for `/live`.
-- Production may set `live_ice_servers` to operator-owned STUN/TURN entries for restrictive networks.
 - `live_default_source` controls whether new live pages default to screen or camera capture.
 - `live_default_height` and `live_default_fps` control the default live capture quality.
 - `live_default_microphone_enabled` controls whether new broadcasts request microphone audio by default.
@@ -42,7 +40,7 @@
 - Reordering favorites affects `/`, `/admin`, and `/search?scope=favorites` immediately.
 - Changing `public_base_url` affects later canonical URLs, `robots.txt`, and `sitemap.xml` without restart.
 - Changing Nostr settings affects later `/.well-known/nostr.json` responses without restart.
-- Changing `Live/ICE_servers_JSON`, `Live/Default_source`, `Live/Default_quality`, `Live/Default_fps`, or `Live/Microphone_default` affects newly opened live pages without restart.
+- Changing `Live/Default_source`, `Live/Default_quality`, `Live/Default_fps`, or `Live/Microphone_default` affects newly opened live pages without restart.
 - Server-side live ICE bind and public-address environment changes require app restart.
 - Changing `Embeds/Google_Maps_API_key` affects later note rendering and admin previews without restart.
 - Existing `/live` pages may override live defaults for the current page session without persisting those overrides.

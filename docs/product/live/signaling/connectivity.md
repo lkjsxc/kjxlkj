@@ -4,18 +4,17 @@
 
 - Browsers connect WebRTC only to the app-hosted live relay.
 - The app advertises host candidates on its configured static ICE UDP port.
-- The app may advertise configured public NAT 1:1 addresses.
-- Browsers may use configured STUN or TURN servers from `Live/ICE_servers_JSON`.
-- TURN is a fallback for restrictive networks, not the primary target path.
+- The app may advertise configured NAT 1:1 addresses through `LIVE_ICE_PUBLIC_IPS`.
+- Browser clients do not receive STUN or TURN servers for the core path.
 
 ## Remote Viewers
 
 - Local-network viewing can work with the app host candidate alone.
 - Remote viewing requires the app ICE UDP port to be reachable from the public edge.
-- Remote viewing behind restrictive networks may require TURN.
 - Remote production must proxy `/live/ws` with WebSocket upgrade headers.
 - Remote production must serve `/live` over HTTPS for capture APIs.
-- Remote production should configure `LIVE_ICE_PUBLIC_IPS` when Docker or NAT hides the public address.
+- Remote production should configure `LIVE_ICE_PUBLIC_IPS` with every app relay address
+  that clients should be allowed to try.
 
 ## Failure Behavior
 

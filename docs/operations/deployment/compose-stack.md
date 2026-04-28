@@ -31,7 +31,7 @@
 - Runtime Compose does not terminate public TLS.
 - Runtime Compose does not own public nginx.
 - Production edge nginx is external infrastructure.
-- Production coturn is optional external infrastructure.
+- Live media uses the app-owned ICE UDP port instead of external TURN.
 - Persisted operator settings still own `site_name`, `site_description`, `public_base_url`, search defaults, and session timeout.
 
 ## Boot Behavior

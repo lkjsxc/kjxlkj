@@ -1,12 +1,12 @@
 # Live Signaling
 
-Contracts for `/live/ws`, browser-to-app WebRTC negotiation, ICE servers, and live connectivity failure behavior.
+Contracts for `/live/ws`, browser-to-app WebRTC negotiation, app relay ICE, and live connectivity failure behavior.
 
 ## Child Index
 
 - [messages.md](messages.md): WebSocket message shapes, forwarding, and lifetime rules
-- [ice-servers.md](ice-servers.md): `Live/ICE_servers_JSON` format and validation
-- [connectivity.md](connectivity.md): NAT traversal, TURN relay, and visible failure states
+- [ice-servers.md](ice-servers.md): app relay ICE environment and address rules
+- [connectivity.md](connectivity.md): NAT traversal and visible failure states
 
 ## Rules
 

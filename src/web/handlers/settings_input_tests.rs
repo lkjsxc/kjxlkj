@@ -8,7 +8,6 @@ fn sample_form() -> SettingsForm {
         public_base_url: "https://example.com".to_string(),
         nostr_names_json: "{}".to_string(),
         nostr_relays_json: "[]".to_string(),
-        live_ice_servers_json: "[]".to_string(),
         live_default_source: "screen".to_string(),
         live_default_height: 1080,
         live_default_fps: 60,
@@ -82,28 +81,6 @@ fn validate_rejects_invalid_live_defaults() {
     form = sample_form();
     form.live_default_fps = 24;
     assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
-}
-
-#[test]
-fn validate_rejects_invalid_live_ice_servers() {
-    let mut form = sample_form();
-    form.live_ice_servers_json = r#"[{"urls":["https://turn.example.com"]}]"#.to_string();
-    assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
-
-    form = sample_form();
-    form.live_ice_servers_json =
-        r#"[{"urls":["turn:turn.example.com:3478"],"username":"user"}]"#.to_string();
-    assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
-}
-
-#[test]
-fn validate_accepts_turn_live_ice_servers() {
-    let mut form = sample_form();
-    form.live_ice_servers_json = r#"[
-        {"urls":["stun:turn.example.com:3478"]},
-        {"urls":["turn:turn.example.com:3478?transport=tcp"],"username":"user","credential":"secret"}
-    ]"#.to_string();
-    assert!(validate_settings_form(&form, &AppSettings::default()).is_ok());
 }
 
 #[test]

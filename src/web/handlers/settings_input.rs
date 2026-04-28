@@ -1,8 +1,6 @@
 //! Settings form parsing and validation
 
-use crate::core::live_settings::{
-    normalize_ice_servers_json, normalize_live_source, validate_live_fps, validate_live_height,
-};
+use crate::core::live_settings::{normalize_live_source, validate_live_fps, validate_live_height};
 use crate::core::nostr::{normalize_names_json, normalize_relays_json};
 use crate::error::AppError;
 use crate::web::db::AppSettings;
@@ -17,7 +15,6 @@ pub struct SettingsForm {
     pub public_base_url: String,
     pub nostr_names_json: String,
     pub nostr_relays_json: String,
-    pub live_ice_servers_json: String,
     pub live_default_source: String,
     pub live_default_height: i64,
     pub live_default_fps: i64,
@@ -48,8 +45,6 @@ pub fn validate_settings_form(
     let public_base_url = validate_public_base_url(&form.public_base_url)?;
     let nostr_names = normalize_names_json(&form.nostr_names_json).map_err(|e| invalid(&e))?;
     let nostr_relays = normalize_relays_json(&form.nostr_relays_json).map_err(|e| invalid(&e))?;
-    let live_ice_servers =
-        normalize_ice_servers_json(&form.live_ice_servers_json).map_err(|e| invalid(&e))?;
     let live_default_source =
         normalize_live_source(&form.live_default_source).map_err(|e| invalid(&e))?;
     let live_default_height =
@@ -87,7 +82,6 @@ pub fn validate_settings_form(
         public_base_url,
         nostr_names,
         nostr_relays,
-        live_ice_servers,
         live_default_source,
         live_default_height,
         live_default_fps,

@@ -11,7 +11,6 @@ use webrtc::ice::udp_mux::{UDPMuxDefault, UDPMuxParams};
 use webrtc::ice::udp_network::UDPNetwork;
 use webrtc::ice_transport::ice_candidate::RTCIceCandidateInit;
 use webrtc::ice_transport::ice_candidate_type::RTCIceCandidateType;
-use webrtc::ice_transport::ice_server::RTCIceServer;
 use webrtc::interceptor::registry::Registry;
 use webrtc::peer_connection::configuration::RTCConfiguration;
 use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
@@ -46,21 +45,14 @@ pub async fn build_api(addr: &str, public_ips: Vec<String>) -> Result<webrtc::ap
         .build())
 }
 
-pub fn ice_servers(value: &Value) -> Result<Vec<RTCIceServer>, String> {
-    match value.as_array() {
-        Some(servers) => servers.iter().map(ice_server).collect(),
-        None => Ok(Vec::new()),
-    }
-}
-
 pub async fn publisher(
     api: &webrtc::api::API,
-    ice_servers: Vec<RTCIceServer>,
     offer: RTCSessionDescription,
     tx: mpsc::UnboundedSender<Message>,
     tracks: RelayTracks,
 ) -> Result<Arc<RTCPeerConnection>, String> {
-    let pc = Arc::new(new_peer(api, ice_servers).await?);
+    let pc = Arc::new(new_peer(api).await?);
+    attach_state_logs(&pc, "broadcaster");
     add_recvonly(&pc, RTPCodecType::Video).await?;
     if tracks.audio.is_some() {
         add_recvonly(&pc, RTPCodecType::Audio).await?;
@@ -73,12 +65,12 @@ pub async fn publisher(
 
 pub async fn viewer(
     api: &webrtc::api::API,
-    ice_servers: Vec<RTCIceServer>,
     offer: RTCSessionDescription,
     tx: mpsc::UnboundedSender<Message>,
     tracks: RelayTracks,
 ) -> Result<Arc<RTCPeerConnection>, String> {
-    let pc = Arc::new(new_peer(api, ice_servers).await?);
+    let pc = Arc::new(new_peer(api).await?);
+    attach_state_logs(&pc, "viewer");
     if let Some(track) = &tracks.video {
         add_track(&pc, track).await?;
     }
@@ -91,46 +83,15 @@ pub async fn viewer(
 }
 
 pub async fn add_ice(pc: &RTCPeerConnection, candidate: RTCIceCandidateInit) {
-    let _ = pc.add_ice_candidate(candidate).await;
-}
-
-fn ice_server(value: &Value) -> Result<RTCIceServer, String> {
-    Ok(RTCIceServer {
-        urls: urls(value.get("urls")).ok_or_else(|| "invalid ICE server urls".to_string())?,
-        username: value
-            .get("username")
-            .and_then(Value::as_str)
-            .unwrap_or_default()
-            .to_string(),
-        credential: value
-            .get("credential")
-            .and_then(Value::as_str)
-            .unwrap_or_default()
-            .to_string(),
-    })
-}
-
-fn urls(value: Option<&Value>) -> Option<Vec<String>> {
-    match value {
-        Some(Value::String(url)) => Some(vec![url.to_string()]),
-        Some(Value::Array(urls)) => urls
-            .iter()
-            .map(|url| url.as_str().map(str::to_string))
-            .collect(),
-        _ => None,
+    if let Err(error) = pc.add_ice_candidate(candidate).await {
+        tracing::warn!(%error, "live add ICE candidate failed");
     }
 }
 
-async fn new_peer(
-    api: &webrtc::api::API,
-    ice_servers: Vec<RTCIceServer>,
-) -> Result<RTCPeerConnection, String> {
-    api.new_peer_connection(RTCConfiguration {
-        ice_servers,
-        ..Default::default()
-    })
-    .await
-    .map_err(|error| error.to_string())
+async fn new_peer(api: &webrtc::api::API) -> Result<RTCPeerConnection, String> {
+    api.new_peer_connection(RTCConfiguration::default())
+        .await
+        .map_err(|error| error.to_string())
 }
 
 async fn add_recvonly(pc: &RTCPeerConnection, kind: RTPCodecType) -> Result<(), String> {
@@ -177,6 +138,7 @@ async fn answer(
         .await
         .map_err(|error| error.to_string())?;
     if let Some(sdp) = pc.local_description().await {
+        tracing::info!("live answer created");
         send(&tx, json!({ "type": "answer", "sdp": sdp }));
     }
     Ok(())
@@ -187,9 +149,21 @@ fn attach_ice_sender(pc: &RTCPeerConnection, tx: mpsc::UnboundedSender<Message>)
         let tx = tx.clone();
         Box::pin(async move {
             if let Some(candidate) = candidate.and_then(|value| value.to_json().ok()) {
+                tracing::debug!("live ICE candidate sent");
                 send(&tx, json!({ "type": "ice", "candidate": candidate }));
             }
         })
+    }));
+}
+
+fn attach_state_logs(pc: &RTCPeerConnection, role: &'static str) {
+    pc.on_ice_connection_state_change(Box::new(move |state| {
+        tracing::info!(role, state = ?state, "live ICE connection state changed");
+        Box::pin(async {})
+    }));
+    pc.on_peer_connection_state_change(Box::new(move |state| {
+        tracing::info!(role, state = ?state, "live peer connection state changed");
+        Box::pin(async {})
     }));
 }
 

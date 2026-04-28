@@ -39,7 +39,10 @@
 
     function readConfig() {
         try { return JSON.parse(document.getElementById('live-config').textContent || '{}'); }
-        catch (_) { return {}; }
+        catch (error) {
+            console.warn('kjxlkj live config parse failed', error);
+            return {};
+        }
     }
 
     function setStatus(label, text) {

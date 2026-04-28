@@ -1,37 +1,34 @@
-# Live ICE Servers
+# Live Relay ICE
 
-## Settings Source
+## Source Of Truth
 
-- `Live/ICE_servers_JSON` is the persisted settings source of truth.
-- The setting stores a JSON array compatible with browser `RTCIceServer[]`.
-- The app converts the same setting into server-side WebRTC ICE server configuration.
-- Fresh installs default to one public Google STUN server.
-- Production may replace the default with operator-owned STUN/TURN entries.
-- Admins may replace the array or clear it.
-- An empty array disables configured ICE servers.
+- The live relay is app-hosted.
+- Browser clients connect only to the app relay, never to each other.
+- Deployment environment owns the app relay ICE socket.
+- `LIVE_ICE_BIND_IP` controls the UDP bind address inside the app runtime.
+- `LIVE_ICE_UDP_PORT` controls the app relay UDP port.
+- `LIVE_ICE_PUBLIC_IPS` controls NAT 1:1 addresses advertised by the app.
+- Admin settings do not provide browser ICE servers for the core live path.
 
-## Object Format
+## Browser Behavior
 
-- Each element must be an object.
-- Each object must have `urls`.
-- `urls` is a non-empty string or a non-empty array of non-empty strings.
-- TURN objects should have `username` and `credential`.
-- A TURN object with `username` must also have `credential`.
+- The live page embeds only capture defaults in `#live-config`.
+- Browser `RTCPeerConnection` instances use an empty `iceServers` list.
+- Browser ICE candidates are scoped to their own app WebSocket session.
+- Browser SDP and ICE are never forwarded to another browser.
+- Viewer media tracks originate from app-owned relay tracks.
 
-## Supported URL Schemes
+## Production Addresses
 
-- `stun:host:port` identifies a STUN service.
-- `turn:host:port` identifies a TURN relay.
-- `turn:host:port?transport=tcp` identifies TURN over TCP.
-- `turns:host:port` identifies TURN over TLS.
-- Unknown schemes are rejected during validation.
+- Public viewers need a public app relay address in `LIVE_ICE_PUBLIC_IPS`.
+- LAN viewers need a LAN app relay address in `LIVE_ICE_PUBLIC_IPS`.
+- Multiple addresses are comma-separated.
+- Docker and Incus must forward `${LIVE_ICE_UDP_PORT}/udp` to the app.
 
-## Production Example
+## Production Example Value
 
-```json
-[
-  { "urls": ["stun:turn.lkjsxc.com:3478"] },
-  { "urls": ["turn:turn.lkjsxc.com:3478"], "username": "kjxlkj", "credential": "secret" },
-  { "urls": ["turn:turn.lkjsxc.com:3478?transport=tcp"], "username": "kjxlkj", "credential": "secret" }
-]
+```env
+LIVE_ICE_BIND_IP=0.0.0.0
+LIVE_ICE_UDP_PORT=8189
+LIVE_ICE_PUBLIC_IPS=92.202.56.95,192.168.1.2
 ```

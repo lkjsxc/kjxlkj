@@ -73,7 +73,6 @@
 - `site_name`, `site_description`, `public_base_url`: shared site identity and discovery fields.
 - `nostr_names`: JSON object of local Nostr names to lowercase hex public keys.
 - `nostr_relays`: JSON array of global Nostr relay URLs.
-- `live_ice_servers`: JSON array compatible with browser and app WebRTC ICE server config.
 - `live_default_source`: default live video source, `screen` or `camera`.
 - `live_default_height`: default live video height preset.
 - `live_default_fps`: default live frame-rate preset.

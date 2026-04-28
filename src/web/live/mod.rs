@@ -13,7 +13,6 @@ use std::sync::{
 };
 use tokio::sync::Mutex;
 use webrtc::ice_transport::ice_candidate::RTCIceCandidateInit;
-use webrtc::ice_transport::ice_server::RTCIceServer;
 use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
 
 #[derive(Clone)]
@@ -47,6 +46,7 @@ impl LiveHub {
             pc: None,
             tracks: None,
         });
+        tracing::info!("live broadcaster registered");
         state::send_viewer_count(&state);
         Ok(LiveRole::Broadcaster)
     }
@@ -64,6 +64,7 @@ impl LiveHub {
         if state.broadcasting {
             state::send(&tx, serde_json::json!({ "type": "stream_started" }));
         }
+        tracing::info!(viewer_id = id, "live viewer registered");
         state::send_viewer_count(&state);
         LiveRole::Viewer(id)
     }
@@ -76,14 +77,20 @@ impl LiveHub {
         }
     }
 
-    pub async fn publish_offer(&self, sdp: RTCSessionDescription, ice: Vec<RTCIceServer>) {
+    pub async fn publish_offer(&self, sdp: RTCSessionDescription) {
         let Some(tx) = self.broadcaster_tx().await else {
             return;
         };
         let tracks = rtc::RelayTracks::from_offer(&sdp);
-        let pc = match rtc::publisher(&self.api, ice, sdp, tx, tracks.clone()).await {
+        tracing::info!(
+            video = tracks.video.is_some(),
+            audio = tracks.audio.is_some(),
+            "live publisher offer parsed"
+        );
+        let pc = match rtc::publisher(&self.api, sdp, tx, tracks.clone()).await {
             Ok(pc) => pc,
             Err(error) => {
+                tracing::warn!(%error, "live publisher offer failed");
                 if let Some(tx) = self.broadcaster_tx().await {
                     state::send_error(&tx, &error);
                 }
@@ -92,21 +99,28 @@ impl LiveHub {
         };
         let old = self.install_publisher(pc, tracks).await;
         state::close_all(old).await;
+        tracing::info!("live publisher installed");
     }
 
-    pub async fn view_offer(&self, id: &str, sdp: RTCSessionDescription, ice: Vec<RTCIceServer>) {
+    pub async fn view_offer(&self, id: &str, sdp: RTCSessionDescription) {
         let Some((tx, tracks)) = self.viewer_parts(id).await else {
+            tracing::debug!(
+                viewer_id = id,
+                "live viewer offer ignored without active stream"
+            );
             return;
         };
-        let pc = match rtc::viewer(&self.api, ice, sdp, tx.clone(), tracks).await {
+        let pc = match rtc::viewer(&self.api, sdp, tx.clone(), tracks).await {
             Ok(pc) => pc,
             Err(error) => {
+                tracing::warn!(viewer_id = id, %error, "live viewer offer failed");
                 state::send_error(&tx, &error);
                 return;
             }
         };
         let old = self.install_viewer(id, pc).await;
         state::close_all(old).await;
+        tracing::info!(viewer_id = id, "live viewer installed");
     }
 
     pub async fn add_ice(&self, role: &LiveRole, candidate: RTCIceCandidateInit) {

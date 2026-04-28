@@ -22,15 +22,15 @@ Use this subtree for the `/live` public broadcast page, its in-app WebRTC relay 
 - [capture/quality-and-audio.md](capture/quality-and-audio.md): quality presets, microphone behavior, and runtime changes
 
 ### Signaling
-- [signaling/README.md](signaling/README.md): WebSocket signaling, messages, ICE servers, and failure behavior
+- [signaling/README.md](signaling/README.md): WebSocket signaling, messages, app relay ICE, and failure behavior
 - [signaling/messages.md](signaling/messages.md): message shapes, forwarding, and lifetime rules
-- [signaling/ice-servers.md](signaling/ice-servers.md): `Live/ICE_servers_JSON` format and supported URL schemes
-- [signaling/connectivity.md](signaling/connectivity.md): NAT traversal, TURN, and failure states
+- [signaling/ice-servers.md](signaling/ice-servers.md): app relay ICE environment and address rules
+- [signaling/connectivity.md](signaling/connectivity.md): NAT traversal and failure states
 
 ### Network
 - [network/README.md](network/README.md): local compose and production edge ownership
 - [network/topology.md](network/topology.md): local service map and production edge flow
-- [network/firewall-rules.md](network/firewall-rules.md): required HTTP, WebSocket, and TURN ports
+- [network/firewall-rules.md](network/firewall-rules.md): required HTTP, WebSocket, and app ICE ports
 
 ## Start Here
 

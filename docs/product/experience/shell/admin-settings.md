@@ -14,7 +14,7 @@
 - Every setting row uses the same visual weight and feels parallel to neighboring rows.
 - Ordinary scalar settings are not grouped into multi-field rows.
 - Row labels use slash-path names such as `Site_identity/Site_name`.
-- Home-section ordering, favorite ordering, Nostr JSON settings, live ICE servers, site icon controls, password change, and save actions are rows in the same list.
+- Home-section ordering, favorite ordering, Nostr JSON settings, live defaults, site icon controls, password change, and save actions are rows in the same list.
 - Large controls such as Markdown textarea, favorite ordering, and password change may span the full list width without becoming separate groups.
 
 ## Behavior

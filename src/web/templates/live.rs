@@ -105,7 +105,6 @@ fn live_surface(is_admin: bool, settings: &AppSettings) -> String {
 
 fn live_config(settings: &AppSettings) -> String {
     let config = json!({
-        "iceServers": settings.live_ice_servers,
         "source": settings.live_default_source,
         "height": settings.live_default_height,
         "fps": settings.live_default_fps,
@@ -113,8 +112,17 @@ fn live_config(settings: &AppSettings) -> String {
     });
     format!(
         r#"<script type="application/json" id="live-config">{}</script>"#,
-        html_escape(&config.to_string()),
+        script_json(&config.to_string()),
     )
+}
+
+fn script_json(value: &str) -> String {
+    value
+        .replace('<', "\\u003c")
+        .replace('>', "\\u003e")
+        .replace('&', "\\u0026")
+        .replace('\u{2028}', "\\u2028")
+        .replace('\u{2029}', "\\u2029")
 }
 
 fn source_options(current: &str) -> String {

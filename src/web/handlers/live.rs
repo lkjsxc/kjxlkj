@@ -61,11 +61,13 @@ async fn handle_socket(state: AppState, is_admin: bool, socket: WebSocket) {
         send_task.abort();
         return;
     };
+    tracing::info!(role = role_name(&role), "live websocket registered");
     while let Some(Ok(message)) = receiver.next().await {
         if let Message::Text(text) = message {
             forward_message(&state, &role, &text).await;
         }
     }
+    tracing::info!(role = role_name(&role), "live websocket closed");
     state.live_hub.unregister(&role).await;
     send_task.abort();
 }
@@ -108,40 +110,30 @@ async fn next_json(receiver: &mut futures_util::stream::SplitStream<WebSocket>) 
 
 async fn forward_message(state: &AppState, role: &LiveRole, text: &str) {
     let Ok(value) = serde_json::from_str::<Value>(text) else {
+        tracing::warn!(role = role_name(role), "invalid live websocket JSON");
         return;
     };
     match value.get("type").and_then(Value::as_str) {
         Some("publish_offer") if matches!(role, LiveRole::Broadcaster) => {
             if let Some(sdp) = session_description(&value) {
-                state
-                    .live_hub
-                    .publish_offer(sdp, ice_servers(state).await)
-                    .await;
+                tracing::info!(role = role_name(role), "live publish offer received");
+                state.live_hub.publish_offer(sdp).await;
             }
         }
         Some("view_offer") => {
             if let (LiveRole::Viewer(id), Some(sdp)) = (role, session_description(&value)) {
-                state
-                    .live_hub
-                    .view_offer(id, sdp, ice_servers(state).await)
-                    .await;
+                tracing::info!(viewer_id = id, "live view offer received");
+                state.live_hub.view_offer(id, sdp).await;
             }
         }
         Some("ice") => {
             if let Some(candidate) = ice_candidate(&value) {
+                tracing::debug!(role = role_name(role), "live ICE candidate received");
                 state.live_hub.add_ice(role, candidate).await;
             }
         }
-        _ => {}
+        _ => tracing::debug!(role = role_name(role), "ignored live websocket message"),
     }
-}
-
-async fn ice_servers(state: &AppState) -> Vec<webrtc::ice_transport::ice_server::RTCIceServer> {
-    db::get_settings(&state.pool)
-        .await
-        .ok()
-        .and_then(|settings| crate::web::live::rtc::ice_servers(&settings.live_ice_servers).ok())
-        .unwrap_or_default()
 }
 
 fn session_description(value: &Value) -> Option<RTCSessionDescription> {
@@ -158,4 +150,11 @@ fn send_error(tx: &mpsc::UnboundedSender<Message>, message: &str) {
             .to_string()
             .into(),
     ));
+}
+
+fn role_name(role: &LiveRole) -> &'static str {
+    match role {
+        LiveRole::Broadcaster => "broadcaster",
+        LiveRole::Viewer(_) => "viewer",
+    }
 }

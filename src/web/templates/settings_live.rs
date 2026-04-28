@@ -1,19 +1,9 @@
 //! Live settings rows
 
 use super::layout::html_escape;
-use super::settings_core::json_textarea_row;
 use super::settings_panel::settings_row;
 use crate::core::live_settings::{LIVE_FPS_VALUES, LIVE_HEIGHTS};
 use crate::web::db::AppSettings;
-
-pub(super) fn live_ice_servers_row(settings: &AppSettings) -> String {
-    json_textarea_row(
-        "Live/ICE_servers_JSON",
-        "live_ice_servers_json",
-        &settings.live_ice_servers,
-        "settings-live-ice-row",
-    )
-}
 
 pub(super) fn live_default_source_row(settings: &AppSettings) -> String {
     settings_row(
