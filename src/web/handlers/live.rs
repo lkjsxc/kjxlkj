@@ -15,6 +15,8 @@ use axum::response::Response;
 use futures_util::{SinkExt, StreamExt};
 use serde_json::{json, Value};
 use tokio::sync::mpsc;
+use webrtc::ice_transport::ice_candidate::RTCIceCandidateInit;
+use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
 
 pub async fn live_page(
     State(state): State<AppState>,
@@ -74,11 +76,8 @@ async fn register_role(
     tx: &mpsc::UnboundedSender<Message>,
     receiver: &mut futures_util::stream::SplitStream<WebSocket>,
 ) -> Option<LiveRole> {
-    let role = next_json(receiver)
-        .await?
-        .get("role")?
-        .as_str()?
-        .to_string();
+    let hello = next_json(receiver).await?;
+    let role = hello.get("role")?.as_str()?.to_string();
     match role.as_str() {
         "broadcaster" if is_admin => state
             .live_hub
@@ -111,10 +110,46 @@ async fn forward_message(state: &AppState, role: &LiveRole, text: &str) {
     let Ok(value) = serde_json::from_str::<Value>(text) else {
         return;
     };
-    match role {
-        LiveRole::Broadcaster => state.live_hub.forward_from_broadcaster(value).await,
-        LiveRole::Viewer(id) => state.live_hub.forward_from_viewer(id, value).await,
+    match value.get("type").and_then(Value::as_str) {
+        Some("publish_offer") if matches!(role, LiveRole::Broadcaster) => {
+            if let Some(sdp) = session_description(&value) {
+                state
+                    .live_hub
+                    .publish_offer(sdp, ice_servers(state).await)
+                    .await;
+            }
+        }
+        Some("view_offer") => {
+            if let (LiveRole::Viewer(id), Some(sdp)) = (role, session_description(&value)) {
+                state
+                    .live_hub
+                    .view_offer(id, sdp, ice_servers(state).await)
+                    .await;
+            }
+        }
+        Some("ice") => {
+            if let Some(candidate) = ice_candidate(&value) {
+                state.live_hub.add_ice(role, candidate).await;
+            }
+        }
+        _ => {}
     }
+}
+
+async fn ice_servers(state: &AppState) -> Vec<webrtc::ice_transport::ice_server::RTCIceServer> {
+    db::get_settings(&state.pool)
+        .await
+        .ok()
+        .and_then(|settings| crate::web::live::rtc::ice_servers(&settings.live_ice_servers).ok())
+        .unwrap_or_default()
+}
+
+fn session_description(value: &Value) -> Option<RTCSessionDescription> {
+    serde_json::from_value(value.get("sdp")?.clone()).ok()
+}
+
+fn ice_candidate(value: &Value) -> Option<RTCIceCandidateInit> {
+    serde_json::from_value(value.get("candidate")?.clone()).ok()
 }
 
 fn send_error(tx: &mpsc::UnboundedSender<Message>, message: &str) {

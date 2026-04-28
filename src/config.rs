@@ -19,6 +19,9 @@ pub enum ConfigError {
 pub struct Config {
     pub bind_host: String,
     pub bind_port: u16,
+    pub live_ice_bind_ip: String,
+    pub live_ice_udp_port: u16,
+    pub live_ice_public_ips: Vec<String>,
     pub database_url: String,
     pub seaweedfs_s3_endpoint: String,
     pub seaweedfs_s3_region: String,
@@ -36,6 +39,10 @@ impl Config {
         Ok(Self {
             bind_host: env::var("BIND_HOST").unwrap_or_else(|_| "0.0.0.0".to_string()),
             bind_port: parse_port("BIND_PORT", "8080")?,
+            live_ice_bind_ip: env::var("LIVE_ICE_BIND_IP")
+                .unwrap_or_else(|_| "0.0.0.0".to_string()),
+            live_ice_udp_port: parse_port("LIVE_ICE_UDP_PORT", "8189")?,
+            live_ice_public_ips: parse_csv("LIVE_ICE_PUBLIC_IPS"),
             database_url: required_var("DATABASE_URL")?,
             seaweedfs_s3_endpoint: required_var("SEAWEEDFS_S3_ENDPOINT")?,
             seaweedfs_s3_region: required_var("SEAWEEDFS_S3_REGION")?,
@@ -53,6 +60,10 @@ impl Config {
 
     pub fn bind_addr(&self) -> String {
         format!("{}:{}", self.bind_host, self.bind_port)
+    }
+
+    pub fn live_ice_addr(&self) -> String {
+        format!("{}:{}", self.live_ice_bind_ip, self.live_ice_udp_port)
     }
 }
 
@@ -79,4 +90,14 @@ fn parse_usize(name: &str, default: &str) -> Result<usize, ConfigError> {
         .unwrap_or_else(|_| default.to_string())
         .parse::<usize>()
         .map_err(|_| ConfigError::InvalidNumber(format!("{name} must be a positive integer")))
+}
+
+fn parse_csv(name: &str) -> Vec<String> {
+    env::var(name)
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string)
+        .collect()
 }

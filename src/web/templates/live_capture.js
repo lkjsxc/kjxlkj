@@ -29,7 +29,7 @@
         try {
             await syncVideoTrack();
             await syncAudioTrack();
-            await live.renegotiateAll();
+            await live.publishOffer();
             live.setStatus('Broadcasting live', live.statusText());
         } catch (error) {
             live.setStatus('Live change failed', error.message || 'Existing stream kept.');
@@ -47,11 +47,11 @@
             current.stop();
         }
         live.localStream.addTrack(replacement);
-        Object.values(live.peers).forEach(function (peer) {
-            var sender = peer.getSenders().find(function (item) { return item.track?.kind === 'video'; });
+        if (live.peer) {
+            var sender = live.peer.getSenders().find(function (item) { return item.track?.kind === 'video'; });
             if (sender) sender.replaceTrack(replacement);
-            else peer.addTrack(replacement, live.localStream);
-        });
+            else live.peer.addTrack(replacement, live.localStream);
+        }
     }
 
     async function applyVideoConstraints(track) {
@@ -71,11 +71,11 @@
             live.localStream.removeTrack(track);
             track.stop();
         });
-        Object.values(live.peers).forEach(function (peer) {
-            peer.getSenders()
+        if (live.peer) {
+            live.peer.getSenders()
                 .filter(function (sender) { return sender.track?.kind === 'audio'; })
                 .forEach(function (sender) { sender.replaceTrack(null); });
-        });
+        }
     }
 
     async function captureVideo() {
@@ -102,7 +102,7 @@
 
     function addPeerAudioTrack(track) {
         live.localStream.addTrack(track);
-        Object.values(live.peers).forEach(function (peer) { peer.addTrack(track, live.localStream); });
+        if (live.peer) live.peer.addTrack(track, live.localStream);
     }
 
     function stopBroadcast(closeSocket) {
@@ -116,8 +116,10 @@
     }
 
     function closePeers() {
-        Object.values(live.peers).forEach(function (peer) { peer.close(); });
-        live.peers = {};
+        if (live.peer) live.peer.close();
+        live.peer = null;
+        live.sentOffer = false;
+        live.localIce = [];
     }
 
     function stopTracks(stream) {

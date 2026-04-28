@@ -40,11 +40,14 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
     info!("Database connected and migrations applied");
 
     let bind_addr = config.bind_addr();
+    let live_hub = LiveHub::new(&config.live_ice_addr(), config.live_ice_public_ips.clone())
+        .await
+        .map_err(AppError::StorageError)?;
     let state = AppState {
         pool,
         storage,
         setup_code,
-        live_hub: LiveHub::default(),
+        live_hub,
         media_upload_max_bytes: config.media_upload_max_bytes,
         site_icon_upload_max_bytes: config.site_icon_upload_max_bytes,
     };

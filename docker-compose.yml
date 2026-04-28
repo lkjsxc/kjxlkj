@@ -49,9 +49,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${APP_PORT}:${BIND_PORT}"
+      - "${LIVE_ICE_UDP_PORT}:${LIVE_ICE_UDP_PORT}/udp"
     environment:
       BIND_HOST: ${BIND_HOST}
       BIND_PORT: ${BIND_PORT}
+      LIVE_ICE_BIND_IP: ${LIVE_ICE_BIND_IP}
+      LIVE_ICE_UDP_PORT: ${LIVE_ICE_UDP_PORT}
+      LIVE_ICE_PUBLIC_IPS: ${LIVE_ICE_PUBLIC_IPS}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       SEAWEEDFS_S3_ENDPOINT: ${SEAWEEDFS_S3_ENDPOINT}
       SEAWEEDFS_S3_REGION: ${SEAWEEDFS_S3_REGION}

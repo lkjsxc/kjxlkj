@@ -18,9 +18,10 @@
         mic: root.querySelector('[data-live-mic]'),
         viewerCount: root.querySelector('[data-live-viewer-count]'),
         ws: null,
+        peer: null,
+        sentOffer: false,
+        localIce: [],
         localStream: null,
-        peers: {},
-        pendingIce: {},
         activeVideo: {},
         closed: false,
     };

@@ -7,11 +7,18 @@
 - `/live/ws` must preserve `Upgrade` and `Connection` headers.
 - `/live/ws` should use long proxy read and send timeouts.
 
-## TURN
+## App ICE
 
-- `3478/udp` reaches edge coturn.
-- `3478/tcp` reaches edge coturn.
-- `49152-65535/udp` reaches edge coturn relay ports.
+- `${LIVE_ICE_UDP_PORT}/udp` reaches the `app` container.
+- The default live ICE UDP port is `8189`.
+- The port must be reachable from remote broadcaster and viewer browsers.
+- Docker, Incus, and edge NAT must preserve UDP traffic for this port.
+
+## Optional TURN
+
+- `3478/udp` may reach edge coturn.
+- `3478/tcp` may reach edge coturn.
+- `49152-65535/udp` may reach edge coturn relay ports.
 - TURN TLS on `5349/tcp` is optional, not required for the target setup.
 
 ## Incus Ownership

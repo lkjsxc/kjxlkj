@@ -1,12 +1,12 @@
 # Live Broadcast
 
-Use this subtree for the `/live` public broadcast page, its WebRTC signaling contract, and remote connectivity requirements.
+Use this subtree for the `/live` public broadcast page, its in-app WebRTC relay contract, and remote connectivity requirements.
 
 ## Read This Section When
 
 - You need the intended admin screen, camera, quality, and microphone workflow.
 - You need the public viewer behavior for the live page.
-- You need the WebSocket signaling and ICE-server contract.
+- You need the WebSocket signaling, ICE-server, and in-app relay contract.
 - You need the production network shape for remote viewers.
 
 ## Child Index

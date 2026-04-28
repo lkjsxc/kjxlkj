@@ -29,7 +29,7 @@
 - When a broadcast starts, viewers connect without page reload.
 - While media negotiation is pending, viewers see a connecting state.
 - When media arrives, viewers see a playing state.
-- When connection or ICE negotiation fails, viewers see a visible failure state.
+- When server negotiation, connection, or ICE negotiation fails, viewers see a visible failure state.
 - When a broadcast ends or disconnects, viewers return to the idle waiting state.
 - Viewers do not need an account to watch.
 - Viewers do not see viewer count.

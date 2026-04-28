@@ -4,8 +4,9 @@
 
 - `Live/ICE_servers_JSON` is the persisted settings source of truth.
 - The setting stores a JSON array compatible with browser `RTCIceServer[]`.
+- The app converts the same setting into server-side WebRTC ICE server configuration.
 - Fresh installs default to one public Google STUN server.
-- Production should replace the default with operator-owned STUN/TURN entries.
+- Production may replace the default with operator-owned STUN/TURN entries.
 - Admins may replace the array or clear it.
 - An empty array disables configured ICE servers.
 

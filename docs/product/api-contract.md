@@ -103,7 +103,7 @@
 - `media_webp_quality` is an integer from `1` through `100`.
 - `nostr_names` accepts 64-character hex public keys or `npub...` input and stores lowercase hex.
 - `nostr_relays` accepts `wss://` relay URLs.
-- `live_ice_servers` is a JSON array compatible with browser `RTCIceServer[]`.
+- `live_ice_servers` is a JSON array compatible with browser and app WebRTC ICE server config.
 - `live_default_source` is `screen` or `camera`.
 - `live_default_height` is one of `360`, `480`, `720`, `1080`, `1440`, or `2160`.
 - `live_default_fps` is one of `15`, `30`, `45`, `60`, or `120`.

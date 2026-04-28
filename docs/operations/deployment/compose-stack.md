@@ -11,7 +11,7 @@
 
 - `postgres`: PostgreSQL database for resources, snapshots, settings, analytics, and sessions
 - `seaweedfs`: SeaweedFS S3 gateway for media binaries
-- `app`: Rust runtime service
+- `app`: Rust runtime service with HTTP and live ICE UDP listeners
 - `verify`: quality-gate service from the verification overlay
 - `visual-verify`: browser verification service from the verification overlay
 
@@ -24,12 +24,14 @@
 
 ## Runtime Environment
 
-- `.env` owns PostgreSQL credentials, app host exposure, SeaweedFS S3 credentials, endpoint settings, and upload limits.
+- `.env` owns PostgreSQL credentials, app host exposure, live ICE exposure, SeaweedFS S3 credentials, endpoint settings, and upload limits.
 - Compose assembles `DATABASE_URL` and the SeaweedFS S3 environment for `app`.
 - Runtime Compose does not expose SeaweedFS ports on the host.
+- Runtime Compose exposes the configured live ICE UDP port on the host.
 - Runtime Compose does not terminate public TLS.
-- Runtime Compose does not own public nginx or TURN.
-- Production edge nginx and coturn are external infrastructure.
+- Runtime Compose does not own public nginx.
+- Production edge nginx is external infrastructure.
+- Production coturn is optional external infrastructure.
 - Persisted operator settings still own `site_name`, `site_description`, `public_base_url`, search defaults, and session timeout.
 
 ## Boot Behavior
@@ -39,7 +41,8 @@
 3. Connect to PostgreSQL.
 4. Run non-destructive PostgreSQL migrations.
 5. Connect to SeaweedFS S3 and ensure the target bucket exists.
-6. Start the HTTP server.
+6. Bind the live ICE UDP listener.
+7. Start the HTTP server.
 
 ## Migration Rule
 

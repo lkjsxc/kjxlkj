@@ -26,6 +26,8 @@ cp .env.example .env
 - Set SeaweedFS S3 credentials.
 - Set `MEDIA_UPLOAD_MAX_BYTES` when media uploads should allow more or less than `536870912` bytes.
 - Set `APP_PORT` if the host should expose something other than `8080`.
+- Set `LIVE_ICE_UDP_PORT` if the host should expose live WebRTC on something other than `8189/udp`.
+- Set `LIVE_ICE_PUBLIC_IPS` to the public address list when Docker or NAT hides the reachable address.
 - Keep `BIND_HOST=0.0.0.0` unless the host should only bind locally.
 
 ## Start the Runtime Stack
@@ -41,6 +43,7 @@ Expected:
 - `postgres` is healthy.
 - `seaweedfs` is healthy.
 - `app` is running.
+- The configured live ICE UDP port is published for remote `/live` media.
 
 ## Confirm Boot Health
 

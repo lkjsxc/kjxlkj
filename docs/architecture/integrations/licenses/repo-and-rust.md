@@ -42,6 +42,7 @@
 | `tracing-subscriber` | 0.3.23 | `MIT` |
 | `url` | 2.5.8 | `MIT OR Apache-2.0` |
 | `uuid` | 1.22.0 | `Apache-2.0 OR MIT` |
+| `webrtc` | 0.17.1 | `MIT OR Apache-2.0` |
 | `webp` | 0.3.1 | `MIT OR Apache-2.0` |
 
 ## Direct Test Crates

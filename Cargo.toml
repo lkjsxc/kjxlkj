@@ -42,6 +42,7 @@ sha2 = "0.10"
 image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp"] }
 resvg = "0.47"
 webp = "0.3"
+webrtc = "0.17.1"
 
 # Password hashing
 argon2 = "0.5"

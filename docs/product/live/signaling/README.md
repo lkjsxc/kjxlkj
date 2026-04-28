@@ -1,6 +1,6 @@
 # Live Signaling
 
-Contracts for WebSocket signaling, ICE servers, and live connectivity failure behavior.
+Contracts for `/live/ws`, browser-to-app WebRTC negotiation, ICE servers, and live connectivity failure behavior.
 
 ## Child Index
 
@@ -11,5 +11,6 @@ Contracts for WebSocket signaling, ICE servers, and live connectivity failure be
 ## Rules
 
 - `GET /live/ws` is the WebSocket signaling endpoint.
-- WebRTC carries media directly or through TURN relay.
-- The server relays signaling messages only.
+- WebRTC media terminates at the `app` process.
+- The `app` process fans broadcaster RTP out to connected viewers.
+- Browsers never negotiate WebRTC directly with each other.
