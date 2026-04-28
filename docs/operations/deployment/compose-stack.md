@@ -27,6 +27,9 @@
 - `.env` owns PostgreSQL credentials, app host exposure, SeaweedFS S3 credentials, endpoint settings, and upload limits.
 - Compose assembles `DATABASE_URL` and the SeaweedFS S3 environment for `app`.
 - Runtime Compose does not expose SeaweedFS ports on the host.
+- Runtime Compose does not terminate public TLS.
+- Runtime Compose does not own public nginx or TURN.
+- Production edge nginx and coturn are external infrastructure.
 - Persisted operator settings still own `site_name`, `site_description`, `public_base_url`, search defaults, and session timeout.
 
 ## Boot Behavior

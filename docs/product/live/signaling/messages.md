@@ -1,18 +1,10 @@
-# Live Signaling Contract
-
-## Transport
-
-- `GET /live/ws` is the WebSocket signaling endpoint.
-- WebRTC carries media directly between browser peers.
-- The server relays signaling messages only.
-- The server stores no live media bytes.
+# Live Signaling Messages
 
 ## Roles
 
 - `broadcaster`: signed-in admin that owns the active live capture stream.
 - `viewer`: any public client watching `/live`.
 - Only one `broadcaster` may be active at a time.
-- A second broadcaster receives an error and does not replace the active stream.
 
 ## Message Shapes
 
@@ -42,10 +34,3 @@
 - Viewer joins and disconnects update the admin-only viewer count.
 - Server restart clears all live state.
 - Browser refresh reconnects as a new viewer or broadcaster.
-
-## ICE Servers
-
-- `Live/ICE_servers_JSON` is the persisted settings source of truth.
-- The setting stores a JSON array compatible with browser `RTCIceServer[]`.
-- The default is one public STUN server.
-- Admins may replace the array or clear it.
