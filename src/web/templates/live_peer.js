@@ -30,7 +30,9 @@
     }
 
     function newPeer(viewerId) {
-        var peer = new RTCPeerConnection({ iceServers: live.config.iceServers || [] });
+        var rtcConfig = { iceServers: live.config.iceServers || [] };
+        if (hasTurnServer(rtcConfig.iceServers)) rtcConfig.iceTransportPolicy = 'relay';
+        var peer = new RTCPeerConnection(rtcConfig);
         peer._viewerId = viewerId;
         peer._pendingIce = live.pendingIce[viewerId] || [];
         delete live.pendingIce[viewerId];
@@ -54,6 +56,19 @@
             };
         }
         return peer;
+    }
+
+    function hasTurnServer(servers) {
+        return servers.some(function (server) {
+            return urls(server).some(function (url) {
+                return /^turns?:/i.test(url);
+            });
+        });
+    }
+
+    function urls(server) {
+        if (!server || !server.urls) return [];
+        return Array.isArray(server.urls) ? server.urls : [server.urls];
     }
 
     async function offerViewer(viewerId) {
