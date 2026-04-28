@@ -4,7 +4,9 @@
 
 - Browsers connect WebRTC only to the app-hosted live relay.
 - The app advertises host candidates on its configured static ICE UDP port.
-- The app may advertise configured NAT 1:1 addresses through `LIVE_ICE_PUBLIC_IPS`.
+- The app selects one advertised NAT 1:1 address per peer connection.
+- Public clients receive public relay candidates.
+- LAN clients receive LAN relay candidates when configured.
 - Browser clients do not receive STUN or TURN servers for the core path.
 
 ## Remote Viewers
@@ -12,9 +14,9 @@
 - Local-network viewing can work with the app host candidate alone.
 - Remote viewing requires the app ICE UDP port to be reachable from the public edge.
 - Remote production must proxy `/live/ws` with WebSocket upgrade headers.
+- Remote production must forward client IP headers from trusted edge proxies.
 - Remote production must serve `/live` over HTTPS for capture APIs.
-- Remote production should configure `LIVE_ICE_PUBLIC_IPS` with every app relay address
-  that clients should be allowed to try.
+- Remote production should configure public and LAN relay addresses separately.
 
 ## Failure Behavior
 

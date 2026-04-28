@@ -13,11 +13,15 @@
 
 ## Production Edge
 
-- Public DNS points `kjxlkj.lkjsxc.com` at `92.202.56.95`.
+- Public DNS points the site hostname at the production edge address.
 - Incus proxy devices for public ports belong on the `edge` container.
 - Edge nginx terminates SSL for `kjxlkj.lkjsxc.com`.
 - Edge nginx proxies HTTP and `/live/ws` to the Portainer-managed `kjxlkj` app stack.
+- Edge nginx forwards `X-Real-IP` and `X-Forwarded-For` to the app stack.
 - Edge forwards the configured live ICE UDP port to the `kjxlkj` app stack.
+- `LIVE_ICE_PUBLIC_IPS` advertises the public edge address for external clients.
+- `LIVE_ICE_LAN_IPS` advertises the LAN edge address for LAN clients.
+- `LIVE_TRUSTED_PROXY_IPS` contains only trusted edge proxy source addresses.
 - The Portainer stack continues to consume GitHub CI-built GHCR images.
 
 ## Flow

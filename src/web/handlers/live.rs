@@ -4,16 +4,17 @@ use crate::error::AppError;
 use crate::web::db;
 use crate::web::handlers::http;
 use crate::web::handlers::session;
-use crate::web::live::LiveRole;
+use crate::web::live::{client_addr, LiveRole};
 use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
 use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
-use axum::extract::State;
+use axum::extract::{ConnectInfo, State};
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 use futures_util::{SinkExt, StreamExt};
 use serde_json::{json, Value};
+use std::net::{IpAddr, SocketAddr};
 use tokio::sync::mpsc;
 use webrtc::ice_transport::ice_candidate::RTCIceCandidateInit;
 use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
@@ -40,14 +41,16 @@ pub async fn live_page(
 
 pub async fn live_ws(
     State(state): State<AppState>,
+    ConnectInfo(direct_addr): ConnectInfo<SocketAddr>,
     headers: HeaderMap,
     ws: WebSocketUpgrade,
 ) -> Result<Response, AppError> {
     let is_admin = session::check_session(&headers, &state.pool).await?;
-    Ok(ws.on_upgrade(move |socket| handle_socket(state, is_admin, socket)))
+    let client_ip = client_addr::client_ip(&headers, direct_addr, &state.live_trusted_proxy_ips);
+    Ok(ws.on_upgrade(move |socket| handle_socket(state, is_admin, client_ip, socket)))
 }
 
-async fn handle_socket(state: AppState, is_admin: bool, socket: WebSocket) {
+async fn handle_socket(state: AppState, is_admin: bool, client_ip: IpAddr, socket: WebSocket) {
     let (mut sender, mut receiver) = socket.split();
     let (tx, mut rx) = mpsc::unbounded_channel::<Message>();
     let send_task = tokio::spawn(async move {
@@ -57,7 +60,7 @@ async fn handle_socket(state: AppState, is_admin: bool, socket: WebSocket) {
             }
         }
     });
-    let Some(role) = register_role(&state, is_admin, &tx, &mut receiver).await else {
+    let Some(role) = register_role(&state, is_admin, client_ip, &tx, &mut receiver).await else {
         send_task.abort();
         return;
     };
@@ -75,6 +78,7 @@ async fn handle_socket(state: AppState, is_admin: bool, socket: WebSocket) {
 async fn register_role(
     state: &AppState,
     is_admin: bool,
+    client_ip: IpAddr,
     tx: &mpsc::UnboundedSender<Message>,
     receiver: &mut futures_util::stream::SplitStream<WebSocket>,
 ) -> Option<LiveRole> {
@@ -83,7 +87,7 @@ async fn register_role(
     match role.as_str() {
         "broadcaster" if is_admin => state
             .live_hub
-            .register_broadcaster(tx.clone())
+            .register_broadcaster(tx.clone(), Some(client_ip))
             .await
             .map_err(|message| send_error(tx, &message))
             .ok(),
@@ -91,7 +95,12 @@ async fn register_role(
             send_error(tx, "Admin session required.");
             None
         }
-        "viewer" => Some(state.live_hub.register_viewer(tx.clone()).await),
+        "viewer" => Some(
+            state
+                .live_hub
+                .register_viewer(tx.clone(), Some(client_ip))
+                .await,
+        ),
         _ => {
             send_error(tx, "Unknown live role.");
             None

@@ -1,12 +1,17 @@
 //! In-memory live WebRTC relay
 
+pub(crate) mod client_addr;
+mod ice_config;
+mod ice_runtime;
 mod model;
 pub(crate) mod rtc;
 mod state;
 mod tracks;
 
+use ice_runtime::LiveRtc;
 use model::{Broadcaster, LiveState, Viewer};
 pub use model::{LiveRole, LiveTx};
+use std::net::IpAddr;
 use std::sync::{
     atomic::{AtomicU64, Ordering},
     Arc,
@@ -17,15 +22,19 @@ use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
 
 #[derive(Clone)]
 pub struct LiveHub {
-    api: Arc<webrtc::api::API>,
+    rtc: Arc<LiveRtc>,
     inner: Arc<Mutex<LiveState>>,
     next_id: Arc<AtomicU64>,
 }
 
 impl LiveHub {
-    pub async fn new(addr: &str, public_ips: Vec<String>) -> Result<Self, String> {
+    pub async fn new(
+        addr: &str,
+        public_ips: Vec<String>,
+        lan_ips: Vec<String>,
+    ) -> Result<Self, String> {
         Ok(Self {
-            api: Arc::new(rtc::build_api(addr, public_ips).await?),
+            rtc: Arc::new(ice_runtime::build_rtc(addr, public_ips, lan_ips).await?),
             inner: Arc::new(Mutex::new(LiveState::default())),
             next_id: Arc::new(AtomicU64::new(1)),
         })
@@ -33,16 +42,23 @@ impl LiveHub {
 
     #[cfg(test)]
     pub async fn test() -> Self {
-        Self::new("127.0.0.1:0", Vec::new()).await.unwrap()
+        Self::new("127.0.0.1:0", Vec::new(), Vec::new())
+            .await
+            .unwrap()
     }
 
-    pub async fn register_broadcaster(&self, tx: LiveTx) -> Result<LiveRole, String> {
+    pub async fn register_broadcaster(
+        &self,
+        tx: LiveTx,
+        client_ip: Option<IpAddr>,
+    ) -> Result<LiveRole, String> {
         let mut state = self.inner.lock().await;
         if state.broadcaster.is_some() {
             return Err("A live broadcast is already active.".to_string());
         }
         state.broadcaster = Some(Broadcaster {
             tx,
+            nat_ip: self.rtc.client_nat_ip(client_ip),
             pc: None,
             tracks: None,
         });
@@ -51,13 +67,14 @@ impl LiveHub {
         Ok(LiveRole::Broadcaster)
     }
 
-    pub async fn register_viewer(&self, tx: LiveTx) -> LiveRole {
+    pub async fn register_viewer(&self, tx: LiveTx, client_ip: Option<IpAddr>) -> LiveRole {
         let id = self.next_id.fetch_add(1, Ordering::Relaxed).to_string();
         let mut state = self.inner.lock().await;
         state.viewers.insert(
             id.clone(),
             Viewer {
                 tx: tx.clone(),
+                nat_ip: self.rtc.client_nat_ip(client_ip),
                 pc: None,
             },
         );
@@ -78,7 +95,7 @@ impl LiveHub {
     }
 
     pub async fn publish_offer(&self, sdp: RTCSessionDescription) {
-        let Some(tx) = self.broadcaster_tx().await else {
+        let Some((tx, nat_ip)) = self.broadcaster_parts().await else {
             return;
         };
         let tracks = rtc::RelayTracks::from_offer(&sdp);
@@ -87,13 +104,19 @@ impl LiveHub {
             audio = tracks.audio.is_some(),
             "live publisher offer parsed"
         );
-        let pc = match rtc::publisher(&self.api, sdp, tx, tracks.clone()).await {
+        let api = match self.rtc.api(nat_ip.as_deref()) {
+            Ok(api) => api,
+            Err(error) => {
+                tracing::warn!(%error, "live publisher API setup failed");
+                state::send_error(&tx, &error);
+                return;
+            }
+        };
+        let pc = match rtc::publisher(&api, sdp, tx.clone(), tracks.clone()).await {
             Ok(pc) => pc,
             Err(error) => {
                 tracing::warn!(%error, "live publisher offer failed");
-                if let Some(tx) = self.broadcaster_tx().await {
-                    state::send_error(&tx, &error);
-                }
+                state::send_error(&tx, &error);
                 return;
             }
         };
@@ -103,14 +126,22 @@ impl LiveHub {
     }
 
     pub async fn view_offer(&self, id: &str, sdp: RTCSessionDescription) {
-        let Some((tx, tracks)) = self.viewer_parts(id).await else {
+        let Some((tx, tracks, nat_ip)) = self.viewer_parts(id).await else {
             tracing::debug!(
                 viewer_id = id,
                 "live viewer offer ignored without active stream"
             );
             return;
         };
-        let pc = match rtc::viewer(&self.api, sdp, tx.clone(), tracks).await {
+        let api = match self.rtc.api(nat_ip.as_deref()) {
+            Ok(api) => api,
+            Err(error) => {
+                tracing::warn!(viewer_id = id, %error, "live viewer API setup failed");
+                state::send_error(&tx, &error);
+                return;
+            }
+        };
+        let pc = match rtc::viewer(&api, sdp, tx.clone(), tracks).await {
             Ok(pc) => pc,
             Err(error) => {
                 tracing::warn!(viewer_id = id, %error, "live viewer offer failed");

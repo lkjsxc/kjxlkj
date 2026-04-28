@@ -25,13 +25,13 @@ impl LiveHub {
         }
     }
 
-    pub(super) async fn broadcaster_tx(&self) -> Option<LiveTx> {
+    pub(super) async fn broadcaster_parts(&self) -> Option<(LiveTx, Option<String>)> {
         self.inner
             .lock()
             .await
             .broadcaster
             .as_ref()
-            .map(|broadcaster| broadcaster.tx.clone())
+            .map(|broadcaster| (broadcaster.tx.clone(), broadcaster.nat_ip.clone()))
     }
 
     pub(super) async fn install_publisher(
@@ -53,11 +53,16 @@ impl LiveHub {
         old
     }
 
-    pub(super) async fn viewer_parts(&self, id: &str) -> Option<(LiveTx, RelayTracks)> {
+    pub(super) async fn viewer_parts(
+        &self,
+        id: &str,
+    ) -> Option<(LiveTx, RelayTracks, Option<String>)> {
         let state = self.inner.lock().await;
         let viewer = state.viewers.get(id)?;
         let tracks = state.broadcaster.as_ref()?.tracks.clone()?;
-        state.broadcasting.then(|| (viewer.tx.clone(), tracks))
+        state
+            .broadcasting
+            .then(|| (viewer.tx.clone(), tracks, viewer.nat_ip.clone()))
     }
 
     pub(super) async fn install_viewer(

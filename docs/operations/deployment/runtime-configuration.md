@@ -2,7 +2,7 @@
 
 ## Compose Environment
 
-- `.env` owns host port exposure, bind address, PostgreSQL credentials, SeaweedFS S3 settings, upload byte limits, and optional `SETUP_CODE`.
+- `.env` owns host port exposure, bind address, live relay addresses, PostgreSQL credentials, SeaweedFS S3 settings, upload byte limits, and optional `SETUP_CODE`.
 - Compose assembles `DATABASE_URL` and SeaweedFS S3 environment for the runtime container.
 - `docker-compose.yml` treats `.env` as authoritative rather than relying on inline fallback defaults.
 - CI must create `.env` from `.env.example` before running compose-backed verification.
@@ -27,3 +27,10 @@
 - Blank `public_base_url` is the safe pre-launch state.
 - Non-blank `public_base_url` enables canonical URLs, `robots.txt`, and `sitemap.xml`.
 - The runtime must not guess public URLs from request headers when `public_base_url` is blank.
+
+## Live Relay Address Rule
+
+- `LIVE_ICE_PUBLIC_IPS` contains externally reachable relay addresses.
+- `LIVE_ICE_LAN_IPS` contains LAN-reachable relay addresses.
+- `LIVE_TRUSTED_PROXY_IPS` contains proxy peers whose forwarded client IP headers are trusted.
+- Public URL discovery and live relay address selection are separate concerns.

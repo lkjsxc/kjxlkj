@@ -7,7 +7,12 @@
 - Deployment environment owns the app relay ICE socket.
 - `LIVE_ICE_BIND_IP` controls the UDP bind address inside the app runtime.
 - `LIVE_ICE_UDP_PORT` controls the app relay UDP port.
-- `LIVE_ICE_PUBLIC_IPS` controls NAT 1:1 addresses advertised by the app.
+- `LIVE_ICE_PUBLIC_IPS` controls public NAT 1:1 addresses advertised by the app.
+- `LIVE_ICE_LAN_IPS` controls LAN NAT 1:1 addresses advertised to LAN clients.
+- `LIVE_TRUSTED_PROXY_IPS` controls which proxy peers may supply forwarded client IP headers.
+- Each address list may contain one IPv4 and one IPv6 candidate.
+- A candidate may be a bare IP address or an `external/local` NAT mapping.
+- Extra same-family entries are ignored before WebRTC setup.
 - Admin settings do not provide browser ICE servers for the core live path.
 
 ## Browser Behavior
@@ -20,9 +25,10 @@
 
 ## Production Addresses
 
-- Public viewers need a public app relay address in `LIVE_ICE_PUBLIC_IPS`.
-- LAN viewers need a LAN app relay address in `LIVE_ICE_PUBLIC_IPS`.
-- Multiple addresses are comma-separated.
+- Public clients receive a public relay candidate matching their address family.
+- LAN clients receive a LAN relay candidate matching their address family when configured.
+- Forwarded client IP headers are ignored unless the direct peer is trusted.
+- Address lists are comma-separated.
 - Docker and Incus must forward `${LIVE_ICE_UDP_PORT}/udp` to the app.
 
 ## Production Example Value
@@ -30,5 +36,7 @@
 ```env
 LIVE_ICE_BIND_IP=0.0.0.0
 LIVE_ICE_UDP_PORT=8189
-LIVE_ICE_PUBLIC_IPS=92.202.56.95,192.168.1.2
+LIVE_ICE_PUBLIC_IPS=<public-edge-ip>
+LIVE_ICE_LAN_IPS=<lan-edge-ip>
+LIVE_TRUSTED_PROXY_IPS=<edge-nginx-container-ip>
 ```

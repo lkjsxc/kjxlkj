@@ -13,6 +13,7 @@ use crate::web::live::LiveHub;
 use axum::extract::DefaultBodyLimit;
 use axum::routing::{get, post, put};
 use axum::Router;
+use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tower_http::compression::CompressionLayer;
 use tracing::{info, warn};
@@ -23,6 +24,7 @@ pub struct AppState {
     pub storage: Storage,
     pub setup_code: setup::SetupCode,
     pub live_hub: LiveHub,
+    pub live_trusted_proxy_ips: Vec<std::net::IpAddr>,
     pub media_upload_max_bytes: usize,
     pub site_icon_upload_max_bytes: usize,
 }
@@ -40,14 +42,19 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
     info!("Database connected and migrations applied");
 
     let bind_addr = config.bind_addr();
-    let live_hub = LiveHub::new(&config.live_ice_addr(), config.live_ice_public_ips.clone())
-        .await
-        .map_err(AppError::StorageError)?;
+    let live_hub = LiveHub::new(
+        &config.live_ice_addr(),
+        config.live_ice_public_ips.clone(),
+        config.live_ice_lan_ips.clone(),
+    )
+    .await
+    .map_err(AppError::StorageError)?;
     let state = AppState {
         pool,
         storage,
         setup_code,
         live_hub,
+        live_trusted_proxy_ips: config.live_trusted_proxy_ips.clone(),
         media_upload_max_bytes: config.media_upload_max_bytes,
         site_icon_upload_max_bytes: config.site_icon_upload_max_bytes,
     };
@@ -57,9 +64,12 @@ pub async fn run_server(config: Config) -> Result<(), AppError> {
     let listener = TcpListener::bind(&bind_addr)
         .await
         .map_err(|e| AppError::StorageError(format!("Failed to bind: {e}")))?;
-    axum::serve(listener, router(state))
-        .await
-        .map_err(|e| AppError::StorageError(format!("Server error: {e}")))?;
+    axum::serve(
+        listener,
+        router(state).into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await
+    .map_err(|e| AppError::StorageError(format!("Server error: {e}")))?;
 
     Ok(())
 }

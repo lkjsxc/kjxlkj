@@ -22,11 +22,13 @@ pub struct LiveState {
 
 pub struct Broadcaster {
     pub tx: LiveTx,
+    pub nat_ip: Option<String>,
     pub pc: Option<Arc<RTCPeerConnection>>,
     pub tracks: Option<RelayTracks>,
 }
 
 pub struct Viewer {
     pub tx: LiveTx,
+    pub nat_ip: Option<String>,
     pub pc: Option<Arc<RTCPeerConnection>>,
 }

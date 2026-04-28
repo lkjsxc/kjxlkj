@@ -1,17 +1,8 @@
 use axum::extract::ws::Message;
 use serde_json::{json, Value};
 use std::sync::Arc;
-use tokio::net::UdpSocket;
 use tokio::sync::mpsc;
-use webrtc::api::interceptor_registry::register_default_interceptors;
-use webrtc::api::media_engine::MediaEngine;
-use webrtc::api::setting_engine::SettingEngine;
-use webrtc::api::APIBuilder;
-use webrtc::ice::udp_mux::{UDPMuxDefault, UDPMuxParams};
-use webrtc::ice::udp_network::UDPNetwork;
 use webrtc::ice_transport::ice_candidate::RTCIceCandidateInit;
-use webrtc::ice_transport::ice_candidate_type::RTCIceCandidateType;
-use webrtc::interceptor::registry::Registry;
 use webrtc::peer_connection::configuration::RTCConfiguration;
 use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
 use webrtc::peer_connection::RTCPeerConnection;
@@ -23,27 +14,6 @@ use webrtc::track::track_local::TrackLocal;
 
 use super::tracks::attach_track_reader;
 pub use super::tracks::RelayTracks;
-
-pub async fn build_api(addr: &str, public_ips: Vec<String>) -> Result<webrtc::api::API, String> {
-    let socket = UdpSocket::bind(addr)
-        .await
-        .map_err(|error| format!("failed to bind live ICE UDP socket: {error}"))?;
-    let mux = UDPMuxDefault::new(UDPMuxParams::new(socket));
-    let mut settings = SettingEngine::default();
-    settings.set_udp_network(UDPNetwork::Muxed(mux));
-    if !public_ips.is_empty() {
-        settings.set_nat_1to1_ips(public_ips, RTCIceCandidateType::Host);
-    }
-    let mut media = MediaEngine::default();
-    media.register_default_codecs().map_err(|e| e.to_string())?;
-    let registry =
-        register_default_interceptors(Registry::new(), &mut media).map_err(|e| e.to_string())?;
-    Ok(APIBuilder::new()
-        .with_setting_engine(settings)
-        .with_media_engine(media)
-        .with_interceptor_registry(registry)
-        .build())
-}
 
 pub async fn publisher(
     api: &webrtc::api::API,

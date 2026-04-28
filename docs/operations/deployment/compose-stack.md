@@ -28,6 +28,7 @@
 - Compose assembles `DATABASE_URL` and the SeaweedFS S3 environment for `app`.
 - Runtime Compose does not expose SeaweedFS ports on the host.
 - Runtime Compose exposes the configured live ICE UDP port on the host.
+- Runtime Compose passes public, LAN, and trusted-proxy live relay settings to `app`.
 - Runtime Compose does not terminate public TLS.
 - Runtime Compose does not own public nginx.
 - Production edge nginx is external infrastructure.

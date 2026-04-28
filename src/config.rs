@@ -1,6 +1,7 @@
 //! Application configuration
 
 use std::env;
+use std::net::IpAddr;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -13,6 +14,8 @@ pub enum ConfigError {
     InvalidBool(String),
     #[error("Invalid number: {0}")]
     InvalidNumber(String),
+    #[error("Invalid IP address: {0}")]
+    InvalidIp(String),
 }
 
 #[derive(Debug, Clone)]
@@ -22,6 +25,8 @@ pub struct Config {
     pub live_ice_bind_ip: String,
     pub live_ice_udp_port: u16,
     pub live_ice_public_ips: Vec<String>,
+    pub live_ice_lan_ips: Vec<String>,
+    pub live_trusted_proxy_ips: Vec<IpAddr>,
     pub database_url: String,
     pub seaweedfs_s3_endpoint: String,
     pub seaweedfs_s3_region: String,
@@ -43,6 +48,8 @@ impl Config {
                 .unwrap_or_else(|_| "0.0.0.0".to_string()),
             live_ice_udp_port: parse_port("LIVE_ICE_UDP_PORT", "8189")?,
             live_ice_public_ips: parse_csv("LIVE_ICE_PUBLIC_IPS"),
+            live_ice_lan_ips: parse_csv("LIVE_ICE_LAN_IPS"),
+            live_trusted_proxy_ips: parse_ip_csv("LIVE_TRUSTED_PROXY_IPS")?,
             database_url: required_var("DATABASE_URL")?,
             seaweedfs_s3_endpoint: required_var("SEAWEEDFS_S3_ENDPOINT")?,
             seaweedfs_s3_region: required_var("SEAWEEDFS_S3_REGION")?,
@@ -99,5 +106,16 @@ fn parse_csv(name: &str) -> Vec<String> {
         .map(str::trim)
         .filter(|value| !value.is_empty())
         .map(str::to_string)
+        .collect()
+}
+
+fn parse_ip_csv(name: &str) -> Result<Vec<IpAddr>, ConfigError> {
+    parse_csv(name)
+        .into_iter()
+        .map(|value| {
+            value
+                .parse()
+                .map_err(|_| ConfigError::InvalidIp(format!("{name} contains {value}")))
+        })
         .collect()
 }
