@@ -31,8 +31,20 @@
 
     function newPeer(viewerId) {
         var peer = new RTCPeerConnection({ iceServers: live.config.iceServers || [] });
+        peer._viewerId = viewerId;
+        peer._pendingIce = live.pendingIce[viewerId] || [];
+        delete live.pendingIce[viewerId];
         peer.onicecandidate = function (event) {
             if (event.candidate) send({ type: 'ice', viewer_id: viewerId, candidate: event.candidate });
+        };
+        peer.oniceconnectionstatechange = function () {
+            if (peer.iceConnectionState === 'failed') failPeer(viewerId, 'Live connection failed.');
+            if (peer.iceConnectionState === 'disconnected') {
+                if (live.role === 'viewer') live.setStatus('Reconnecting live', 'Media connection interrupted.');
+            }
+        };
+        peer.onconnectionstatechange = function () {
+            if (peer.connectionState === 'failed') failPeer(viewerId, 'Live connection failed.');
         };
         if (live.role === 'viewer') {
             peer.ontrack = function (event) {
@@ -67,19 +79,50 @@
     async function receiveOffer(message) {
         var peer = live.peers[message.viewer_id] || (live.peers[message.viewer_id] = newPeer(message.viewer_id));
         await peer.setRemoteDescription(message.sdp);
+        await addPendingIce(peer);
         await peer.setLocalDescription(await peer.createAnswer());
         send({ type: 'answer', viewer_id: message.viewer_id, sdp: peer.localDescription });
     }
 
     async function receiveAnswer(message) {
         if (live.peers[message.viewer_id]) {
-            await live.peers[message.viewer_id].setRemoteDescription(message.sdp);
+            var peer = live.peers[message.viewer_id];
+            await peer.setRemoteDescription(message.sdp);
+            await addPendingIce(peer);
         }
     }
 
     async function receiveIce(message) {
         var peer = live.peers[message.viewer_id];
-        if (peer && message.candidate) await peer.addIceCandidate(message.candidate);
+        if (!message.candidate) return;
+        if (!peer) return queueIce(message.viewer_id, message.candidate);
+        if (!peer.remoteDescription) return peer._pendingIce.push(message.candidate);
+        await addIce(peer, message.candidate);
+    }
+
+    function queueIce(viewerId, candidate) {
+        live.pendingIce[viewerId] = live.pendingIce[viewerId] || [];
+        live.pendingIce[viewerId].push(candidate);
+    }
+
+    async function addPendingIce(peer) {
+        var candidates = peer._pendingIce.splice(0);
+        for (var i = 0; i < candidates.length; i += 1) await addIce(peer, candidates[i]);
+    }
+
+    async function addIce(peer, candidate) {
+        try {
+            await peer.addIceCandidate(candidate);
+        } catch (_) {
+            failPeer(peer._viewerId, 'Live connection failed.');
+        }
+    }
+
+    function failPeer(viewerId, text) {
+        var peer = live.peers[viewerId];
+        if (peer) peer.close();
+        delete live.peers[viewerId];
+        if (live.role === 'viewer') resetViewer(text);
     }
 
     function startViewer() {

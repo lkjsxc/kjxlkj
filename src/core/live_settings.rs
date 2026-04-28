@@ -19,7 +19,22 @@ pub fn normalize_ice_servers_json(value: &str) -> Result<Value, String> {
             .get("urls")
             .ok_or_else(|| "Live ICE servers require urls".to_string())?;
         if !valid_urls(urls) {
-            return Err("Live ICE server urls must be non-empty strings".to_string());
+            return Err(
+                "Live ICE server urls must be non-empty strings with known schemes".to_string(),
+            );
+        }
+        if has_turn_url(urls) {
+            let has_user = object
+                .get("username")
+                .and_then(Value::as_str)
+                .is_some_and(|s| !s.is_empty());
+            let has_cred = object
+                .get("credential")
+                .and_then(Value::as_str)
+                .is_some_and(|s| !s.is_empty());
+            if has_user && !has_cred {
+                return Err("Live ICE TURN servers with username require credential".to_string());
+            }
         }
     }
     Ok(Value::Array(array.clone()))
@@ -52,8 +67,24 @@ pub fn validate_live_fps(value: i64) -> Result<i64, String> {
 
 fn valid_urls(value: &Value) -> bool {
     match value {
-        Value::String(url) => !url.trim().is_empty(),
+        Value::String(url) => valid_url_str(url),
         Value::Array(urls) => !urls.is_empty() && urls.iter().all(valid_urls),
+        _ => false,
+    }
+}
+
+fn valid_url_str(url: &str) -> bool {
+    let trimmed = url.trim();
+    if trimmed.is_empty() {
+        return false;
+    }
+    trimmed.starts_with("stun:") || trimmed.starts_with("turn:") || trimmed.starts_with("turns:")
+}
+
+fn has_turn_url(value: &Value) -> bool {
+    match value {
+        Value::String(url) => url.trim().starts_with("turn:") || url.trim().starts_with("turns:"),
+        Value::Array(urls) => urls.iter().any(has_turn_url),
         _ => false,
     }
 }

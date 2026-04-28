@@ -85,6 +85,28 @@ fn validate_rejects_invalid_live_defaults() {
 }
 
 #[test]
+fn validate_rejects_invalid_live_ice_servers() {
+    let mut form = sample_form();
+    form.live_ice_servers_json = r#"[{"urls":["https://turn.example.com"]}]"#.to_string();
+    assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
+
+    form = sample_form();
+    form.live_ice_servers_json =
+        r#"[{"urls":["turn:turn.example.com:3478"],"username":"user"}]"#.to_string();
+    assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
+}
+
+#[test]
+fn validate_accepts_turn_live_ice_servers() {
+    let mut form = sample_form();
+    form.live_ice_servers_json = r#"[
+        {"urls":["stun:turn.example.com:3478"]},
+        {"urls":["turn:turn.example.com:3478?transport=tcp"],"username":"user","credential":"secret"}
+    ]"#.to_string();
+    assert!(validate_settings_form(&form, &AppSettings::default()).is_ok());
+}
+
+#[test]
 fn validate_trims_google_maps_key() {
     let mut form = sample_form();
     form.google_maps_embed_api_key = "  maps-key  ".to_string();

@@ -20,6 +20,7 @@
         ws: null,
         localStream: null,
         peers: {},
+        pendingIce: {},
         activeVideo: {},
         closed: false,
     };

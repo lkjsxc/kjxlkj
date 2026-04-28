@@ -24,7 +24,7 @@ Use this subtree for user-visible canon: routes, APIs, resource behavior, and UI
 
 - Resource model: [resources/resource-kinds.md](resources/resource-kinds.md)
 - Route map: [surface/routes.md](surface/routes.md)
-- Live broadcast: [live/page.md](live/page.md)
+- Live broadcast: [live/page/README.md](live/page/README.md)
 - Listing behavior: [behavior/list-and-fetch.md](behavior/list-and-fetch.md)
 - UI map: [experience/README.md](experience/README.md)
 - Discovery map: [discoverability/README.md](discoverability/README.md)
