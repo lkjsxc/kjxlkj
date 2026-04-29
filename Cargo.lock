@@ -2405,6 +2405,7 @@ dependencies = [
  "pulldown-cmark",
  "regex",
  "resvg",
+ "rustls 0.23.37",
  "serde",
  "serde_json",
  "sha2",

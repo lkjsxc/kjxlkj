@@ -25,3 +25,14 @@
 - The app closes failed peer connections.
 - A viewer failure must not end the broadcaster stream for other viewers.
 - A broadcaster WebSocket failure ends the stream for all viewers.
+
+## Media Diagnostics
+
+- ICE `Connected` means the peer path is viable, not that media is flowing.
+- The app must install a process-level Rustls crypto provider before WebRTC receives RTP.
+- Server logs must show `live publisher track received` after the publish answer is applied.
+- Server logs must show `live publisher first RTP packet received` before any viewer can decode video.
+- Browser viewer logs must show inbound RTP stats with bytes or decoded frames.
+- Multiple publisher media sections require RID-tagged RTP so the relay can map tracks.
+- If viewer `ontrack` fires but inbound RTP stats stay zero, inspect publisher track reception first.
+- If publisher RTP arrives but viewer stats stay zero, inspect relay track writes and viewer answer SDP.

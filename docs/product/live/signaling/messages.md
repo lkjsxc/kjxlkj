@@ -21,19 +21,24 @@
 ## Negotiation Rules
 
 - The broadcaster sends one `publish_offer` to the server.
-- The server answers the broadcaster and receives media tracks.
+- The browser publisher gives each sent RTP encoding a stable RID.
+- The server registers `on_track` before applying the broadcaster offer.
+- The server answers the broadcaster from the transceivers created by that offer.
+- The server must not add synthetic publisher recvonly transceivers before reading the offer.
 - Each viewer sends one `view_offer` to the server after `stream_started`.
 - The server answers each viewer with recv media sections for active tracks.
 - ICE candidates are scoped to the connected WebSocket session.
 - Candidate messages never include a viewer id.
 - The active broadcaster receives `viewer_count` when it registers and whenever viewer count changes.
 - Viewer clients never receive `viewer_count`.
+- Broadcaster shutdown sends `stream_ended` before the server closes viewer peer connections.
 
 ## Media Relay Rules
 
 - The server accepts one VP8 video track from the broadcaster.
 - The server accepts one optional Opus audio track from the broadcaster.
 - The server forwards RTP packets from broadcaster tracks to viewer tracks.
+- Viewer `ontrack` only proves SDP negotiation; playback requires inbound RTP stats and advancing video time.
 - The server does not persist, inspect, transcode, or save media bytes.
 - Browser-to-browser RTP, SDP, and ICE exchange is forbidden.
 

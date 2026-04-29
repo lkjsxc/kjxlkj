@@ -54,9 +54,23 @@
         if (live.role === 'viewer') {
             peer.ontrack = function (event) {
                 console.info('kjxlkj live track received', event.track.kind);
-                live.video.srcObject = event.streams[0];
-                live.video.muted = false;
-                live.setStatus('Live now', 'Broadcast is playing.');
+                if (!live.remoteStream) live.remoteStream = new MediaStream();
+                if (!live.remoteStream.getTracks().some(function (track) { return track.id === event.track.id; })) {
+                    live.remoteStream.addTrack(event.track);
+                }
+                if (live.video.srcObject !== live.remoteStream) live.video.srcObject = live.remoteStream;
+                live.video.muted = true;
+                live.setStatus('Receiving live', 'Media track connected.');
+                live.video.play().then(function () {
+                    if (live.peer !== peer) return;
+                    live.setStatus('Live now', 'Broadcast is playing.');
+                }).catch(function (error) {
+                    if (live.peer !== peer) return;
+                    console.warn('kjxlkj live playback failed', error);
+                    if (live.video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+                        live.setStatus('Live unavailable', 'Video playback failed.');
+                    }
+                });
             };
         }
         return peer;
@@ -66,7 +80,11 @@
         if (!live.localStream || !live.ws || live.ws.readyState !== WebSocket.OPEN) return;
         replacePeer();
         live.localStream.getTracks().forEach(function (track) {
-            live.peer.addTrack(track, live.localStream);
+            live.peer.addTransceiver(track, {
+                direction: 'sendonly',
+                streams: [live.localStream],
+                sendEncodings: [{ rid: track.kind === 'video' ? 'v' : 'a' }]
+            });
         });
         preferPublisherCodecs();
         await negotiate('publish_offer');
@@ -98,6 +116,7 @@
         if (live.peer) {
             await live.peer.setRemoteDescription(message.sdp);
             console.info('kjxlkj live answer applied');
+            sampleMediaStats(live.role, live.peer);
         }
     }
 
@@ -113,6 +132,7 @@
     function replacePeer() {
         live.closePeers();
         live.peer = newPeer();
+        live.remoteStream = null;
         live.sentOffer = false;
         live.localIce = [];
     }
@@ -133,6 +153,29 @@
         if (preferred.length) transceiver.setCodecPreferences(preferred);
     }
 
+    function sampleMediaStats(role, peer) {
+        if (!peer.getStats) return;
+        var remaining = 8;
+        var timer = setInterval(async function () {
+            if (peer !== live.peer || remaining-- <= 0) return clearInterval(timer);
+            try {
+                var stats = await peer.getStats();
+                stats.forEach(function (report) {
+                    if (report.type !== 'inbound-rtp' && report.type !== 'outbound-rtp') return;
+                    if (report.isRemote) return;
+                    console.info('kjxlkj live media stats', role, report.type, report.kind || report.mediaType, {
+                        bytesReceived: report.bytesReceived || 0,
+                        bytesSent: report.bytesSent || 0,
+                        framesDecoded: report.framesDecoded || 0,
+                        framesEncoded: report.framesEncoded || 0
+                    });
+                });
+            } catch (error) {
+                console.debug('kjxlkj live stats failed', error);
+            }
+        }, 1000);
+    }
+
     function failPeer(text) {
         live.closePeers();
         if (live.role === 'viewer') resetViewer(text);
@@ -140,6 +183,7 @@
 
     function resetViewer(text) {
         live.closePeers();
+        live.remoteStream = null;
         live.video.srcObject = null;
         live.setStatus('Waiting for broadcast', text || 'No active stream.');
     }

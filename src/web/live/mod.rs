@@ -88,10 +88,10 @@ impl LiveHub {
 
     pub async fn unregister(&self, role: &LiveRole) {
         let (pcs, ended) = self.unregister_locked(role).await;
-        state::close_all(pcs).await;
         if ended {
             self.notify_stream_ended().await;
         }
+        state::close_all(pcs).await;
     }
 
     pub async fn publish_offer(&self, sdp: RTCSessionDescription) {

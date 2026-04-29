@@ -57,6 +57,7 @@ enum ComposeAction {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    init_crypto_provider();
     init_tracing();
 
     let cli = Cli::parse();
@@ -84,6 +85,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     Ok(())
+}
+
+fn init_crypto_provider() {
+    let _ = rustls::crypto::aws_lc_rs::default_provider().install_default();
 }
 
 fn init_tracing() {

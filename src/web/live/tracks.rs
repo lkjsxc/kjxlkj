@@ -53,12 +53,22 @@ pub fn attach_track_reader(pc: &Arc<RTCPeerConnection>, tracks: RelayTracks) {
                         .await;
                 }
             });
+            let mut packets = 0_u64;
             while let Ok((rtp, _)) = track.read_rtp().await {
+                packets += 1;
+                if packets == 1 {
+                    tracing::info!(
+                        kind = ?kind,
+                        ssrc = rtp.header.ssrc,
+                        payload_type = rtp.header.payload_type,
+                        "live publisher first RTP packet received"
+                    );
+                }
                 if let Err(error) = output.write_rtp(&rtp).await {
                     tracing::debug!(kind = ?kind, %error, "live RTP packet skipped");
                 }
             }
-            tracing::info!(kind = ?kind, "live publisher track ended");
+            tracing::info!(kind = ?kind, packets, "live publisher track ended");
         });
         Box::pin(async {})
     }));

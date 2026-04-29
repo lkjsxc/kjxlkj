@@ -6,9 +6,6 @@ use webrtc::ice_transport::ice_candidate::RTCIceCandidateInit;
 use webrtc::peer_connection::configuration::RTCConfiguration;
 use webrtc::peer_connection::sdp::session_description::RTCSessionDescription;
 use webrtc::peer_connection::RTCPeerConnection;
-use webrtc::rtp_transceiver::rtp_codec::RTPCodecType;
-use webrtc::rtp_transceiver::rtp_transceiver_direction::RTCRtpTransceiverDirection;
-use webrtc::rtp_transceiver::RTCRtpTransceiverInit;
 use webrtc::track::track_local::track_local_static_rtp::TrackLocalStaticRTP;
 use webrtc::track::track_local::TrackLocal;
 
@@ -23,10 +20,6 @@ pub async fn publisher(
 ) -> Result<Arc<RTCPeerConnection>, String> {
     let pc = Arc::new(new_peer(api).await?);
     attach_state_logs(&pc, "broadcaster");
-    add_recvonly(&pc, RTPCodecType::Video).await?;
-    if tracks.audio.is_some() {
-        add_recvonly(&pc, RTPCodecType::Audio).await?;
-    }
     attach_ice_sender(&pc, tx.clone());
     attach_track_reader(&pc, tracks);
     answer(&pc, offer, tx).await?;
@@ -62,19 +55,6 @@ async fn new_peer(api: &webrtc::api::API) -> Result<RTCPeerConnection, String> {
     api.new_peer_connection(RTCConfiguration::default())
         .await
         .map_err(|error| error.to_string())
-}
-
-async fn add_recvonly(pc: &RTCPeerConnection, kind: RTPCodecType) -> Result<(), String> {
-    pc.add_transceiver_from_kind(
-        kind,
-        Some(RTCRtpTransceiverInit {
-            direction: RTCRtpTransceiverDirection::Recvonly,
-            send_encodings: Vec::new(),
-        }),
-    )
-    .await
-    .map(|_| ())
-    .map_err(|error| error.to_string())
 }
 
 async fn add_track(
