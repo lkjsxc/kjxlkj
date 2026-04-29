@@ -36,7 +36,9 @@ pub fn attach_track_reader(pc: &Arc<RTCPeerConnection>, tracks: RelayTracks) {
         let tracks = tracks.clone();
         let pc_weak = pc_weak.clone();
         tokio::spawn(async move {
-            let Some(output) = tracks.for_kind(track.kind()) else {
+            let kind = track.kind();
+            tracing::info!(kind = ?kind, "live publisher track received");
+            let Some(output) = tracks.for_kind(kind) else {
                 return;
             };
             let media_ssrc = track.ssrc();
@@ -52,10 +54,11 @@ pub fn attach_track_reader(pc: &Arc<RTCPeerConnection>, tracks: RelayTracks) {
                 }
             });
             while let Ok((rtp, _)) = track.read_rtp().await {
-                if output.write_rtp(&rtp).await.is_err() {
-                    break;
+                if let Err(error) = output.write_rtp(&rtp).await {
+                    tracing::debug!(kind = ?kind, %error, "live RTP packet skipped");
                 }
             }
+            tracing::info!(kind = ?kind, "live publisher track ended");
         });
         Box::pin(async {})
     }));
