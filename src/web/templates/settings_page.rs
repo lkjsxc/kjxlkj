@@ -12,8 +12,8 @@ use super::settings_core::{
 use super::settings_home::{home_hero_section, home_sections_section};
 use super::settings_icon::site_icon_section;
 use super::settings_live::{
-    live_default_fps_row, live_default_microphone_row, live_default_quality_row,
-    live_default_source_row,
+    live_default_camera_facing_row, live_default_fps_row, live_default_microphone_row,
+    live_default_quality_row, live_default_source_row,
 };
 use super::settings_panel::settings_row;
 use super::settings_security::security_section;
@@ -53,6 +53,7 @@ pub fn settings_page(
         media_quality_row(settings),
         google_maps_key_row(settings),
         live_default_source_row(settings),
+        live_default_camera_facing_row(settings),
         live_default_quality_row(settings),
         live_default_fps_row(settings),
         live_default_microphone_row(settings),

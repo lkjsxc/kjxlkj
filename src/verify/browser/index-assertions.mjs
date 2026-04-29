@@ -71,6 +71,7 @@ export async function expectLivePage(page, isAdmin = false) {
     assert.equal(await video.getAttribute('controls'), '');
     if (isAdmin) {
         await page.locator('[data-live-source]').waitFor({ state: 'visible' });
+        await page.locator('[data-live-camera-facing]').waitFor({ state: 'visible' });
         await page.locator('[data-live-camera]').waitFor({ state: 'visible' });
         await page.locator('[data-live-height]').waitFor({ state: 'visible' });
         await page.locator('[data-live-fps]').waitFor({ state: 'visible' });
@@ -124,6 +125,7 @@ export async function expectSettingsPage(page) {
     await page.getByLabel('Search/Results_per_page').waitFor({ state: 'visible' });
     await page.getByLabel('Media/WebP_quality').waitFor({ state: 'visible' });
     await page.getByLabel('Live/Default_source').waitFor({ state: 'visible' });
+    await page.getByLabel('Live/Default_camera_facing').waitFor({ state: 'visible' });
     await page.getByLabel('Live/Default_quality').waitFor({ state: 'visible' });
     await page.getByLabel('Live/Default_fps').waitFor({ state: 'visible' });
     await page.getByLabel('Live/Microphone_default').waitFor({ state: 'visible' });
@@ -134,6 +136,7 @@ export async function expectSettingsPage(page) {
     await assertVisibleText(page, 'Search');
     await assertVisibleText(page, 'Media');
     await assertVisibleText(page, 'Live/Default_source');
+    await assertVisibleText(page, 'Live/Default_camera_facing');
     await assertVisibleText(page, 'Resources/New_resources_start_private');
     await assertVisibleText(page, 'Password');
     assert.equal(await page.locator('.settings-section .section-head').count(), 0);

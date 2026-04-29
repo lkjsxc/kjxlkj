@@ -135,7 +135,8 @@ CREATE TABLE IF NOT EXISTS app_settings (
     public_base_url TEXT NOT NULL DEFAULT '',
     nostr_names JSONB NOT NULL DEFAULT '{}'::JSONB,
     nostr_relays JSONB NOT NULL DEFAULT '[]'::JSONB,
-    live_default_source TEXT NOT NULL DEFAULT 'screen' CHECK (live_default_source IN ('screen', 'camera')),
+    live_default_source TEXT NOT NULL DEFAULT 'camera' CHECK (live_default_source IN ('screen', 'camera')),
+    live_default_camera_facing TEXT NOT NULL DEFAULT 'environment' CHECK (live_default_camera_facing IN ('environment', 'user')),
     live_default_height BIGINT NOT NULL DEFAULT 1080 CHECK (live_default_height IN (360, 480, 720, 1080, 1440, 2160)),
     live_default_fps BIGINT NOT NULL DEFAULT 60 CHECK (live_default_fps IN (15, 30, 45, 60, 120)),
     live_default_microphone_enabled BOOLEAN NOT NULL DEFAULT FALSE,
@@ -153,7 +154,17 @@ ALTER TABLE resource_snapshots ADD COLUMN IF NOT EXISTS owner_note_id CHAR(26) R
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS media_webp_quality BIGINT NOT NULL DEFAULT 82;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS nostr_names JSONB NOT NULL DEFAULT '{}'::JSONB;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS nostr_relays JSONB NOT NULL DEFAULT '[]'::JSONB;
-ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_source TEXT NOT NULL DEFAULT 'screen';
+ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_source TEXT NOT NULL DEFAULT 'camera';
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'app_settings' AND column_name = 'live_default_camera_facing'
+    ) THEN
+        ALTER TABLE app_settings ADD COLUMN live_default_camera_facing TEXT NOT NULL DEFAULT 'environment';
+        UPDATE app_settings SET live_default_source = 'camera' WHERE live_default_source = 'screen';
+    END IF;
+END $$;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_height BIGINT NOT NULL DEFAULT 1080;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_fps BIGINT NOT NULL DEFAULT 60;
 ALTER TABLE app_settings ADD COLUMN IF NOT EXISTS live_default_microphone_enabled BOOLEAN NOT NULL DEFAULT FALSE;

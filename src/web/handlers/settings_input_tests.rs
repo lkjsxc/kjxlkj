@@ -8,7 +8,8 @@ fn sample_form() -> SettingsForm {
         public_base_url: "https://example.com".to_string(),
         nostr_names_json: "{}".to_string(),
         nostr_relays_json: "[]".to_string(),
-        live_default_source: "screen".to_string(),
+        live_default_source: "camera".to_string(),
+        live_default_camera_facing: "environment".to_string(),
         live_default_height: 1080,
         live_default_fps: 60,
         live_default_microphone_enabled: None,
@@ -60,11 +61,13 @@ fn validate_rejects_blank_site_name() {
 fn validate_accepts_live_defaults() {
     let mut form = sample_form();
     form.live_default_source = "camera".to_string();
+    form.live_default_camera_facing = "user".to_string();
     form.live_default_height = 2160;
     form.live_default_fps = 120;
     form.live_default_microphone_enabled = Some("on".to_string());
     let settings = validate_settings_form(&form, &AppSettings::default()).unwrap();
     assert_eq!(settings.live_default_source, "camera");
+    assert_eq!(settings.live_default_camera_facing, "user");
     assert_eq!(settings.live_default_height, 2160);
     assert_eq!(settings.live_default_fps, 120);
     assert!(settings.live_default_microphone_enabled);
@@ -74,6 +77,9 @@ fn validate_accepts_live_defaults() {
 fn validate_rejects_invalid_live_defaults() {
     let mut form = sample_form();
     form.live_default_source = "window".to_string();
+    assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
+    form = sample_form();
+    form.live_default_camera_facing = "left".to_string();
     assert!(validate_settings_form(&form, &AppSettings::default()).is_err());
     form = sample_form();
     form.live_default_height = 999;

@@ -28,8 +28,10 @@ export async function installLiveMediaMocks(context) {
             return ctx.createMediaStreamDestination().stream.getAudioTracks()[0];
         }
         const media = navigator.mediaDevices || {};
+        window.__liveGetUserMediaCalls = [];
         media.getDisplayMedia = async () => new MediaStream([videoTrack()]);
         media.getUserMedia = async (constraints) => {
+            window.__liveGetUserMediaCalls.push(JSON.parse(JSON.stringify(constraints || {})));
             const tracks = [];
             if (constraints?.video) tracks.push(videoTrack());
             if (constraints?.audio) tracks.push(audioTrack());
@@ -43,11 +45,13 @@ export async function installLiveMediaMocks(context) {
 }
 
 export async function configureLiveDefaults(page) {
-    assert.equal(await page.getByLabel('Live/Default_source').inputValue(), 'screen');
+    assert.equal(await page.getByLabel('Live/Default_source').inputValue(), 'camera');
+    assert.equal(await page.getByLabel('Live/Default_camera_facing').inputValue(), 'environment');
     assert.equal(await page.getByLabel('Live/Default_quality').inputValue(), '1080');
     assert.equal(await page.getByLabel('Live/Default_fps').inputValue(), '60');
     assert.equal(await page.getByLabel('Live/Microphone_default').isChecked(), false);
     await page.getByLabel('Live/Default_source').selectOption('camera');
+    await page.getByLabel('Live/Default_camera_facing').selectOption('user');
     await page.getByLabel('Live/Default_quality').selectOption('1440');
     await page.getByLabel('Live/Default_fps').selectOption('45');
     await page.getByLabel('Live/Microphone_default').check();
@@ -55,11 +59,13 @@ export async function configureLiveDefaults(page) {
 
 export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
     assert.equal(await adminPage.locator('[data-live-source]').inputValue(), 'camera');
+    assert.equal(await adminPage.locator('[data-live-camera-facing]').inputValue(), 'user');
     assert.equal(await adminPage.locator('[data-live-height]').inputValue(), '1440');
     assert.equal(await adminPage.locator('[data-live-fps]').inputValue(), '45');
     assert.equal(await adminPage.locator('[data-live-mic]').isChecked(), true);
     await adminPage.getByRole('button', { name: 'Start broadcast', exact: true }).click();
     await adminPage.getByText('Broadcasting live', { exact: true }).waitFor({ state: 'visible' });
+    await assertCameraRequest(adminPage, 'user');
     await adminPage.getByText('0 viewers', { exact: true }).waitFor({ state: 'visible' });
 
     const guestContext = await newContext(browser, { width: 900, height: 700 });
@@ -68,6 +74,10 @@ export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
     await viewer.goto(`${appUrl}/live`, { waitUntil: 'networkidle' });
     await adminPage.getByText('1 viewer', { exact: true }).waitFor({ state: 'visible' });
     await assertViewerMediaPlaying(viewer);
+
+    await adminPage.locator('[data-live-camera-facing]').selectOption('environment');
+    await adminPage.getByText('Rear camera and microphone active.', { exact: true }).waitFor({ state: 'visible' });
+    await assertCameraRequest(adminPage, 'environment');
 
     await adminPage.locator('[data-live-source]').selectOption('screen');
     await adminPage.locator('[data-live-height]').selectOption('720');
@@ -81,6 +91,14 @@ export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
     ]);
     await assertViewerEnded(viewer);
     await guestContext.close();
+}
+
+async function assertCameraRequest(page, facing) {
+    await page.waitForFunction((expected) => {
+        return (window.__liveGetUserMediaCalls || []).some((call) => {
+            return call.video?.facingMode?.ideal === expected;
+        });
+    }, facing);
 }
 
 async function assertViewerMediaPlaying(page) {

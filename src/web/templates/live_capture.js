@@ -81,7 +81,7 @@
     async function captureVideo() {
         var next = live.selectedVideo();
         var stream = next.source === 'camera'
-            ? await navigator.mediaDevices.getUserMedia({ video: live.cameraConstraints(), audio: false })
+            ? await captureCamera()
             : await navigator.mediaDevices.getDisplayMedia({ video: live.videoConstraints(), audio: false });
         var track = stream.getVideoTracks()[0];
         live.activeVideo = next;
@@ -89,6 +89,18 @@
             if (live.localStream?.getVideoTracks()[0] === track) stopBroadcast(true);
         });
         return track;
+    }
+
+    async function captureCamera() {
+        try {
+            return await navigator.mediaDevices.getUserMedia({ video: live.cameraConstraints(), audio: false });
+        } catch (error) {
+            if (live.selectedVideo().device) throw error;
+            return navigator.mediaDevices.getUserMedia({
+                video: live.cameraFallbackConstraints(),
+                audio: false
+            });
+        }
     }
 
     async function captureAudio() {

@@ -27,6 +27,17 @@ pub(super) fn live_default_quality_row(settings: &AppSettings) -> String {
     )
 }
 
+pub(super) fn live_default_camera_facing_row(settings: &AppSettings) -> String {
+    settings_row(
+        "Live/Default_camera_facing",
+        &format!(
+            r#"<label class="form-group" data-settings-item><span>Live/Default_camera_facing</span><select name="live_default_camera_facing">{}</select></label>"#,
+            camera_facing_options(&settings.live_default_camera_facing),
+        ),
+        "settings-live-camera-facing-row",
+    )
+}
+
 pub(super) fn live_default_fps_row(settings: &AppSettings) -> String {
     settings_row(
         "Live/Default_fps",
@@ -56,6 +67,14 @@ pub(super) fn live_default_microphone_row(settings: &AppSettings) -> String {
 
 fn source_options(current: &str) -> String {
     [("screen", "Screen"), ("camera", "Camera")]
+        .into_iter()
+        .map(|(value, label)| option(value, label, value == current))
+        .collect::<Vec<_>>()
+        .join("")
+}
+
+fn camera_facing_options(current: &str) -> String {
+    [("environment", "Rear"), ("user", "Front")]
         .into_iter()
         .map(|(value, label)| option(value, label, value == current))
         .collect::<Vec<_>>()

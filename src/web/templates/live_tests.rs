@@ -15,6 +15,7 @@ fn site() -> SiteContext {
 fn admin_live_page_renders_capture_controls() {
     let html = live_page(&site(), true, "/login", &AppSettings::default());
     assert!(html.contains("data-live-source"));
+    assert!(html.contains("data-live-camera-facing"));
     assert!(html.contains("data-live-camera"));
     assert!(html.contains("data-live-height"));
     assert!(html.contains("value=\"1080\" selected"));
@@ -43,6 +44,7 @@ fn guest_live_page_uses_native_controls_without_admin_ui() {
 fn live_config_is_parseable_script_json_without_ice_servers() {
     let settings = AppSettings {
         live_default_source: "camera".to_string(),
+        live_default_camera_facing: "user".to_string(),
         ..AppSettings::default()
     };
     let html = live_page(&site(), false, "/login", &settings);
@@ -50,6 +52,7 @@ fn live_config_is_parseable_script_json_without_ice_servers() {
     assert!(!config.contains("&quot;"));
     let value: Value = serde_json::from_str(config).unwrap();
     assert_eq!(value["source"], "camera");
+    assert_eq!(value["cameraFacing"], "user");
     assert_eq!(value["height"], 1080);
     assert_eq!(value["fps"], 60);
     assert!(value.get("iceServers").is_none());

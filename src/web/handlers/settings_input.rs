@@ -1,6 +1,8 @@
 //! Settings form parsing and validation
 
-use crate::core::live_settings::{normalize_live_source, validate_live_fps, validate_live_height};
+use crate::core::live_settings::{
+    normalize_live_camera_facing, normalize_live_source, validate_live_fps, validate_live_height,
+};
 use crate::core::nostr::{normalize_names_json, normalize_relays_json};
 use crate::error::AppError;
 use crate::web::db::AppSettings;
@@ -16,6 +18,7 @@ pub struct SettingsForm {
     pub nostr_names_json: String,
     pub nostr_relays_json: String,
     pub live_default_source: String,
+    pub live_default_camera_facing: String,
     pub live_default_height: i64,
     pub live_default_fps: i64,
     pub live_default_microphone_enabled: Option<String>,
@@ -47,6 +50,8 @@ pub fn validate_settings_form(
     let nostr_relays = normalize_relays_json(&form.nostr_relays_json).map_err(|e| invalid(&e))?;
     let live_default_source =
         normalize_live_source(&form.live_default_source).map_err(|e| invalid(&e))?;
+    let live_default_camera_facing =
+        normalize_live_camera_facing(&form.live_default_camera_facing).map_err(|e| invalid(&e))?;
     let live_default_height =
         validate_live_height(form.live_default_height).map_err(|e| invalid(&e))?;
     let live_default_fps = validate_live_fps(form.live_default_fps).map_err(|e| invalid(&e))?;
@@ -83,6 +88,7 @@ pub fn validate_settings_form(
         nostr_names,
         nostr_relays,
         live_default_source,
+        live_default_camera_facing,
         live_default_height,
         live_default_fps,
         live_default_microphone_enabled: form.live_default_microphone_enabled.is_some(),

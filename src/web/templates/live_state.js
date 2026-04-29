@@ -11,6 +11,7 @@
         start: root.querySelector('[data-live-start]'),
         stop: root.querySelector('[data-live-stop]'),
         source: root.querySelector('[data-live-source]'),
+        cameraFacing: root.querySelector('[data-live-camera-facing]'),
         camera: root.querySelector('[data-live-camera]'),
         refresh: root.querySelector('[data-live-camera-refresh]'),
         height: root.querySelector('[data-live-height]'),
@@ -31,6 +32,7 @@
     live.sameVideo = sameVideo;
     live.videoConstraints = videoConstraints;
     live.cameraConstraints = cameraConstraints;
+    live.cameraFallbackConstraints = cameraFallbackConstraints;
     live.setRunning = setRunning;
     live.statusText = statusText;
     live.updateViewerCount = updateViewerCount;
@@ -53,12 +55,15 @@
     function selectedVideo() {
         return {
             source: live.source?.value || live.config.source || 'screen',
+            facing: live.cameraFacing?.value || live.config.cameraFacing || 'environment',
             device: live.camera?.value || '',
         };
     }
 
     function sameVideo(next) {
-        return live.activeVideo.source === next.source && live.activeVideo.device === next.device;
+        return live.activeVideo.source === next.source &&
+            live.activeVideo.facing === next.facing &&
+            live.activeVideo.device === next.device;
     }
 
     function videoConstraints() {
@@ -71,6 +76,13 @@
     function cameraConstraints() {
         var constraints = videoConstraints();
         if (live.camera?.value) constraints.deviceId = { exact: live.camera.value };
+        else constraints.facingMode = { ideal: live.cameraFacing?.value || live.config.cameraFacing || 'environment' };
+        return constraints;
+    }
+
+    function cameraFallbackConstraints() {
+        var constraints = videoConstraints();
+        if (live.camera?.value) constraints.deviceId = { exact: live.camera.value };
         return constraints;
     }
 
@@ -80,8 +92,14 @@
     }
 
     function statusText() {
-        var label = live.source?.value === 'camera' ? 'Camera' : 'Screen';
+        var label = live.source?.value === 'camera' ? cameraLabel() : 'Screen';
         return label + (live.mic?.checked ? ' and microphone' : '') + ' active.';
+    }
+
+    function cameraLabel() {
+        return (live.cameraFacing?.value || live.config.cameraFacing) === 'user'
+            ? 'Front camera'
+            : 'Rear camera';
     }
 
     function updateViewerCount(count) {
@@ -95,7 +113,7 @@
         var selected = live.camera.value;
         var devices = (await navigator.mediaDevices.enumerateDevices())
             .filter(function (item) { return item.kind === 'videoinput'; });
-        live.camera.innerHTML = devices.map(cameraOption).join('');
+        live.camera.innerHTML = '<option value="">Auto by facing</option>' + devices.map(cameraOption).join('');
         if (selected) live.camera.value = selected;
         syncSourceUi();
     }
@@ -106,8 +124,10 @@
     }
 
     function syncSourceUi() {
-        if (live.camera) live.camera.disabled = live.source?.value !== 'camera';
-        if (live.refresh) live.refresh.disabled = live.source?.value !== 'camera';
+        var disabled = live.source?.value !== 'camera';
+        if (live.cameraFacing) live.cameraFacing.disabled = disabled;
+        if (live.camera) live.camera.disabled = disabled;
+        if (live.refresh) live.refresh.disabled = disabled;
     }
 
     function escapeHtml(value) {

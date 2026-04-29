@@ -59,6 +59,7 @@ fn live_surface(is_admin: bool, settings: &AppSettings) -> String {
             r#"<div class="live-controls">
 <div class="live-control-grid">
 <label class="form-group"><span>Source</span><select data-live-source>{}</select></label>
+<label class="form-group"><span>Camera facing</span><select data-live-camera-facing>{}</select></label>
 <label class="form-group"><span>Camera</span><select data-live-camera></select></label>
 <button type="button" class="btn live-refresh" data-live-camera-refresh>Refresh cameras</button>
 <label class="form-group"><span>Quality</span><select data-live-height>{}</select></label>
@@ -72,6 +73,7 @@ fn live_surface(is_admin: bool, settings: &AppSettings) -> String {
 </div>
 </div>"#,
             source_options(&settings.live_default_source),
+            camera_facing_options(&settings.live_default_camera_facing),
             number_options(
                 &[360, 480, 720, 1080, 1440, 2160],
                 settings.live_default_height,
@@ -106,6 +108,7 @@ fn live_surface(is_admin: bool, settings: &AppSettings) -> String {
 fn live_config(settings: &AppSettings) -> String {
     let config = json!({
         "source": settings.live_default_source,
+        "cameraFacing": settings.live_default_camera_facing,
         "height": settings.live_default_height,
         "fps": settings.live_default_fps,
         "microphone": settings.live_default_microphone_enabled,
@@ -127,6 +130,14 @@ fn script_json(value: &str) -> String {
 
 fn source_options(current: &str) -> String {
     [("screen", "Screen"), ("camera", "Camera")]
+        .into_iter()
+        .map(|(value, label)| option(value, label, value == current))
+        .collect::<Vec<_>>()
+        .join("")
+}
+
+fn camera_facing_options(current: &str) -> String {
+    [("environment", "Rear"), ("user", "Front")]
         .into_iter()
         .map(|(value, label)| option(value, label, value == current))
         .collect::<Vec<_>>()

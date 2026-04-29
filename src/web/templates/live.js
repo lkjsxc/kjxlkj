@@ -8,7 +8,7 @@
             live.applyLiveChange();
         });
     }
-    [live.camera, live.height, live.fps, live.mic].forEach(function (control) {
+    [live.cameraFacing, live.camera, live.height, live.fps, live.mic].forEach(function (control) {
         if (control) control.addEventListener('change', live.applyLiveChange);
     });
     if (live.refresh) live.refresh.addEventListener('click', live.loadCameras);

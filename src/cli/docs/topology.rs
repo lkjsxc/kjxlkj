@@ -46,9 +46,34 @@ fn validate_dir_recursive(dir: &Path, errors: &mut Vec<String>) -> Result<(), st
         ));
     }
 
+    validate_child_index(dir, &entries, errors)?;
+
     for entry in &entries {
         if entry.path().is_dir() {
             validate_dir_recursive(&entry.path(), errors)?;
+        }
+    }
+    Ok(())
+}
+
+fn validate_child_index(
+    dir: &Path,
+    entries: &[fs::DirEntry],
+    errors: &mut Vec<String>,
+) -> Result<(), std::io::Error> {
+    let readme = dir.join("README.md");
+    if !readme.exists() {
+        return Ok(());
+    }
+    let content = fs::read_to_string(&readme)?;
+    for entry in entries {
+        let name = entry.file_name();
+        let name = name.to_string_lossy();
+        if name == "README.md" {
+            continue;
+        }
+        if !content.contains(name.as_ref()) {
+            errors.push(format!("{}: README.md must link {}", dir.display(), name));
         }
     }
     Ok(())
