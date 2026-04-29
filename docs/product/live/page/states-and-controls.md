@@ -18,7 +18,9 @@
 ## Admin Controls
 
 - Admins choose screen or camera as the single active video source.
-- Admins can choose camera device, target quality, target frame rate, and microphone state.
+- Admins can choose camera facing, exact camera device, target quality, target frame rate, and microphone state.
+- The default source is camera.
+- The default camera facing is rear.
 - Persisted defaults come from `/admin/settings`.
 - `/live` controls may override persisted defaults for the current page session.
 - Viewer count is visible only to the admin broadcaster.

@@ -11,7 +11,7 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Desktop homepage shell with mixed resource cards.
 - Desktop search page with `kind` filtering.
 - Desktop live page idle viewer state.
-- Desktop live page admin broadcast controls with source, device, quality, frame-rate, microphone, and viewer-count UI.
+- Desktop live page admin broadcast controls with source, camera-facing, device, quality, frame-rate, microphone, and viewer-count UI.
 - Desktop admin dashboard shell.
 - Desktop admin note page.
 - Desktop guest media page.
@@ -44,8 +44,8 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Settings page renders one flat list without boxed setting groups.
 - Settings page exposes slash-path row labels for ordinary settings.
 - Nostr discovery settings validate and persist from settings.
-- Live ICE server settings validate and persist from settings.
-- Live default source, quality, frame-rate, and microphone settings validate and persist from settings.
+- Live relay ICE environment is not exposed as a persisted browser setting.
+- Live default source, camera-facing, quality, frame-rate, and microphone settings validate and persist from settings.
 - Home-section ordering on settings uses drag-only controls.
 - Site icon upload and reset work from `/admin/settings` without leaving the page.
 - Guest media pages expose `Download original` while inline image display may still prefer WebP.

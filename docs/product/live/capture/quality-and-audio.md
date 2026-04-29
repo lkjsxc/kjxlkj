@@ -18,8 +18,8 @@
 
 ## Runtime Changes
 
-- Admins may change source, camera device, quality, frame rate, and microphone state while live.
-- Source or camera-device changes reacquire video and replace the publisher video sender track.
+- Admins may change source, camera facing, camera device, quality, frame rate, and microphone state while live.
+- Source, camera-facing, or camera-device changes reacquire video and replace the publisher video sender track.
 - Quality and frame-rate changes first try `MediaStreamTrack.applyConstraints`.
 - If constraints fail, the app may reacquire the selected video source and replace the sender track.
 - Microphone changes may add, stop, or disable audio tracks and then renegotiate the publisher.

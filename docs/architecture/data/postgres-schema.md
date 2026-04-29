@@ -73,7 +73,8 @@
 - `site_name`, `site_description`, `public_base_url`: shared site identity and discovery fields.
 - `nostr_names`: JSON object of local Nostr names to lowercase hex public keys.
 - `nostr_relays`: JSON array of global Nostr relay URLs.
-- `live_default_source`: default live video source, `screen` or `camera`.
+- `live_default_source`: default live video source, `screen` or `camera`, default `camera`.
+- `live_default_camera_facing`: default live camera facing, `environment` or `user`, default `environment`.
 - `live_default_height`: default live video height preset.
 - `live_default_fps`: default live frame-rate preset.
 - `live_default_microphone_enabled`: default live microphone state.
