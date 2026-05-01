@@ -8,8 +8,12 @@
 
 ## Repo License
 
-- The repo itself is licensed under `Apache-2.0`.
+- The repo itself is licensed under `PolyForm-Noncommercial-1.0.0`.
+- Unauthorized commercial use is not permitted.
+- Commercial use requires separate written permission from the licensor.
+- Noncommercial use, modification, and distribution are governed by the root `LICENSE`.
 - The repo does not vendor third-party editor bundles or browser automation libraries into the source tree.
+- Direct and transitive third-party dependencies keep their own upstream licenses.
 
 ## Direct Runtime Crates
 

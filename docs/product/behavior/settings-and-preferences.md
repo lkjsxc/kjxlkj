@@ -46,4 +46,5 @@
 - Changing `Live/Default_source`, `Live/Default_camera_facing`, `Live/Default_quality`, `Live/Default_fps`, or `Live/Microphone_default` affects newly opened live pages without restart.
 - Server-side live ICE bind and public-address environment changes require app restart.
 - Changing `Embeds/Google_Maps_API_key` affects later note rendering and admin previews without restart.
+- External URL metadata fetches use fixed runtime safety rules and do not require a settings toggle.
 - Existing `/live` pages may override live defaults for the current page session without persisting those overrides.

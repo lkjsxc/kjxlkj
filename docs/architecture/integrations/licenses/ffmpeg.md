@@ -3,7 +3,7 @@
 ## Why This File Exists
 
 - `Dockerfile` installs `ffmpeg` into the runtime image.
-- That means the built app image carries extra license obligations beyond the repo's own `Apache-2.0` code.
+- That means the built app image carries extra license obligations beyond the repo's own `PolyForm-Noncommercial-1.0.0` code.
 
 ## License Signals
 
@@ -13,7 +13,7 @@
 
 ## Repo Rules
 
-- Do not describe the shipped runtime image as Apache-only while it contains `ffmpeg`.
+- Do not describe the shipped runtime image as project-license-only while it contains `ffmpeg`.
 - If the runtime image is redistributed, review the exact FFmpeg package build and satisfy the applicable notice and source-offer obligations for that build.
 - Keep FFmpeg as an operational dependency only. The repo does not vendor FFmpeg source into the tree.
 - If FFmpeg is removed from the runtime image, update this file and the package inventory in the same batch.

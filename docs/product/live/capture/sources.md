@@ -27,7 +27,11 @@
 - The blank camera-device value means `Auto by facing`.
 - A non-blank camera-device value uses exact `deviceId` and overrides facing mode.
 - The camera picker may show browser-provided labels only after permission is granted.
-- Refreshing cameras updates the picker without persisting a device default.
+- The camera picker updates automatically without a manual refresh button.
+- Automatic refresh runs on admin page load, `devicechange`, camera source selection, successful camera capture, and page visibility return.
+- Automatic refresh preserves the selected camera when that `deviceId` is still available.
+- Automatic refresh resets the picker to `Auto by facing` when the selected `deviceId` disappears.
+- Browsers without `devicechange` support still refresh when the page becomes visible or receives focus.
 - Camera picker controls are disabled when source is `screen`.
 
 ## Browser Permissions

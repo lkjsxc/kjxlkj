@@ -2,8 +2,9 @@
 
 ## Rules
 
-- Static provider cards never require network fetches during rendering.
-- Static cards show provider, concise URL-derived title text, and canonical host/path.
+- Static provider cards never require network fetches during public rendering.
+- Cached metadata may upgrade static provider cards into bookmark cards.
+- Static fallback cards show provider, concise URL-derived title text, and canonical host/path.
 - Static cards open in a new browsing context with `rel="noopener noreferrer"`.
 - Static cards are the fallback for malformed rich-provider URLs.
 

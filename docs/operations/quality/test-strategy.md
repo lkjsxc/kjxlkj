@@ -4,7 +4,7 @@
 
 - ID, alias, and settings validation.
 - Title and summary derivation for notes and media.
-- Markdown sanitization, local embeds, and deterministic external URL embed rendering.
+- Markdown sanitization, local embeds, deterministic external URL fallbacks, and cached metadata embed rendering.
 - Object-storage key handling and snapshot retention rules.
 - Note-attachment upload preserves raw body text and falls back to append-at-end for stale selection ranges.
 - Note-attachment upload returns a server-confirmed UTF-8 cursor after insertion.

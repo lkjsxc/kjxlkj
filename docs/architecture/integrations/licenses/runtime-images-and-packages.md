@@ -21,6 +21,6 @@
 
 ## Rules
 
-- Container images remain multi-license aggregates and must not be described as Apache-only.
+- Container images remain multi-license aggregates and must not be described as project-license-only.
 - Direct image tag changes must update this inventory when the image family or bundled tooling changes.
 - System packages added through repo-owned Dockerfiles must be documented here in the same batch.

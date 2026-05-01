@@ -14,7 +14,7 @@
 - `visual-verify` uses authored browser scripts plus Node built-ins and the `playwright` package.
 - The repo does not add extra third-party npm packages beyond `playwright`.
 - Browser binaries are not vendored into the source tree. They are inherited from the pinned Playwright image.
-- Browser-license obligations therefore follow the image and the bundled browser vendors rather than the repo root `LICENSE`.
+- Browser-license obligations therefore follow the image and bundled browser vendors rather than the repo root `LICENSE`.
 
 ## Rules
 

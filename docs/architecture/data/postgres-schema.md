@@ -60,6 +60,27 @@
 - `view_count`: counted resource-page views for that UTC day.
 - Primary key: `(resource_id, view_date)`.
 
+## `external_embed_cache`
+
+- `url_hash`: SHA-256 hex primary key for the normalized external URL.
+- `url`: normalized external URL.
+- `canonical_url`: nullable upstream canonical URL.
+- `provider`: normalized provider label.
+- `kind`: `bookmark`, `image`, `video`, `audio`, `frame`, or `social`.
+- `title`: nullable bookmark title.
+- `description`: nullable bookmark description.
+- `site_name`: nullable upstream site name.
+- `author_name`: nullable upstream author name.
+- `thumbnail_url`: nullable direct remote thumbnail URL.
+- `thumbnail_width`: nullable thumbnail width.
+- `thumbnail_height`: nullable thumbnail height.
+- `fetched_at`: nullable successful fetch timestamp.
+- `expires_at`: nullable refresh timestamp.
+- `last_error`: nullable latest failure summary.
+- `error_at`: nullable latest failure timestamp.
+- `created_at`: immutable UTC timestamp.
+- `updated_at`: mutable UTC timestamp.
+
 ## `app_settings`
 
 - `id`: singleton key fixed to `1`.

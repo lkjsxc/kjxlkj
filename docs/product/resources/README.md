@@ -15,6 +15,7 @@ Use this subtree for the shared model that makes notes and media behave like pee
 - [file-media.md](file-media.md): file-family media rules, especially `HEIC` and `HEIF`
 - [embed-rules.md](embed-rules.md): inline image and video rules for Markdown and saved snapshots
 - [external-url-embeds.md](external-url-embeds.md): deterministic external URL embed rules
+- [embed-unfurling.md](embed-unfurling.md): cached metadata fetch and bookmark-card rules
 - [providers/README.md](providers/README.md): curated provider rules for rich external embeds
 - [media-derivatives.md](media-derivatives.md): original media, WebP variants, and video poster rules
 - [local-url-cards.md](local-url-cards.md): local media URL card rendering rules
