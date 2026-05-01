@@ -114,6 +114,30 @@ CREATE TABLE IF NOT EXISTS resource_daily_views (
 CREATE INDEX IF NOT EXISTS idx_resource_daily_views_rank
     ON resource_daily_views(view_date, view_count DESC, resource_id);
 
+CREATE TABLE IF NOT EXISTS external_embed_cache (
+    url_hash CHAR(64) PRIMARY KEY,
+    url TEXT NOT NULL UNIQUE,
+    canonical_url TEXT,
+    provider TEXT NOT NULL,
+    kind TEXT NOT NULL CHECK (kind IN ('bookmark', 'image', 'video', 'audio', 'frame', 'social')),
+    title TEXT,
+    description TEXT,
+    site_name TEXT,
+    author_name TEXT,
+    thumbnail_url TEXT,
+    thumbnail_width INTEGER,
+    thumbnail_height INTEGER,
+    fetched_at TIMESTAMPTZ,
+    expires_at TIMESTAMPTZ,
+    last_error TEXT,
+    error_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_external_embed_cache_url ON external_embed_cache(url);
+CREATE INDEX IF NOT EXISTS idx_external_embed_cache_expires ON external_embed_cache(expires_at);
+
 CREATE TABLE IF NOT EXISTS app_settings (
     id SMALLINT PRIMARY KEY,
     home_recent_limit BIGINT NOT NULL DEFAULT 5,

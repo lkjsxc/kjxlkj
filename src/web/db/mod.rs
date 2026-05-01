@@ -3,6 +3,7 @@
 mod analytics;
 mod auth;
 mod discovery;
+mod external_embeds;
 mod favorites;
 mod list_kind;
 mod list_scope;
@@ -36,6 +37,10 @@ pub use auth::{
     create_admin, create_session, delete_session, is_setup, validate_session, verify_credentials,
 };
 pub use discovery::list_public_sitemap_resources;
+pub use external_embeds::{
+    list_external_embeds, stale_external_embed_urls, upsert_external_embed,
+    upsert_external_embed_error,
+};
 pub use favorites::{list_all_favorite_resources, reorder_favorites};
 pub use list_kind::ListKind;
 pub use list_scope::ListScope;
@@ -46,8 +51,8 @@ pub use listing::{
 pub use media::{create_media, MediaBlob};
 pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
 pub use models::{
-    ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot, ResourceStats,
-    ResourceViewStats, SitemapResource,
+    ExternalEmbed, ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot,
+    ResourceStats, ResourceViewStats, SitemapResource,
 };
 pub use navigation::{get_next_resource, get_previous_resource};
 pub use password_reset::{

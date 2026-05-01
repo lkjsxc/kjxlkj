@@ -4,6 +4,7 @@ use crate::core::looks_like_id;
 use crate::error::AppError;
 use crate::web::db::{self, DbPool, Resource};
 use crate::web::markdown_cards;
+use crate::web::markdown_external::external_embed_cache;
 use crate::web::view;
 use std::collections::HashMap;
 
@@ -15,11 +16,14 @@ pub async fn render_markdown_page(
     public_base_url: Option<&str>,
     google_maps_embed_api_key: Option<&str>,
 ) -> Result<String, AppError> {
+    let external_urls = crate::core::external_embed_urls(body, public_base_url);
+    let external_cache = external_embed_cache(pool, &external_urls).await?;
     let html = crate::core::render_markdown_with_options(
         body,
         crate::core::MarkdownOptions {
             public_base_url,
             google_maps_embed_api_key,
+            external_embed_cache: Some(&external_cache),
         },
     );
     let html = decorate_local_images(pool, &html, current_resource_id, is_admin).await?;

@@ -31,6 +31,12 @@ pub async fn render_markdown_preview(
     session::require_session(&headers, &state.pool).await?;
     let settings = db::get_settings(&state.pool).await?;
     let site = SiteContext::from_settings(&settings);
+    crate::web::embed_unfurl::refresh_body_embeds(
+        &state.pool,
+        &body.body,
+        site.public_base_url.as_deref(),
+    )
+    .await?;
     Ok(http::json_status(
         StatusCode::OK,
         PreviewOutput {

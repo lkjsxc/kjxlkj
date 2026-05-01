@@ -50,6 +50,7 @@ pub async fn create(
         ),
     )
     .await?;
+    refresh_resource_embeds(pool, &resource.body).await?;
     Ok(http::json_status(
         StatusCode::CREATED,
         ResourcePayload::from_resource(resource),
@@ -75,10 +76,13 @@ pub async fn update(
     )
     .await?
     {
-        Some(resource) => Ok(http::json_status(
-            StatusCode::OK,
-            ResourcePayload::from_resource(resource),
-        )),
+        Some(resource) => {
+            refresh_resource_embeds(pool, &resource.body).await?;
+            Ok(http::json_status(
+                StatusCode::OK,
+                ResourcePayload::from_resource(resource),
+            ))
+        }
         None => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }
 }
@@ -104,14 +108,23 @@ pub async fn api_update(
     )
     .await?
     {
-        Some(resource) => Ok(http::json_status(
-            StatusCode::OK,
-            ResourcePayload::from_resource(resource),
-        )),
+        Some(resource) => {
+            refresh_resource_embeds(pool, &resource.body).await?;
+            Ok(http::json_status(
+                StatusCode::OK,
+                ResourcePayload::from_resource(resource),
+            ))
+        }
         None => Err(AppError::NotFound(format!(
             "resource '{reference}' not found"
         ))),
     }
+}
+
+async fn refresh_resource_embeds(pool: &db::DbPool, body: &str) -> Result<(), AppError> {
+    let settings = db::get_settings(pool).await?;
+    let site = crate::web::site::SiteContext::from_settings(&settings);
+    crate::web::embed_unfurl::refresh_body_embeds(pool, body, site.public_base_url.as_deref()).await
 }
 
 pub async fn remove(

@@ -3,14 +3,17 @@ import { execFileSync } from 'node:child_process';
 export function resetDatabase(databaseUrl) {
     runSql(
         databaseUrl,
-        "TRUNCATE app_settings, sessions, resource_daily_views, resource_snapshots, resources, admin_user RESTART IDENTITY CASCADE; " +
+        "TRUNCATE external_embed_cache, app_settings, sessions, resource_daily_views, resource_snapshots, resources, admin_user RESTART IDENTITY CASCADE; " +
             "INSERT INTO app_settings " +
             "(id, home_recent_limit, home_favorite_limit, home_popular_limit, home_intro_markdown, " +
             "home_recent_visible, home_favorite_visible, home_popular_visible, " +
             "home_recent_position, home_favorite_position, home_popular_position, " +
             "search_results_per_page, session_timeout_minutes, default_new_resource_is_private, site_name, site_description, public_base_url) " +
             "VALUES (1, 5, 5, 5, $$# Home\n\nWelcome to **kjxlkj**. Use Home as the landing space for search, popular resources, and curated favorites.$$," +
-            " TRUE, TRUE, TRUE, 1, 2, 3, 20, 1440, FALSE, 'kjxlkj', 'Markdown-first resource system for LLM-operated workflows.', '')"
+            " TRUE, TRUE, TRUE, 1, 2, 3, 20, 1440, FALSE, 'kjxlkj', 'Markdown-first resource system for LLM-operated workflows.', ''); " +
+            "INSERT INTO external_embed_cache (url_hash, url, provider, kind, title, description, site_name, thumbnail_url, fetched_at, expires_at) " +
+            "VALUES (encode(digest('https://github.com/lkjsxc/kjxlkj/pull/12', 'sha256'), 'hex'), 'https://github.com/lkjsxc/kjxlkj/pull/12', " +
+            "'GitHub', 'bookmark', 'Cached pull request', 'Seeded bookmark metadata for visual verification.', 'GitHub', 'https://example.com/card.png', NOW(), NOW() + INTERVAL '14 days')"
     );
 }
 

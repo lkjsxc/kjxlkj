@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 export async function assertGuestEmbeds(page) {
     await page.locator('.prose .local-resource-card[data-card-title="Atlas Entry"]').waitFor({ state: 'visible' });
     await page.locator('.prose .local-resource-card[data-card-title="Orbital Archive"]').waitFor({ state: 'visible' });
+    await page.locator('.prose .external-embed-bookmark:has-text("Cached pull request")').waitFor({ state: 'visible' });
     await page.locator('.prose iframe[src*="open.spotify.com/embed/track/abc123"]').waitFor({ state: 'visible' });
     await page.locator('.prose iframe[src*="tiktok.com/player/v1/1234567890"]').waitFor({ state: 'visible' });
     await page.locator('.prose .external-embed-social[data-embed-provider="x"][data-embed-hydrated="true"]').waitFor({ state: 'visible' });

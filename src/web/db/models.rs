@@ -145,3 +145,14 @@ pub struct SitemapResource {
     pub alias: Option<String>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Debug, Clone)]
+pub struct ExternalEmbed {
+    pub url: String,
+    pub provider: String,
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub site_name: Option<String>,
+    pub author_name: Option<String>,
+    pub thumbnail_url: Option<String>,
+}

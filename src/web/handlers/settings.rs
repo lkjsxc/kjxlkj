@@ -53,7 +53,15 @@ pub async fn settings_submit(
     session::require_session(&headers, &state.pool).await?;
     let pool = &state.pool;
     let current = db::get_settings(pool).await?;
-    db::update_settings(pool, &validate_settings_form(&form, &current)?).await?;
+    let next = validate_settings_form(&form, &current)?;
+    db::update_settings(pool, &next).await?;
+    let site = SiteContext::from_settings(&next);
+    crate::web::embed_unfurl::refresh_body_embeds(
+        pool,
+        &next.home_intro_markdown,
+        site.public_base_url.as_deref(),
+    )
+    .await?;
     Ok(http::see_other("/admin/settings"))
 }
 

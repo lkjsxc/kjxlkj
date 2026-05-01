@@ -35,6 +35,7 @@
 | `once_cell` | 1.21.4 | `MIT OR Apache-2.0` |
 | `pulldown-cmark` | 0.13.3 | `MIT` |
 | `regex` | 1.12.3 | `MIT OR Apache-2.0` |
+| `reqwest` | 0.12.28 | `MIT OR Apache-2.0` |
 | `serde` | 1.0.228 | `MIT OR Apache-2.0` |
 | `serde_json` | 1.0.149 | `MIT OR Apache-2.0` |
 | `sha2` | 0.10.9 | `MIT OR Apache-2.0` |

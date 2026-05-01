@@ -11,7 +11,8 @@ pub fn render_url_embed(value: &str, options: MarkdownOptions<'_>) -> Option<Str
     if value.starts_with('/') && !value.starts_with("//") {
         return local_url_card(value, value);
     }
-    let url = Url::parse(value).ok()?;
+    let mut url = Url::parse(value).ok()?;
+    url.set_fragment(None);
     if !matches!(url.scheme(), "http" | "https") {
         return None;
     }
@@ -19,6 +20,12 @@ pub fn render_url_embed(value: &str, options: MarkdownOptions<'_>) -> Option<Str
     direct::render(&url, &host)
         .or_else(|| frames::render(&url, &host, options))
         .or_else(|| social::render(&url, &host))
+        .or_else(|| {
+            options
+                .external_embed_cache?
+                .get(url.as_str())
+                .map(|metadata| static_cards::render_metadata(&url, &host, metadata))
+        })
         .or_else(|| Some(static_cards::render(&url, &host)))
 }
 

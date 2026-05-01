@@ -1,5 +1,6 @@
 use super::{attr, segment, segments};
 use crate::core::markdown_links::html_text;
+use crate::core::EmbedMetadata;
 use url::Url;
 
 pub(super) fn render(url: &Url, host: &str) -> String {
@@ -16,6 +17,34 @@ pub(super) fn render(url: &Url, host: &str) -> String {
         _ => ("External", host.to_string()),
     };
     static_card(provider, url.as_str(), &title)
+}
+
+pub(super) fn render_metadata(url: &Url, host: &str, metadata: &EmbedMetadata) -> String {
+    let provider = first_text(metadata.site_name.as_ref(), Some(&metadata.provider), host);
+    let title = first_text(metadata.title.as_ref(), None, host);
+    let description = metadata.description.as_deref().unwrap_or(url.as_str());
+    let thumb = metadata
+        .thumbnail_url
+        .as_deref()
+        .map_or_else(String::new, |src| {
+            format!(r#"<img src="{}" alt="" loading="lazy">"#, attr(src))
+        });
+    let author = metadata
+        .author_name
+        .as_deref()
+        .map_or_else(String::new, |name| {
+            format!(
+                r#"<span class="external-embed-author">{}</span>"#,
+                html_text(name)
+            )
+        });
+    format!(
+        r#"<div class="external-embed external-embed-card external-embed-bookmark"><a href="{}" target="_blank" rel="noopener noreferrer"><span class="external-embed-provider">{}</span><strong>{}</strong><small>{}</small>{author}{thumb}</a></div>"#,
+        attr(url.as_str()),
+        html_text(provider),
+        html_text(title),
+        html_text(description),
+    )
 }
 
 fn static_card(provider: &str, href: &str, title: &str) -> String {
@@ -63,4 +92,16 @@ fn is_mastodon_like(url: &Url) -> bool {
     segments(url)
         .iter()
         .any(|part| part.starts_with('@') || part.chars().all(|ch| ch.is_ascii_digit()))
+}
+
+fn first_text<'a>(
+    primary: Option<&'a String>,
+    secondary: Option<&'a String>,
+    fallback: &'a str,
+) -> &'a str {
+    primary
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| secondary.filter(|value| !value.trim().is_empty()))
+        .map(String::as_str)
+        .unwrap_or(fallback)
 }

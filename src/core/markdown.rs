@@ -19,6 +19,7 @@ pub fn render_markdown_with_origin(body: &str, public_base_url: Option<&str>) ->
         MarkdownOptions {
             public_base_url,
             google_maps_embed_api_key: None,
+            external_embed_cache: None,
         },
     )
 }
@@ -39,6 +40,10 @@ pub fn render_markdown_with_options(body: &str, options: MarkdownOptions<'_>) ->
         post_process_html(&builder.clean(&html_out).to_string()),
         &embed_blocks,
     )
+}
+
+pub fn external_embed_urls(body: &str, public_base_url: Option<&str>) -> Vec<String> {
+    markdown_embed_blocks::external_urls(body, public_base_url)
 }
 
 fn post_process_html(html: &str) -> String {

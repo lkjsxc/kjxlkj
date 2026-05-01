@@ -1,6 +1,7 @@
 //! Web layer
 
 pub(crate) mod db;
+pub(crate) mod embed_unfurl;
 pub mod handlers;
 mod history_summary;
 mod live;
@@ -8,6 +9,7 @@ mod live;
 mod live_tests;
 mod markdown;
 mod markdown_cards;
+mod markdown_external;
 mod routes;
 mod site;
 #[cfg(test)]

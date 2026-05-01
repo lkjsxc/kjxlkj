@@ -1,4 +1,5 @@
-use super::{render_markdown, render_markdown_with_options, MarkdownOptions};
+use super::{render_markdown, render_markdown_with_options, EmbedMetadata, MarkdownOptions};
+use std::collections::HashMap;
 
 #[test]
 fn render_markdown_keeps_safe_media_embeds() {
@@ -107,6 +108,7 @@ fn render_markdown_embeds_maps_only_with_key() {
         MarkdownOptions {
             public_base_url: None,
             google_maps_embed_api_key: Some("maps-key"),
+            external_embed_cache: None,
         },
     );
 
@@ -124,4 +126,33 @@ fn render_markdown_embeds_native_audio_and_social_placeholders() {
     assert!(html.contains("<audio controls"));
     assert!(html.contains("data-embed-provider=\"x\""));
     assert!(html.contains("data-embed-url=\"https://x.com/user/status/123\""));
+}
+
+#[test]
+fn render_markdown_uses_cached_external_metadata_cards() {
+    let mut cache = HashMap::new();
+    cache.insert(
+        "https://example.com/article".to_string(),
+        EmbedMetadata {
+            provider: "example.com".to_string(),
+            title: Some("Cached article".to_string()),
+            description: Some("Cached summary".to_string()),
+            site_name: Some("Example".to_string()),
+            author_name: Some("Author".to_string()),
+            thumbnail_url: Some("https://example.com/card.jpg".to_string()),
+        },
+    );
+    let html = render_markdown_with_options(
+        "https://example.com/article",
+        MarkdownOptions {
+            public_base_url: None,
+            google_maps_embed_api_key: None,
+            external_embed_cache: Some(&cache),
+        },
+    );
+
+    assert!(html.contains("external-embed-bookmark"));
+    assert!(html.contains("Cached article"));
+    assert!(html.contains("Cached summary"));
+    assert!(html.contains("https://example.com/card.jpg"));
 }
