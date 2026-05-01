@@ -28,6 +28,10 @@ export async function installLiveMediaMocks(context) {
             return ctx.createMediaStreamDestination().stream.getAudioTracks()[0];
         }
         const media = navigator.mediaDevices || {};
+        const events = new EventTarget();
+        media.addEventListener = events.addEventListener.bind(events);
+        media.removeEventListener = events.removeEventListener.bind(events);
+        media.dispatchEvent = events.dispatchEvent.bind(events);
         window.__liveGetUserMediaCalls = [];
         media.getDisplayMedia = async () => new MediaStream([videoTrack()]);
         media.getUserMedia = async (constraints) => {
@@ -37,9 +41,10 @@ export async function installLiveMediaMocks(context) {
             if (constraints?.audio) tracks.push(audioTrack());
             return new MediaStream(tracks);
         };
-        media.enumerateDevices = async () => [
+        window.__liveVideoDevices = [
             { kind: 'videoinput', deviceId: 'mock-camera', label: 'Mock Camera' },
         ];
+        media.enumerateDevices = async () => window.__liveVideoDevices;
         Object.defineProperty(navigator, 'mediaDevices', { value: media, configurable: true });
     });
 }
@@ -63,6 +68,9 @@ export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
     assert.equal(await adminPage.locator('[data-live-height]').inputValue(), '1440');
     assert.equal(await adminPage.locator('[data-live-fps]').inputValue(), '45');
     assert.equal(await adminPage.locator('[data-live-mic]').isChecked(), true);
+    assert.equal(await adminPage.locator('[data-live-camera-refresh]').count(), 0);
+    await adminPage.locator('[data-live-camera] option[value="mock-camera"]').waitFor({ state: 'attached' });
+    await assertAutomaticCameraRefresh(adminPage);
     await adminPage.getByRole('button', { name: 'Start broadcast', exact: true }).click();
     await adminPage.getByText('Broadcasting live', { exact: true }).waitFor({ state: 'visible' });
     await assertCameraRequest(adminPage, 'user');
@@ -91,6 +99,17 @@ export async function verifyLiveBroadcastLifecycle(browser, adminPage) {
     ]);
     await assertViewerEnded(viewer);
     await guestContext.close();
+}
+
+async function assertAutomaticCameraRefresh(page) {
+    await page.evaluate(() => {
+        window.__liveVideoDevices = [
+            { kind: 'videoinput', deviceId: 'mock-camera', label: 'Mock Camera' },
+            { kind: 'videoinput', deviceId: 'usb-camera', label: 'USB Camera' },
+        ];
+        navigator.mediaDevices.dispatchEvent?.(new Event('devicechange'));
+    });
+    await page.locator('[data-live-camera] option[value="usb-camera"]').waitFor({ state: 'attached' });
 }
 
 async function assertCameraRequest(page, facing) {

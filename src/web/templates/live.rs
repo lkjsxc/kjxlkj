@@ -8,6 +8,7 @@ use crate::web::site::SiteContext;
 use serde_json::json;
 
 const LIVE_STATE_JS: &str = include_str!("live_state.js");
+const LIVE_DEVICES_JS: &str = include_str!("live_devices.js");
 const LIVE_CAPTURE_JS: &str = include_str!("live_capture.js");
 const LIVE_PEER_JS: &str = include_str!("live_peer.js");
 const LIVE_JS: &str = include_str!("live.js");
@@ -48,7 +49,7 @@ pub fn live_page(
         ),
         "",
         &format!(
-            r#"<script>{LIVE_STATE_JS}</script><script>{LIVE_CAPTURE_JS}</script><script>{LIVE_PEER_JS}</script><script>{LIVE_JS}</script>"#
+            r#"<script>{LIVE_STATE_JS}</script><script>{LIVE_DEVICES_JS}</script><script>{LIVE_CAPTURE_JS}</script><script>{LIVE_PEER_JS}</script><script>{LIVE_JS}</script>"#
         ),
     )
 }
@@ -61,7 +62,6 @@ fn live_surface(is_admin: bool, settings: &AppSettings) -> String {
 <label class="form-group"><span>Source</span><select data-live-source>{}</select></label>
 <label class="form-group"><span>Camera facing</span><select data-live-camera-facing>{}</select></label>
 <label class="form-group"><span>Camera</span><select data-live-camera></select></label>
-<button type="button" class="btn live-refresh" data-live-camera-refresh>Refresh cameras</button>
 <label class="form-group"><span>Quality</span><select data-live-height>{}</select></label>
 <label class="form-group"><span>Frame rate</span><select data-live-fps>{}</select></label>
 <label class="check-row live-mic"><input type="checkbox" data-live-mic {}><span>Microphone</span></label>

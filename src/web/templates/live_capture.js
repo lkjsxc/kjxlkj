@@ -93,13 +93,17 @@
 
     async function captureCamera() {
         try {
-            return await navigator.mediaDevices.getUserMedia({ video: live.cameraConstraints(), audio: false });
+            var stream = await navigator.mediaDevices.getUserMedia({ video: live.cameraConstraints(), audio: false });
+            live.loadCameras?.();
+            return stream;
         } catch (error) {
             if (live.selectedVideo().device) throw error;
-            return navigator.mediaDevices.getUserMedia({
+            var fallback = await navigator.mediaDevices.getUserMedia({
                 video: live.cameraFallbackConstraints(),
                 audio: false
             });
+            live.loadCameras?.();
+            return fallback;
         }
     }
 
@@ -140,6 +144,7 @@
 
     function cleanup() {
         live.closed = true;
+        live.cleanupCameraDevices?.();
         if (live.role === 'broadcaster') stopBroadcast(true);
         else {
             closePeers();

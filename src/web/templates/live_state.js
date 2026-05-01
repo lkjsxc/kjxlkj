@@ -13,7 +13,6 @@
         source: root.querySelector('[data-live-source]'),
         cameraFacing: root.querySelector('[data-live-camera-facing]'),
         camera: root.querySelector('[data-live-camera]'),
-        refresh: root.querySelector('[data-live-camera-refresh]'),
         height: root.querySelector('[data-live-height]'),
         fps: root.querySelector('[data-live-fps]'),
         mic: root.querySelector('[data-live-mic]'),
@@ -36,7 +35,6 @@
     live.setRunning = setRunning;
     live.statusText = statusText;
     live.updateViewerCount = updateViewerCount;
-    live.loadCameras = loadCameras;
     live.syncSourceUi = syncSourceUi;
 
     function readConfig() {
@@ -108,31 +106,9 @@
         }
     }
 
-    async function loadCameras() {
-        if (!live.camera || !navigator.mediaDevices?.enumerateDevices) return;
-        var selected = live.camera.value;
-        var devices = (await navigator.mediaDevices.enumerateDevices())
-            .filter(function (item) { return item.kind === 'videoinput'; });
-        live.camera.innerHTML = '<option value="">Auto by facing</option>' + devices.map(cameraOption).join('');
-        if (selected) live.camera.value = selected;
-        syncSourceUi();
-    }
-
-    function cameraOption(item, index) {
-        var label = item.label || 'Camera ' + (index + 1);
-        return '<option value="' + escapeHtml(item.deviceId) + '">' + escapeHtml(label) + '</option>';
-    }
-
     function syncSourceUi() {
         var disabled = live.source?.value !== 'camera';
         if (live.cameraFacing) live.cameraFacing.disabled = disabled;
         if (live.camera) live.camera.disabled = disabled;
-        if (live.refresh) live.refresh.disabled = disabled;
-    }
-
-    function escapeHtml(value) {
-        return String(value).replace(/[&<>"]/g, function (ch) {
-            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch];
-        });
     }
 })();
