@@ -10,10 +10,10 @@
 - `kind` is `bookmark`, `image`, `video`, `audio`, `frame`, or `social`.
 - `title`, `description`, `site_name`, and `author_name` are optional display fields.
 - `thumbnail_url`, `thumbnail_width`, and `thumbnail_height` are optional direct remote preview-image fields.
-- `fetched_at` records the last successful metadata fetch.
-- `expires_at` records when metadata should be refreshed by an admin-triggered path.
-- `last_error` records the latest fetch or parse failure summary.
-- `error_at` records the latest failure time.
+- `fetched_at` is the last successful metadata fetch time.
+- `expires_at` is when metadata should be refreshed by an admin-triggered path.
+- `last_error` is the latest fetch or parse failure summary.
+- `error_at` is the latest failure time.
 - `created_at` and `updated_at` are UTC timestamps.
 
 ## Refresh Rules
