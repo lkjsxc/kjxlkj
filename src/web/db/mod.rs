@@ -26,10 +26,12 @@ mod popular_window;
 mod resource_ids;
 mod resource_support;
 mod resources;
+mod resources_scoped;
 mod settings;
 mod settings_model;
 mod snapshots;
 mod snapshots_cursor;
+mod spaces;
 mod write_support;
 
 pub use analytics::{count_resource_view, get_resource_view_stats, list_popular_resources};
@@ -45,8 +47,8 @@ pub use favorites::{list_all_favorite_resources, reorder_favorites};
 pub use list_kind::ListKind;
 pub use list_scope::ListScope;
 pub use listing::{
-    list_favorite_resources, list_recent_resources, list_resources, ListDirection, ListRequest,
-    ListSort,
+    list_favorite_resources, list_favorite_resources_in_space, list_recent_resources,
+    list_recent_resources_in_space, list_resources, ListDirection, ListRequest, ListSort,
 };
 pub use media::{create_media, MediaBlob};
 pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
@@ -64,9 +66,14 @@ pub use resources::{
     create_resource, delete_resource, get_resource, get_resource_by_alias, get_resource_by_ref,
     update_resource,
 };
+pub use resources_scoped::{
+    create_resource_in_space, delete_resource_in_space, get_resource_by_ref_in_space,
+    update_resource_in_space,
+};
 pub use settings::{get_resource_stats, get_settings, update_settings};
 pub use settings_model::AppSettings;
 pub use snapshots::{get_snapshot_target, list_resource_snapshots, SnapshotTarget};
+pub use spaces::require_space;
 
 use crate::error::AppError;
 use deadpool_postgres::{Manager, Pool, Runtime};

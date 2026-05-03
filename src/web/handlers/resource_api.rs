@@ -31,6 +31,25 @@ pub async fn search(
     headers: HeaderMap,
     Query(params): Query<SearchParams>,
 ) -> Result<Response, AppError> {
+    search_inner(State(state), headers, Query(params), None).await
+}
+
+pub async fn search_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(user): Path<String>,
+    Query(params): Query<SearchParams>,
+) -> Result<Response, AppError> {
+    db::require_space(&state.pool, &user).await?;
+    search_inner(State(state), headers, Query(params), Some(user)).await
+}
+
+async fn search_inner(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Query(params): Query<SearchParams>,
+    space_slug: Option<String>,
+) -> Result<Response, AppError> {
     let pool = &state.pool;
     let is_admin = session::check_session(&headers, pool).await?;
     let settings = db::get_settings(pool).await?;
@@ -47,6 +66,7 @@ pub async fn search(
     let page = db::list_resources(
         pool,
         &ListRequest {
+            space_slug,
             include_private: is_admin,
             limit: params.limit.unwrap_or(settings.search_results_per_page),
             query,
@@ -94,9 +114,20 @@ pub async fn fetch(
 pub async fn fetch_scoped(
     State(state): State<AppState>,
     headers: HeaderMap,
-    Path((_user, reference)): Path<(String, String)>,
+    Path((user, reference)): Path<(String, String)>,
 ) -> Result<Response, AppError> {
-    fetch(State(state), headers, Path(reference)).await
+    let pool = &state.pool;
+    db::require_space(pool, &user).await?;
+    let is_admin = session::check_session(&headers, pool).await?;
+    match db::get_resource_by_ref_in_space(pool, &user, &reference).await? {
+        Some(resource) if is_admin || !resource.is_private => Ok(http::json_status(
+            StatusCode::OK,
+            ResourcePayload::from_resource(resource),
+        )),
+        _ => Err(AppError::NotFound(format!(
+            "resource '{reference}' not found"
+        ))),
+    }
 }
 
 impl SearchItem {

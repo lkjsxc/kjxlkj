@@ -23,6 +23,7 @@ pub struct ResourcePayload {
     is_favorite: bool,
     favorite_position: Option<i64>,
     is_private: bool,
+    visibility: &'static str,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
 }
@@ -50,6 +51,11 @@ impl ResourcePayload {
             is_favorite: resource.is_favorite,
             favorite_position: resource.favorite_position,
             is_private: resource.is_private,
+            visibility: if resource.is_private {
+                "private"
+            } else {
+                "public"
+            },
             created_at: resource.created_at,
             updated_at: resource.updated_at,
         }

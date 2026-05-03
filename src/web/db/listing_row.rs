@@ -6,6 +6,7 @@ pub(crate) fn row_to_listed_resource(row: tokio_postgres::Row) -> ListedResource
     ListedResource {
         resource: Resource {
             id: row.get("id"),
+            space_slug: row.try_get("space_slug").unwrap_or_default(),
             kind: ResourceKind::from_db(&row.get::<_, String>("kind")),
             alias: row.get("alias"),
             title: row.get("title"),

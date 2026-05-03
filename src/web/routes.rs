@@ -7,7 +7,7 @@ use crate::web::db;
 use crate::web::handlers::{
     admin, assets, discoverability, favorites, health, history, home, live, login, logout, media,
     media_attachments, password_reset, popular_sections, preview, resource, resource_api,
-    resource_file, resource_history, resources, search, settings, setup, site_icon,
+    resource_file, resource_history, resources_scoped, search, settings, setup, site_icon,
 };
 use crate::web::live::LiveHub;
 use axum::extract::DefaultBodyLimit;
@@ -115,10 +115,10 @@ pub fn router(state: AppState) -> Router {
             "/{user}/markdown-preview",
             post(preview::render_markdown_preview),
         )
-        .route("/{user}/search", get(search::search_page))
+        .route("/{user}/search", get(search::search_page_scoped))
         .route(
             "/api/users/{user}/resources/search",
-            get(resource_api::search),
+            get(resource_api::search_scoped),
         )
         .route(
             "/api/users/{user}/resources/preview-markdown",
@@ -135,7 +135,10 @@ pub fn router(state: AppState) -> Router {
             "/api/users/{user}/resources/media",
             post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
-        .route("/api/users/{user}/resources/notes", post(resources::create))
+        .route(
+            "/api/users/{user}/resources/notes",
+            post(resources_scoped::create),
+        )
         .route(
             "/api/users/{user}/resources/{reference}/history",
             get(resource_history::api_history_scoped),
@@ -143,8 +146,8 @@ pub fn router(state: AppState) -> Router {
         .route(
             "/api/users/{user}/resources/{reference}",
             get(resource_api::fetch_scoped)
-                .put(resources::api_update_scoped)
-                .delete(resources::remove_scoped),
+                .put(resources_scoped::api_update)
+                .delete(resources_scoped::remove),
         )
         .route(
             "/{user}/resources/media",
@@ -155,10 +158,10 @@ pub fn router(state: AppState) -> Router {
             post(media_attachments::attach_media_scoped)
                 .layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
-        .route("/{user}/resources/notes", post(resources::create))
+        .route("/{user}/resources/notes", post(resources_scoped::create))
         .route(
             "/{user}/resources/{id}",
-            put(resources::update_scoped).delete(resources::remove_scoped),
+            put(resources_scoped::update).delete(resources_scoped::remove),
         )
         .route("/{user}/favorites/order", put(favorites::reorder))
         .route(
@@ -173,7 +176,7 @@ pub fn router(state: AppState) -> Router {
             "/{user}/resources/{id}/next",
             get(resource_history::next_scoped),
         )
-        .route("/{user}", get(home::home_page))
+        .route("/{user}", get(home::home_page_scoped))
         .route("/{user}/{reference}", get(resource::resource_page_scoped))
         .layer(CompressionLayer::new())
         .with_state(state)

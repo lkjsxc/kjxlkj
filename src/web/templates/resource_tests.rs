@@ -7,6 +7,7 @@ use chrono::Utc;
 fn sample_resource() -> Resource {
     Resource {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
+        space_slug: "alice".to_string(),
         kind: ResourceKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),
@@ -50,13 +51,12 @@ fn sample_chrome() -> ResourceChrome {
         history_href: "/demo-note/history".to_string(),
     }
 }
-
 #[rustfmt::skip]
 fn sample_site() -> SiteContext { SiteContext { site_name: "Launchpad".to_string(), site_description: "Search-friendly notes.".to_string(), public_base_url: Some("https://example.com".to_string()) } }
-
 fn sample_media_resource() -> Resource {
     Resource {
         id: "bcdefghijklmnopqrstuvwxy27".to_string(),
+        space_slug: "alice".to_string(),
         kind: ResourceKind::Media,
         alias: Some("demo-image".to_string()),
         title: "Demo file".to_string(),
@@ -158,7 +158,7 @@ fn guest_media_page_exposes_original_download_and_display_route() {
         &sample_site(),
     );
     assert!(html.contains("Download original"));
-    assert!(html.contains("href=\"/demo-image/file\""));
+    assert!(html.contains("href=\"/alice/demo-image/file\""));
     assert!(html.contains("download=\"demo.heic\""));
     assert!(html.contains("Open raw file"));
     assert!(html.contains(r#"class="resource-nav-strip resource-nav-strip-dual""#));

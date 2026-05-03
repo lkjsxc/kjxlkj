@@ -10,7 +10,7 @@ use crate::web::routes::AppState;
 use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::view;
-use axum::extract::{Query, State};
+use axum::extract::{Path, Query, State};
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 use serde::Deserialize;
@@ -31,6 +31,27 @@ pub async fn search_page(
     headers: HeaderMap,
     uri: Uri,
     Query(params): Query<SearchParams>,
+) -> Result<Response, AppError> {
+    search_page_inner(State(state), headers, uri, Query(params), None).await
+}
+
+pub async fn search_page_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+    Path(user): Path<String>,
+    Query(params): Query<SearchParams>,
+) -> Result<Response, AppError> {
+    db::require_space(&state.pool, &user).await?;
+    search_page_inner(State(state), headers, uri, Query(params), Some(user)).await
+}
+
+async fn search_page_inner(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+    Query(params): Query<SearchParams>,
+    space_slug: Option<String>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
     if !db::is_setup(pool).await? {
@@ -54,6 +75,7 @@ pub async fn search_page(
     let page = db::list_resources(
         pool,
         &ListRequest {
+            space_slug,
             include_private: is_admin,
             limit,
             query: query.clone(),

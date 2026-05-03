@@ -13,6 +13,7 @@ const MAX_LIMIT: i64 = 100;
 
 #[derive(Clone, Debug)]
 pub struct ListRequest {
+    pub space_slug: Option<String>,
     pub include_private: bool,
     pub limit: i64,
     pub query: Option<String>,
@@ -71,7 +72,7 @@ pub async fn list_recent_resources(
     include_private: bool,
     limit: i64,
 ) -> Result<Vec<ListedResource>, AppError> {
-    top_resources(pool, include_private, limit, false).await
+    top_resources(pool, None, include_private, limit, false).await
 }
 
 pub async fn list_favorite_resources(
@@ -79,13 +80,32 @@ pub async fn list_favorite_resources(
     include_private: bool,
     limit: i64,
 ) -> Result<Vec<ListedResource>, AppError> {
-    top_resources(pool, include_private, limit, true).await
+    top_resources(pool, None, include_private, limit, true).await
+}
+
+pub async fn list_recent_resources_in_space(
+    pool: &DbPool,
+    space_slug: &str,
+    include_private: bool,
+    limit: i64,
+) -> Result<Vec<ListedResource>, AppError> {
+    top_resources(pool, Some(space_slug), include_private, limit, false).await
+}
+
+pub async fn list_favorite_resources_in_space(
+    pool: &DbPool,
+    space_slug: &str,
+    include_private: bool,
+    limit: i64,
+) -> Result<Vec<ListedResource>, AppError> {
+    top_resources(pool, Some(space_slug), include_private, limit, true).await
 }
 
 impl Default for ListRequest {
     fn default() -> Self {
         Self {
             include_private: false,
+            space_slug: None,
             limit: DEFAULT_LIMIT,
             query: None,
             direction: ListDirection::Next,
@@ -107,6 +127,7 @@ fn query_request<'a>(
 ) -> ListingQuery<'a> {
     ListingQuery {
         include_private: request.include_private,
+        space_slug: request.space_slug.as_deref(),
         limit,
         query: (!query.is_empty()).then_some(query),
         direction,

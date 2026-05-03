@@ -28,7 +28,7 @@ pub async fn admin_page(
     let site = SiteContext::from_settings(&settings);
     let window = PopularWindow::Days30;
     let popular =
-        db::list_popular_resources(pool, true, settings.home_popular_limit, window).await?;
+        db::list_popular_resources(pool, None, true, settings.home_popular_limit, window).await?;
     let recent = db::list_recent_resources(pool, true, settings.home_recent_limit).await?;
     let favorites = db::list_all_favorite_resources(pool, true).await?;
     let stats = db::get_resource_stats(pool, true).await?;

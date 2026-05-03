@@ -145,7 +145,12 @@ fn title_from(title: &str, body: &str) -> String {
 }
 
 pub fn resource_href(resource: &Resource) -> String {
-    format!("/{}", resource.alias.as_deref().unwrap_or(&resource.id))
+    let reference = resource.alias.as_deref().unwrap_or(&resource.id);
+    if resource.space_slug.is_empty() {
+        format!("/{reference}")
+    } else {
+        format!("/{}/{reference}", resource.space_slug)
+    }
 }
 
 pub fn file_href(resource: &Resource) -> String {
@@ -157,7 +162,11 @@ pub fn history_href(resource: &Resource) -> String {
 }
 
 pub fn snapshot_href(snapshot: &ResourceSnapshot) -> String {
-    format!("/{}", snapshot.id)
+    if snapshot.space_slug.is_empty() {
+        format!("/{}", snapshot.id)
+    } else {
+        format!("/{}/{}", snapshot.space_slug, snapshot.id)
+    }
 }
 
 pub fn visibility_label(is_private: bool) -> &'static str {

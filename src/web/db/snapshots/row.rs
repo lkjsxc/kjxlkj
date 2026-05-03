@@ -6,6 +6,7 @@ use crate::web::db::resource_support::row_to_resource;
 pub(super) fn row_to_snapshot(row: tokio_postgres::Row) -> ResourceSnapshot {
     ResourceSnapshot {
         id: row.get("id"),
+        space_slug: row.try_get("space_slug").unwrap_or_default(),
         kind: ResourceKind::from_db(&row.get::<_, String>("kind")),
         snapshot_number: row.get("snapshot_number"),
         alias: row.get("alias"),
@@ -33,6 +34,7 @@ pub(super) fn row_to_snapshot_target(row: tokio_postgres::Row) -> SnapshotTarget
         resource: row_to_resource(row.clone()),
         snapshot: ResourceSnapshot {
             id: row.get("snapshot_id"),
+            space_slug: row.try_get("snapshot_space_slug").unwrap_or_default(),
             kind: ResourceKind::from_db(&row.get::<_, String>("snapshot_kind")),
             snapshot_number: row.get("snapshot_number"),
             alias: row.get("snapshot_alias"),

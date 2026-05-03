@@ -9,6 +9,7 @@ use chrono::Utc;
 fn sample_resource() -> Resource {
     Resource {
         id: "abcdefghijklmnopqrstuvwx26".to_string(),
+        space_slug: "alice".to_string(),
         kind: ResourceKind::Note,
         alias: Some("demo-note".to_string()),
         title: "Demo".to_string(),

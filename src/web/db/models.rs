@@ -58,6 +58,7 @@ impl MediaFamily {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Resource {
     pub id: String,
+    pub space_slug: String,
     pub kind: ResourceKind,
     pub alias: Option<String>,
     pub title: String,
@@ -86,6 +87,7 @@ pub struct Resource {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ResourceSnapshot {
     pub id: String,
+    pub space_slug: String,
     pub kind: ResourceKind,
     pub snapshot_number: i32,
     pub alias: Option<String>,

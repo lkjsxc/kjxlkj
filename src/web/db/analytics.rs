@@ -61,25 +61,28 @@ pub async fn get_resource_view_stats(
 
 pub async fn list_popular_resources(
     pool: &DbPool,
+    space_slug: Option<&str>,
     include_private: bool,
     limit: i64,
     window: PopularWindow,
 ) -> Result<Vec<ListedResource>, AppError> {
     let sql = format!(
         "WITH popular AS ({}) \
-         SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
+         SELECT r.id, (SELECT slug::TEXT FROM spaces WHERE id = r.space_id) AS space_slug, \
+         r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
          r.duration_ms, r.media_variants, r.owner_note_id, r.is_favorite, r.favorite_position, (r.visibility = 'private') AS is_private, r.view_count_total, \
          r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, \
          COALESCE(p.popular_views, 0)::BIGINT AS popular_views \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
          WHERE r.deleted_at IS NULL AND ($1 OR r.visibility = 'public') \
+         AND ($3::TEXT IS NULL OR r.space_id = (SELECT id FROM spaces WHERE slug = $3::CITEXT)) \
          ORDER BY COALESCE(p.popular_views, 0) DESC, r.view_count_total DESC, r.updated_at DESC, r.id ASC LIMIT $2",
         popular_cte(window)
     );
     client(pool)
         .await?
-        .query(&sql, &[&include_private, &limit])
+        .query(&sql, &[&include_private, &limit, &space_slug])
         .await
         .map(|rows| rows.into_iter().map(row_to_listed_resource).collect())
         .map_err(|e| AppError::DatabaseError(e.to_string()))

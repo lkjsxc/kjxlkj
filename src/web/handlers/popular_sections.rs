@@ -69,11 +69,13 @@ async fn popular_items(
     limit: i64,
     window: PopularWindow,
 ) -> Result<Vec<templates::IndexItem>, AppError> {
-    Ok(db::list_popular_resources(pool, is_admin, limit, window)
-        .await?
-        .iter()
-        .map(|resource| view::popular_index_item(resource, is_admin, window))
-        .collect())
+    Ok(
+        db::list_popular_resources(pool, None, is_admin, limit, window)
+            .await?
+            .iter()
+            .map(|resource| view::popular_index_item(resource, is_admin, window))
+            .collect(),
+    )
 }
 
 fn not_found() -> Response {

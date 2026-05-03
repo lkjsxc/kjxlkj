@@ -10,7 +10,7 @@ use crate::web::site::SiteContext;
 use crate::web::templates;
 use crate::web::templates::home::HomeView;
 use crate::web::view;
-use axum::extract::State;
+use axum::extract::{Path, State};
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 
@@ -18,6 +18,25 @@ pub async fn home_page(
     State(state): State<AppState>,
     headers: HeaderMap,
     uri: Uri,
+) -> Result<Response, AppError> {
+    home_page_inner(State(state), headers, uri, None).await
+}
+
+pub async fn home_page_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+    Path(user): Path<String>,
+) -> Result<Response, AppError> {
+    db::require_space(&state.pool, &user).await?;
+    home_page_inner(State(state), headers, uri, Some(user)).await
+}
+
+async fn home_page_inner(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+    space_slug: Option<String>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
     if !db::is_setup(pool).await? {
@@ -27,11 +46,28 @@ pub async fn home_page(
     let settings = db::get_settings(pool).await?;
     let site = SiteContext::from_settings(&settings);
     let window = PopularWindow::Days30;
-    let popular =
-        db::list_popular_resources(pool, is_admin, settings.home_popular_limit, window).await?;
-    let recent = db::list_recent_resources(pool, is_admin, settings.home_recent_limit).await?;
-    let favorites =
-        db::list_favorite_resources(pool, is_admin, settings.home_favorite_limit).await?;
+    let popular = db::list_popular_resources(
+        pool,
+        space_slug.as_deref(),
+        is_admin,
+        settings.home_popular_limit,
+        window,
+    )
+    .await?;
+    let recent = match space_slug.as_deref() {
+        Some(slug) => {
+            db::list_recent_resources_in_space(pool, slug, is_admin, settings.home_recent_limit)
+                .await?
+        }
+        None => db::list_recent_resources(pool, is_admin, settings.home_recent_limit).await?,
+    };
+    let favorites = match space_slug.as_deref() {
+        Some(slug) => {
+            db::list_favorite_resources_in_space(pool, slug, is_admin, settings.home_favorite_limit)
+                .await?
+        }
+        None => db::list_favorite_resources(pool, is_admin, settings.home_favorite_limit).await?,
+    };
     let popular_items = popular
         .iter()
         .map(|resource| view::popular_index_item(resource, is_admin, window))

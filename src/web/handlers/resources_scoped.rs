@@ -1,44 +1,28 @@
-//! Resource management handlers
-
+use super::resources::{CreateInput, UpdateInput};
+use super::{http, resource_payload::ResourcePayload, resources, session};
 use crate::core::{normalize_alias, validate_id};
 use crate::error::AppError;
 use crate::web::db;
-use crate::web::handlers::http;
-use crate::web::handlers::{resource_payload::ResourcePayload, session};
 use crate::web::routes::AppState;
 use axum::extract::{Json, Path, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
-use serde::Deserialize;
-
-#[derive(Deserialize)]
-pub struct CreateInput {
-    pub body: Option<String>,
-    pub alias: Option<String>,
-    pub is_favorite: Option<bool>,
-    pub is_private: Option<bool>,
-}
-
-#[derive(Deserialize)]
-pub struct UpdateInput {
-    pub body: String,
-    pub alias: Option<String>,
-    pub is_favorite: bool,
-    pub is_private: bool,
-}
 
 pub async fn create(
     State(state): State<AppState>,
     headers: HeaderMap,
+    Path(user): Path<String>,
     Json(body): Json<CreateInput>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
+    db::require_space(pool, &user).await?;
     session::require_session(&headers, pool).await?;
     let Some(content) = body.body.clone() else {
         return Err(AppError::InvalidRequest("body is required".to_string()));
     };
-    let resource = db::create_resource(
+    let resource = db::create_resource_in_space(
         pool,
+        &user,
         &db::generate_resource_id(pool).await?,
         normalize_alias(body.alias.as_deref())?.as_deref(),
         &content,
@@ -50,7 +34,7 @@ pub async fn create(
         ),
     )
     .await?;
-    refresh_resource_embeds(pool, &resource.body).await?;
+    resources::refresh_resource_embeds(pool, &resource.body).await?;
     Ok(http::json_status(
         StatusCode::CREATED,
         ResourcePayload::from_resource(resource),
@@ -60,29 +44,26 @@ pub async fn create(
 pub async fn update(
     State(state): State<AppState>,
     headers: HeaderMap,
-    Path(id): Path<String>,
+    Path((user, id)): Path<(String, String)>,
     Json(body): Json<UpdateInput>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
+    db::require_space(pool, &user).await?;
     session::require_session(&headers, pool).await?;
     validate_id(&id)?;
-    match db::update_resource(
+    let alias = normalize_alias(body.alias.as_deref())?;
+    match db::update_resource_in_space(
         pool,
+        &user,
         &id,
-        normalize_alias(body.alias.as_deref())?.as_deref(),
+        alias.as_deref(),
         &body.body,
         body.is_favorite,
         body.is_private,
     )
     .await?
     {
-        Some(resource) => {
-            refresh_resource_embeds(pool, &resource.body).await?;
-            Ok(http::json_status(
-                StatusCode::OK,
-                ResourcePayload::from_resource(resource),
-            ))
-        }
+        Some(resource) => json_resource(pool, resource).await,
         None => Err(AppError::NotFound(format!("resource '{id}' not found"))),
     }
 }
@@ -90,54 +71,54 @@ pub async fn update(
 pub async fn api_update(
     State(state): State<AppState>,
     headers: HeaderMap,
-    Path(reference): Path<String>,
+    Path((user, reference)): Path<(String, String)>,
     Json(body): Json<UpdateInput>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
+    db::require_space(pool, &user).await?;
     session::require_session(&headers, pool).await?;
-    let resource = db::get_resource_by_ref(pool, &reference)
+    let resource = db::get_resource_by_ref_in_space(pool, &user, &reference)
         .await?
         .ok_or_else(|| AppError::NotFound(format!("resource '{reference}' not found")))?;
-    match db::update_resource(
+    let alias = normalize_alias(body.alias.as_deref())?;
+    match db::update_resource_in_space(
         pool,
+        &user,
         &resource.id,
-        normalize_alias(body.alias.as_deref())?.as_deref(),
+        alias.as_deref(),
         &body.body,
         body.is_favorite,
         body.is_private,
     )
     .await?
     {
-        Some(resource) => {
-            refresh_resource_embeds(pool, &resource.body).await?;
-            Ok(http::json_status(
-                StatusCode::OK,
-                ResourcePayload::from_resource(resource),
-            ))
-        }
+        Some(resource) => json_resource(pool, resource).await,
         None => Err(AppError::NotFound(format!(
             "resource '{reference}' not found"
         ))),
     }
 }
 
-pub(super) async fn refresh_resource_embeds(pool: &db::DbPool, body: &str) -> Result<(), AppError> {
-    let settings = db::get_settings(pool).await?;
-    let site = crate::web::site::SiteContext::from_settings(&settings);
-    crate::web::embed_unfurl::refresh_body_embeds(pool, body, site.public_base_url.as_deref()).await
-}
-
 pub async fn remove(
     State(state): State<AppState>,
     headers: HeaderMap,
-    Path(id): Path<String>,
+    Path((user, id)): Path<(String, String)>,
 ) -> Result<Response, AppError> {
     let pool = &state.pool;
+    db::require_space(pool, &user).await?;
     session::require_session(&headers, pool).await?;
     validate_id(&id)?;
-    if db::delete_resource(pool, &id).await? {
+    if db::delete_resource_in_space(pool, &user, &id).await? {
         Ok(http::empty(StatusCode::NO_CONTENT))
     } else {
         Err(AppError::NotFound(format!("resource '{id}' not found")))
     }
+}
+
+async fn json_resource(pool: &db::DbPool, resource: db::Resource) -> Result<Response, AppError> {
+    resources::refresh_resource_embeds(pool, &resource.body).await?;
+    Ok(http::json_status(
+        StatusCode::OK,
+        ResourcePayload::from_resource(resource),
+    ))
 }

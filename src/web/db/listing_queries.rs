@@ -6,6 +6,7 @@ use super::{DbPool, ListKind, ListScope, ListedResource, PopularWindow};
 use crate::error::AppError;
 
 pub(super) struct ListingQuery<'a> {
+    pub(super) space_slug: Option<&'a str>,
     pub(super) include_private: bool,
     pub(super) limit: i64,
     pub(super) query: Option<&'a str>,
@@ -31,14 +32,17 @@ pub(super) async fn browse_resources(
     let popular = popular_cte(request.popular_window);
     let sql = format!(
         "WITH popular AS ({popular}), \
-         listed AS (SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
+         listed AS (SELECT r.id, (SELECT slug::TEXT FROM spaces WHERE id = r.space_id) AS space_slug, \
+         r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
          r.duration_ms, r.media_variants, r.is_favorite, r.favorite_position, (r.visibility = 'private') AS is_private, r.view_count_total, \
          r.owner_note_id, \
          r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, COALESCE(p.popular_views, 0)::BIGINT AS popular_views, \
          LOWER(r.title) AS title_key, 0::DOUBLE PRECISION AS rank, 0::DOUBLE PRECISION AS fuzzy \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
-         WHERE r.deleted_at IS NULL AND ($1 OR r.visibility = 'public') {favorite_filter} {kind_filter}) \
+         WHERE r.deleted_at IS NULL AND ($1 OR r.visibility = 'public') \
+         AND ($12::TEXT IS NULL OR r.space_id = (SELECT id FROM spaces WHERE slug = $12::CITEXT)) \
+         {favorite_filter} {kind_filter}) \
          SELECT * FROM listed WHERE {} AND {} ORDER BY {} LIMIT $11",
         request.sort.binding_clause(2),
         request.sort.cursor_filter(request.direction, 2),
@@ -68,7 +72,8 @@ pub(super) async fn search_resources(
     let sql = format!(
         "WITH q AS (SELECT websearch_to_tsquery('simple', $2) AS tsq, $2::TEXT AS raw), \
          popular AS ({popular}), \
-         matched AS (SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
+         matched AS (SELECT r.id, (SELECT slug::TEXT FROM spaces WHERE id = r.space_id) AS space_slug, \
+         r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, r.duration_ms, r.media_variants, \
          r.is_favorite, r.favorite_position, (r.visibility = 'private') AS is_private, r.view_count_total, r.last_viewed_at, r.created_at, r.updated_at, \
          r.owner_note_id, \
@@ -78,7 +83,9 @@ pub(super) async fn search_resources(
          GREATEST(similarity(COALESCE(r.alias, ''), (SELECT raw FROM q)), similarity(r.title, (SELECT raw FROM q)), \
          similarity(r.body, (SELECT raw FROM q)), similarity(COALESCE(r.original_filename, ''), (SELECT raw FROM q)))::DOUBLE PRECISION AS fuzzy \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
-         WHERE r.deleted_at IS NULL AND ($1 OR r.visibility = 'public') {favorite_filter} {kind_filter} \
+         WHERE r.deleted_at IS NULL AND ($1 OR r.visibility = 'public') \
+         AND ($13::TEXT IS NULL OR r.space_id = (SELECT id FROM spaces WHERE slug = $13::CITEXT)) \
+         {favorite_filter} {kind_filter} \
          AND (r.search_document @@ (SELECT tsq FROM q) OR r.alias ILIKE '%' || (SELECT raw FROM q) || '%' \
          OR r.title ILIKE '%' || (SELECT raw FROM q) || '%' OR r.body ILIKE '%' || (SELECT raw FROM q) || '%' \
          OR COALESCE(r.original_filename, '') ILIKE '%' || (SELECT raw FROM q) || '%' \
@@ -99,6 +106,7 @@ pub(super) async fn search_resources(
 
 pub(super) async fn top_resources(
     pool: &DbPool,
+    space_slug: Option<&str>,
     include_private: bool,
     limit: i64,
     favorites_only: bool,
@@ -112,14 +120,17 @@ pub(super) async fn top_resources(
         ("", "updated_at DESC, id ASC")
     };
     let sql = format!(
-        "SELECT id, kind, alias, title, summary, body, media_family, file_key, content_type, byte_size, \
+        "SELECT id, (SELECT slug::TEXT FROM spaces WHERE id = space_id) AS space_slug, \
+         kind, alias, title, summary, body, media_family, file_key, content_type, byte_size, \
          sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, \
          (visibility = 'private') AS is_private, view_count_total, last_viewed_at, created_at, updated_at, summary AS preview, NULL::BIGINT AS popular_views \
-         FROM resources WHERE deleted_at IS NULL AND ($1 OR visibility = 'public') {filter} ORDER BY {order} LIMIT $2"
+         FROM resources WHERE deleted_at IS NULL AND ($1 OR visibility = 'public') \
+         AND ($3::TEXT IS NULL OR space_id = (SELECT id FROM spaces WHERE slug = $3::CITEXT)) \
+         {filter} ORDER BY {order} LIMIT $2"
     );
     client(pool)
         .await?
-        .query(&sql, &[&include_private, &limit])
+        .query(&sql, &[&include_private, &limit, &space_slug])
         .await
         .map(|rows| rows.into_iter().map(row_to_listed_resource).collect())
         .map_err(db_err)

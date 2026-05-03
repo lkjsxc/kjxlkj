@@ -48,9 +48,28 @@ pub async fn resource_page(
 pub async fn resource_page_scoped(
     State(state): State<AppState>,
     headers: HeaderMap,
-    Path((_user, reference)): Path<(String, String)>,
+    Path((user, reference)): Path<(String, String)>,
 ) -> Result<Response, AppError> {
-    resource_page(State(state), headers, Path(reference)).await
+    let pool = &state.pool;
+    if !db::is_setup(pool).await? {
+        return Ok(http::redirect("/setup"));
+    }
+    db::require_space(pool, &user).await?;
+    let is_admin = session::check_session(&headers, pool).await?;
+    let settings = db::get_settings(pool).await?;
+    let site = SiteContext::from_settings(&settings);
+    let resource = match resolve_space_resource(pool, &user, &reference).await? {
+        Some(resource) => resource,
+        None => return Ok(not_found(&site)),
+    };
+    match resource {
+        RootResource::Current(resource) => {
+            render_current_resource(pool, &reference, resource.as_ref(), is_admin, &site).await
+        }
+        RootResource::Snapshot(resource) => {
+            render_snapshot(pool, resource.as_ref(), is_admin, &site).await
+        }
+    }
 }
 
 async fn resolve_root_resource(
@@ -70,6 +89,24 @@ async fn resolve_root_resource(
         .await?
         .map(Box::new)
         .map(RootResource::Snapshot))
+}
+
+async fn resolve_space_resource(
+    pool: &DbPool,
+    space_slug: &str,
+    reference: &str,
+) -> Result<Option<RootResource>, AppError> {
+    if let Some(resource) = db::get_resource_by_ref_in_space(pool, space_slug, reference).await? {
+        return Ok(Some(RootResource::Current(Box::new(resource))));
+    }
+    if looks_like_id(reference) {
+        return Ok(db::get_snapshot_target(pool, reference)
+            .await?
+            .filter(|target| target.resource.space_slug == space_slug)
+            .map(Box::new)
+            .map(RootResource::Snapshot));
+    }
+    Ok(None)
 }
 
 async fn render_current_resource(

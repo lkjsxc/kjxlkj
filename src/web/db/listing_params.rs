@@ -2,6 +2,7 @@ use super::listing_queries::ListingQuery;
 
 pub(super) struct BrowseParams<'a> {
     include_private: bool,
+    space_slug: Option<&'a str>,
     updated_at: Option<chrono::DateTime<chrono::Utc>>,
     created_at: Option<chrono::DateTime<chrono::Utc>>,
     title_key: Option<&'a str>,
@@ -18,6 +19,7 @@ impl<'a> BrowseParams<'a> {
     pub(super) fn new(request: &'a ListingQuery<'a>) -> Self {
         Self {
             include_private: request.include_private,
+            space_slug: request.space_slug,
             updated_at: request.cursor.and_then(|item| item.updated_at),
             created_at: request.cursor.and_then(|item| item.created_at),
             title_key: request.cursor.and_then(|item| item.title_key.as_deref()),
@@ -31,7 +33,7 @@ impl<'a> BrowseParams<'a> {
         }
     }
 
-    pub(super) fn refs(&'a self) -> [&'a (dyn tokio_postgres::types::ToSql + Sync); 11] {
+    pub(super) fn refs(&'a self) -> [&'a (dyn tokio_postgres::types::ToSql + Sync); 12] {
         [
             &self.include_private,
             &self.updated_at,
@@ -44,6 +46,7 @@ impl<'a> BrowseParams<'a> {
             &self.popular_views,
             &self.view_count_total,
             &self.limit,
+            &self.space_slug,
         ]
     }
 }
@@ -61,7 +64,7 @@ impl<'a> SearchParams<'a> {
         }
     }
 
-    pub(super) fn refs(&'a self) -> [&'a (dyn tokio_postgres::types::ToSql + Sync); 12] {
+    pub(super) fn refs(&'a self) -> [&'a (dyn tokio_postgres::types::ToSql + Sync); 13] {
         [
             &self.browse.include_private,
             &self.query,
@@ -75,6 +78,7 @@ impl<'a> SearchParams<'a> {
             &self.browse.popular_views,
             &self.browse.view_count_total,
             &self.browse.limit,
+            &self.browse.space_slug,
         ]
     }
 }
