@@ -45,6 +45,14 @@ pub async fn resource_page(
     }
 }
 
+pub async fn resource_page_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, reference)): Path<(String, String)>,
+) -> Result<Response, AppError> {
+    resource_page(State(state), headers, Path(reference)).await
+}
+
 async fn resolve_root_resource(
     pool: &DbPool,
     reference: &str,

@@ -49,6 +49,15 @@ pub async fn current_file(
     .await
 }
 
+pub async fn current_file_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, reference)): Path<(String, String)>,
+    Query(query): Query<FileQuery>,
+) -> Result<Response, AppError> {
+    current_file(State(state), headers, Path(reference), Query(query)).await
+}
+
 async fn resolve_id_backed_file(
     pool: &DbPool,
     reference: &str,

@@ -91,6 +91,14 @@ pub async fn fetch(
     }
 }
 
+pub async fn fetch_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, reference)): Path<(String, String)>,
+) -> Result<Response, AppError> {
+    fetch(State(state), headers, Path(reference)).await
+}
+
 impl SearchItem {
     fn from_row(row: ListedResource) -> Self {
         Self {

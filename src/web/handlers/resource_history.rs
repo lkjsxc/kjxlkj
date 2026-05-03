@@ -48,6 +48,15 @@ pub async fn history(
     Ok(http::json_status(StatusCode::OK, page))
 }
 
+pub async fn history_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, id)): Path<(String, String)>,
+    Query(params): Query<HistoryParams>,
+) -> Result<Response, AppError> {
+    history(State(state), headers, Path(id), Query(params)).await
+}
+
 pub async fn api_history(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -72,6 +81,15 @@ pub async fn api_history(
     Ok(http::json_status(StatusCode::OK, page))
 }
 
+pub async fn api_history_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, reference)): Path<(String, String)>,
+    Query(params): Query<HistoryParams>,
+) -> Result<Response, AppError> {
+    api_history(State(state), headers, Path(reference), Query(params)).await
+}
+
 pub async fn previous(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -80,12 +98,28 @@ pub async fn previous(
     nav_response(&state.pool, &headers, id, true).await
 }
 
+pub async fn previous_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, id)): Path<(String, String)>,
+) -> Result<Response, AppError> {
+    previous(State(state), headers, Path(id)).await
+}
+
 pub async fn next(
     State(state): State<AppState>,
     headers: HeaderMap,
     Path(id): Path<String>,
 ) -> Result<Response, AppError> {
     nav_response(&state.pool, &headers, id, false).await
+}
+
+pub async fn next_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, id)): Path<(String, String)>,
+) -> Result<Response, AppError> {
+    next(State(state), headers, Path(id)).await
 }
 
 async fn nav_response(

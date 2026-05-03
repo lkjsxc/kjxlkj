@@ -87,6 +87,15 @@ pub async fn update(
     }
 }
 
+pub async fn update_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, id)): Path<(String, String)>,
+    Json(body): Json<UpdateInput>,
+) -> Result<Response, AppError> {
+    update(State(state), headers, Path(id), Json(body)).await
+}
+
 pub async fn api_update(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -121,6 +130,15 @@ pub async fn api_update(
     }
 }
 
+pub async fn api_update_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, reference)): Path<(String, String)>,
+    Json(body): Json<UpdateInput>,
+) -> Result<Response, AppError> {
+    api_update(State(state), headers, Path(reference), Json(body)).await
+}
+
 async fn refresh_resource_embeds(pool: &db::DbPool, body: &str) -> Result<(), AppError> {
     let settings = db::get_settings(pool).await?;
     let site = crate::web::site::SiteContext::from_settings(&settings);
@@ -140,4 +158,12 @@ pub async fn remove(
     } else {
         Err(AppError::NotFound(format!("resource '{id}' not found")))
     }
+}
+
+pub async fn remove_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, id)): Path<(String, String)>,
+) -> Result<Response, AppError> {
+    remove(State(state), headers, Path(id)).await
 }

@@ -94,6 +94,15 @@ pub async fn attach_media(
     }
 }
 
+pub async fn attach_media_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path((_user, id)): Path<(String, String)>,
+    payload: Multipart,
+) -> Result<Response, AppError> {
+    attach_media(State(state), headers, Path(id), payload).await
+}
+
 async fn build_attachments(
     pool: &db::DbPool,
     files: &[super::media_input::UploadedFile],

@@ -95,68 +95,86 @@ pub fn router(state: AppState) -> Router {
         .route("/sitemap.xml", get(discoverability::sitemap_xml))
         .route("/.well-known/nostr.json", get(discoverability::nostr_json))
         .route("/", get(home::home_page))
-        .route("/admin", get(admin::admin_page))
-        .route("/admin/", get(admin::admin_page))
+        .route("/{user}/admin", get(admin::admin_page))
+        .route("/{user}/admin/", get(admin::admin_page))
         .route(
             "/_/popular-resources/{surface}/{window}",
             get(popular_sections::popular_resources_section),
         )
         .route(
-            "/admin/settings",
+            "/{user}/settings",
             get(settings::settings_page).post(settings::settings_submit),
         )
-        .route("/admin/password", post(settings::password_submit))
+        .route("/account/password", post(settings::password_submit))
         .route(
-            "/admin/site-icon",
+            "/{user}/settings/site-icon",
             post(site_icon::upload).layer(DefaultBodyLimit::max(state.site_icon_upload_max_bytes)),
         )
-        .route("/admin/site-icon/reset", post(site_icon::reset))
+        .route("/{user}/settings/site-icon/reset", post(site_icon::reset))
         .route(
-            "/admin/markdown-preview",
+            "/{user}/markdown-preview",
             post(preview::render_markdown_preview),
         )
-        .route("/search", get(search::search_page))
-        .route("/api/resources/search", get(resource_api::search))
+        .route("/{user}/search", get(search::search_page))
         .route(
-            "/api/resources/preview-markdown",
+            "/api/users/{user}/resources/search",
+            get(resource_api::search),
+        )
+        .route(
+            "/api/users/{user}/resources/preview-markdown",
             post(preview::render_markdown_preview),
         )
-        .route("/live", get(live::live_page))
-        .route("/live/ws", get(live::live_ws))
-        .route("/{reference}/file", get(resource_file::current_file))
-        .route("/{id}/history", get(history::history_page))
+        .route("/{user}/live", get(live::live_page))
+        .route("/{user}/live/ws", get(live::live_ws))
         .route(
-            "/api/resources/media",
+            "/{user}/{reference}/file",
+            get(resource_file::current_file_scoped),
+        )
+        .route("/{user}/{id}/history", get(history::history_page_scoped))
+        .route(
+            "/api/users/{user}/resources/media",
             post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
-        .route("/api/resources/notes", post(resources::create))
+        .route("/api/users/{user}/resources/notes", post(resources::create))
         .route(
-            "/api/resources/{reference}/history",
-            get(resource_history::api_history),
+            "/api/users/{user}/resources/{reference}/history",
+            get(resource_history::api_history_scoped),
         )
         .route(
-            "/api/resources/{reference}",
-            get(resource_api::fetch).put(resources::api_update),
+            "/api/users/{user}/resources/{reference}",
+            get(resource_api::fetch_scoped)
+                .put(resources::api_update_scoped)
+                .delete(resources::remove_scoped),
         )
         .route(
-            "/resources/media",
+            "/{user}/resources/media",
             post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
         .route(
-            "/resources/{id}/media-attachments",
-            post(media_attachments::attach_media)
+            "/{user}/resources/{id}/media-attachments",
+            post(media_attachments::attach_media_scoped)
                 .layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
-        .route("/resources/notes", post(resources::create))
+        .route("/{user}/resources/notes", post(resources::create))
         .route(
-            "/resources/{id}",
-            put(resources::update).delete(resources::remove),
+            "/{user}/resources/{id}",
+            put(resources::update_scoped).delete(resources::remove_scoped),
         )
-        .route("/resources/favorites/order", put(favorites::reorder))
-        .route("/resources/{id}/history", get(resource_history::history))
-        .route("/resources/{id}/prev", get(resource_history::previous))
-        .route("/resources/{id}/next", get(resource_history::next))
-        .route("/{reference}", get(resource::resource_page))
+        .route("/{user}/favorites/order", put(favorites::reorder))
+        .route(
+            "/{user}/resources/{id}/history",
+            get(resource_history::history_scoped),
+        )
+        .route(
+            "/{user}/resources/{id}/prev",
+            get(resource_history::previous_scoped),
+        )
+        .route(
+            "/{user}/resources/{id}/next",
+            get(resource_history::next_scoped),
+        )
+        .route("/{user}", get(home::home_page))
+        .route("/{user}/{reference}", get(resource::resource_page_scoped))
         .layer(CompressionLayer::new())
         .with_state(state)
 }

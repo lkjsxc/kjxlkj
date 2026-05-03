@@ -69,6 +69,16 @@ pub async fn history_page(
     )))
 }
 
+pub async fn history_page_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    uri: Uri,
+    Path((_user, reference)): Path<(String, String)>,
+    Query(params): Query<HistoryParams>,
+) -> Result<Response, AppError> {
+    history_page(State(state), headers, uri, Path(reference), Query(params)).await
+}
+
 fn with_query(path: &str, query: &str) -> String {
     if query.is_empty() {
         path.to_string()
