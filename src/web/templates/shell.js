@@ -12,7 +12,7 @@
         }
         delete app.beforeNavigate;
     };
-    app.formatLocalTimes = formatLocalTimes;
+    app.formatLocalTimes = formatLocalTimes; app.spacePath = spacePath;
     app.runPageScripts = runPageScripts;
     app.setupDrawer = setupDrawer;
     app.syncHeadDocument = syncHeadDocument;
@@ -26,9 +26,48 @@
     ];
 
     formatLocalTimes();
+    setupSpaceRoutes();
     setupImageNavigation();
     setupDrawer();
 
+    function currentSpacePrefix() {
+        var first = location.pathname.split('/').filter(Boolean)[0] || '';
+        if (!first || ['_', 'account', 'api', 'assets', 'favicon.ico', 'healthz', 'login', 'logout', 'reset-password', 'setup', 'sitemap.xml', 'robots.txt'].includes(first)) {
+            return '';
+        }
+        return '/' + first;
+    }
+    function spacePath(path) {
+        var prefix = currentSpacePrefix();
+        if (!prefix || !path || path[0] !== '/') return path;
+        if (path === '/') return prefix;
+        if (path === '/admin/settings') return prefix + '/settings';
+        if (path === '/admin/password') return '/account/password';
+        if (path === '/admin/site-icon') return prefix + '/settings/site-icon';
+        if (path === '/admin/site-icon/reset') return prefix + '/settings/site-icon/reset';
+        if (path === '/admin/markdown-preview') return prefix + '/markdown-preview';
+        if (path === '/resources/favorites/order') return prefix + '/favorites/order';
+        if (path === '/admin' || path.startsWith('/admin?')) return prefix + path;
+        if (path === '/search' || path.startsWith('/search?')) return prefix + path;
+        if (path === '/live' || path.startsWith('/live/')) return prefix + path;
+        if (path === '/resources' || path.startsWith('/resources/')) return prefix + path;
+        return path;
+    }
+    function setupSpaceRoutes() {
+        var nativeFetch = window.fetch;
+        window.fetch = function (resource, options) {
+            if (typeof resource === 'string') resource = spacePath(resource);
+            return nativeFetch.call(this, resource, options);
+        };
+        document.addEventListener('click', function (event) {
+            var link = event.target.closest('a[href]');
+            if (link) link.setAttribute('href', spacePath(link.getAttribute('href')));
+        }, true);
+        document.addEventListener('submit', function (event) {
+            var form = event.target.closest('form[action]');
+            if (form) form.setAttribute('action', spacePath(form.getAttribute('action')));
+        }, true);
+    }
     function formatLocalTimes(root) {
         var formatter = new Intl.DateTimeFormat(undefined, {
             year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false,

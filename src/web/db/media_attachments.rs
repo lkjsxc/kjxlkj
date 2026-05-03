@@ -113,7 +113,7 @@ async fn create_media_resources<C: GenericClient>(
                 &format!(
                     "INSERT INTO resources (id, space_id, kind, title, summary, body, media_family, file_key, content_type, \
                      byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, visibility) \
-                     VALUES ($1, default_space_id(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, $13, FALSE, NULL, \
+                     VALUES ($1, (SELECT space_id FROM resources WHERE id = $13), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, $13, FALSE, NULL, \
                      CASE WHEN $14 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END) {RETURNING_RECORD}"
                 ),
                 &[

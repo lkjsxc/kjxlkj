@@ -9,7 +9,8 @@
     }
 
     function connect(nextRole) {
-        live.ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/live/ws');
+        var path = window.kjxlkj?.spacePath?.('/live/ws') || '/live/ws';
+        live.ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + path);
         live.ws.addEventListener('open', function () {
             console.info('kjxlkj live websocket open', nextRole);
             send({ type: 'hello', role: nextRole });

@@ -10,7 +10,7 @@ function createNote() {
             if (!response.ok) throw new Error('create failed');
             return response.json();
         })
-        .then(function (note) { window.location.href = '/' + note.id; })
+        .then(function (note) { window.location.href = note.href || ('/' + note.id); })
         .catch(function () { alert('Failed to create note'); });
 }
 

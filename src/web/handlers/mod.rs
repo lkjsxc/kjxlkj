@@ -12,6 +12,7 @@ pub mod live;
 pub mod login;
 pub mod logout;
 pub mod media;
+mod media_attachment_response;
 pub mod media_attachments;
 mod media_derivatives;
 mod media_input;

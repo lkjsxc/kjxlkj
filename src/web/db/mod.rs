@@ -51,7 +51,9 @@ pub use listing::{
     list_recent_resources_in_space, list_resources, ListDirection, ListRequest, ListSort,
 };
 pub use media::{create_media, create_media_in_space, MediaBlob, ScopedMediaCreate};
-pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
+pub use media_attachments::{
+    attach_media_to_note, AttachmentBatchResult, AttachmentCreate, NoteAttachmentUpdate,
+};
 pub use models::{
     ExternalEmbed, ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot,
     ResourceStats, ResourceViewStats, SitemapResource,
