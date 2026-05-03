@@ -9,6 +9,7 @@ pub struct ResourcePayload {
     kind: crate::web::db::ResourceKind,
     alias: Option<String>,
     body: String,
+    href: String,
     media_family: Option<crate::web::db::MediaFamily>,
     file_href: Option<String>,
     content_type: Option<String>,
@@ -32,11 +33,13 @@ impl ResourcePayload {
     pub fn from_resource(resource: Resource) -> Self {
         let file_href = (resource.kind == crate::web::db::ResourceKind::Media)
             .then(|| view::file_href(&resource));
+        let href = view::resource_href(&resource);
         Self {
             id: resource.id,
             kind: resource.kind,
             alias: resource.alias,
             body: resource.body,
+            href,
             media_family: resource.media_family,
             file_href,
             content_type: resource.content_type,
