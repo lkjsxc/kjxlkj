@@ -4,6 +4,20 @@ use super::{AppSettings, DbPool, ResourceStats};
 use crate::error::AppError;
 
 pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
+    get_settings_for(pool, None).await
+}
+
+pub async fn get_settings_in_space(
+    pool: &DbPool,
+    space_slug: &str,
+) -> Result<AppSettings, AppError> {
+    get_settings_for(pool, Some(space_slug)).await
+}
+
+async fn get_settings_for(
+    pool: &DbPool,
+    space_slug: Option<&str>,
+) -> Result<AppSettings, AppError> {
     let row = client(pool)
         .await?
         .query_opt(
@@ -14,9 +28,10 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
              media_webp_quality, site_name, site_description, public_base_url, \
              nostr_names, nostr_relays, live_default_source, live_default_camera_facing, \
              live_default_height, live_default_fps, live_default_microphone_enabled, \
-             site_icon_key, site_icon_content_type \
-             FROM space_settings ORDER BY updated_at DESC LIMIT 1",
-            &[],
+             site_icon_key, site_icon_content_type FROM space_settings \
+             WHERE $1::TEXT IS NULL OR space_id = (SELECT id FROM spaces WHERE slug = $1::CITEXT) \
+             ORDER BY updated_at DESC LIMIT 1",
+            &[&space_slug],
         )
         .await
         .map_err(db_err)?;
@@ -24,6 +39,22 @@ pub async fn get_settings(pool: &DbPool) -> Result<AppSettings, AppError> {
 }
 
 pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<(), AppError> {
+    update_settings_for(pool, None, settings).await
+}
+
+pub async fn update_settings_in_space(
+    pool: &DbPool,
+    space_slug: &str,
+    settings: &AppSettings,
+) -> Result<(), AppError> {
+    update_settings_for(pool, Some(space_slug), settings).await
+}
+
+async fn update_settings_for(
+    pool: &DbPool,
+    space_slug: Option<&str>,
+    settings: &AppSettings,
+) -> Result<(), AppError> {
     client(pool)
         .await?
         .execute(
@@ -37,7 +68,8 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
              live_default_height = $21, live_default_fps = $22, live_default_microphone_enabled = $23, \
              site_icon_key = $24, site_icon_content_type = $25, \
              site_icon_updated_at = CASE WHEN site_icon_key IS DISTINCT FROM $24 THEN NOW() ELSE site_icon_updated_at END, \
-             updated_at = NOW() WHERE space_id = default_space_id()",
+             updated_at = NOW() WHERE ($26::TEXT IS NULL AND space_id = default_space_id()) \
+             OR space_id = (SELECT id FROM spaces WHERE slug = $26::CITEXT)",
             &[
                 &settings.home_recent_limit,
                 &settings.home_favorite_limit,
@@ -64,6 +96,7 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
                 &settings.live_default_microphone_enabled,
                 &settings.site_icon_key,
                 &settings.site_icon_content_type,
+                &space_slug,
             ],
         )
         .await

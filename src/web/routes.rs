@@ -103,7 +103,7 @@ pub fn router(state: AppState) -> Router {
         )
         .route(
             "/{user}/settings",
-            get(settings::settings_page).post(settings::settings_submit),
+            get(settings::settings_page_scoped).post(settings::settings_submit_scoped),
         )
         .route("/account/password", post(settings::password_submit))
         .route(

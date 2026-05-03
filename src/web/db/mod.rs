@@ -72,7 +72,10 @@ pub use resources_scoped::{
     create_resource_in_space, delete_resource_in_space, get_resource_by_ref_in_space,
     update_resource_in_space,
 };
-pub use settings::{get_resource_stats, get_settings, update_settings};
+pub use settings::{
+    get_resource_stats, get_settings, get_settings_in_space, update_settings,
+    update_settings_in_space,
+};
 pub use settings_model::AppSettings;
 pub use snapshots::{get_snapshot_target, list_resource_snapshots, SnapshotTarget};
 pub use spaces::require_space;
