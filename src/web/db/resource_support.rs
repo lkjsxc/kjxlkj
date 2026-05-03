@@ -6,11 +6,13 @@ use tokio_postgres::error::SqlState;
 
 pub(super) const RETURNING_RECORD: &str = "RETURNING id, kind, alias, title, summary, body, \
 media_family, file_key, content_type, byte_size, sha256_hex, original_filename, width, height, \
-duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
+duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, \
+(visibility = 'private') AS is_private, view_count_total, last_viewed_at, \
 created_at, updated_at";
 pub(super) const SELECT_RECORD: &str = "SELECT id, kind, alias, title, summary, body, \
 media_family, file_key, content_type, byte_size, sha256_hex, original_filename, width, height, \
-duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private, view_count_total, last_viewed_at, \
+duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, \
+(visibility = 'private') AS is_private, view_count_total, last_viewed_at, \
 created_at, updated_at";
 
 pub(super) async fn current_favorite_state<C: GenericClient>(

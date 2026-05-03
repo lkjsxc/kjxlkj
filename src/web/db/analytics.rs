@@ -18,8 +18,10 @@ pub async fn count_resource_view(pool: &DbPool, id: &str) -> Result<(), AppError
     .await
     .map_err(|e| AppError::DatabaseError(e.to_string()))?;
     tx.execute(
-        "INSERT INTO resource_daily_views (resource_id, view_date, view_count) VALUES ($1, CURRENT_DATE, 1) \
-         ON CONFLICT (resource_id, view_date) DO UPDATE SET view_count = resource_daily_views.view_count + 1",
+        "INSERT INTO resource_daily_views (space_id, resource_id, view_date, view_count) \
+         SELECT space_id, id, CURRENT_DATE, 1 FROM resources WHERE id = $1 \
+         ON CONFLICT (space_id, resource_id, view_date) DO UPDATE \
+         SET view_count = resource_daily_views.view_count + 1",
         &[&id],
     )
     .await
@@ -67,11 +69,11 @@ pub async fn list_popular_resources(
         "WITH popular AS ({}) \
          SELECT r.id, r.kind, r.alias, r.title, r.summary, r.body, r.media_family, r.file_key, \
          r.content_type, r.byte_size, r.sha256_hex, r.original_filename, r.width, r.height, \
-         r.duration_ms, r.media_variants, r.owner_note_id, r.is_favorite, r.favorite_position, r.is_private, r.view_count_total, \
+         r.duration_ms, r.media_variants, r.owner_note_id, r.is_favorite, r.favorite_position, (r.visibility = 'private') AS is_private, r.view_count_total, \
          r.last_viewed_at, r.created_at, r.updated_at, r.summary AS preview, \
          COALESCE(p.popular_views, 0)::BIGINT AS popular_views \
          FROM resources r LEFT JOIN popular p ON p.resource_id = r.id \
-         WHERE r.deleted_at IS NULL AND ($1 OR r.is_private = FALSE) \
+         WHERE r.deleted_at IS NULL AND ($1 OR r.visibility = 'public') \
          ORDER BY COALESCE(p.popular_views, 0) DESC, r.view_count_total DESC, r.updated_at DESC, r.id ASC LIMIT $2",
         popular_cte(window)
     );

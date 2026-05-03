@@ -34,9 +34,10 @@ pub async fn create_snapshot<C: GenericClient>(
     let media_variants = media_variants_to_json(&resource.media_variants);
     db.execute(
         "INSERT INTO resource_snapshots \
-         (id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
-          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_private) \
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)",
+         (id, space_id, resource_id, kind, snapshot_number, alias, title, summary, body, media_family, file_key, \
+          content_type, byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, visibility) \
+         VALUES ($1, (SELECT space_id FROM resources WHERE id = $2), $2, $3, $4, $5, $6, $7, $8, $9, \
+          $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, CASE WHEN $20 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END)",
         &[
             &snapshot_id,
             &resource.id,

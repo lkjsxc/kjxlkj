@@ -111,9 +111,10 @@ async fn create_media_resources<C: GenericClient>(
         let row = db
             .query_one(
                 &format!(
-                    "INSERT INTO resources (id, kind, title, summary, body, media_family, file_key, content_type, \
-                     byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private) \
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, $13, FALSE, NULL, $14) {RETURNING_RECORD}"
+                    "INSERT INTO resources (id, space_id, kind, title, summary, body, media_family, file_key, content_type, \
+                     byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, visibility) \
+                     VALUES ($1, default_space_id(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NULL, NULL, NULL, $12, $13, FALSE, NULL, \
+                     CASE WHEN $14 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END) {RETURNING_RECORD}"
                 ),
                 &[
                     &attachment.media_id,
@@ -152,7 +153,9 @@ async fn update_target_note<C: GenericClient>(
         .query_one(
             &format!(
                 "UPDATE resources SET alias = $2, title = $3, summary = $4, body = $5, \
-                 is_favorite = $6, favorite_position = $7, is_private = $8, updated_at = NOW() \
+                 is_favorite = $6, favorite_position = $7, \
+                 visibility = CASE WHEN $8 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END, \
+                 updated_at = NOW() \
                  WHERE id = $1 AND deleted_at IS NULL {RETURNING_RECORD}"
             ),
             &[

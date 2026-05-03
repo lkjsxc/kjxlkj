@@ -13,7 +13,8 @@ pub async fn list_external_embeds(
         .await?
         .query(
             "SELECT url, provider, title, description, site_name, author_name, thumbnail_url \
-             FROM external_embed_cache WHERE url = ANY($1) AND fetched_at IS NOT NULL",
+             FROM external_embed_cache WHERE space_id = default_space_id() \
+             AND url = ANY($1) AND fetched_at IS NOT NULL",
             &[&urls],
         )
         .await
@@ -32,7 +33,8 @@ pub async fn stale_external_embed_urls(
         .await?
         .query(
             "SELECT input.url FROM unnest($1::TEXT[]) AS input(url) \
-             LEFT JOIN external_embed_cache cache ON cache.url = input.url \
+             LEFT JOIN external_embed_cache cache ON cache.space_id = default_space_id() \
+             AND cache.url = input.url \
              WHERE cache.url IS NULL OR cache.expires_at IS NULL OR cache.expires_at <= NOW()",
             &[&urls],
         )
@@ -47,10 +49,10 @@ pub async fn upsert_external_embed(pool: &DbPool, embed: &ExternalEmbed) -> Resu
         .await?
         .execute(
             "INSERT INTO external_embed_cache \
-             (url_hash, url, provider, kind, title, description, site_name, author_name, \
+             (space_id, url_hash, url, provider, kind, title, description, site_name, author_name, \
               thumbnail_url, fetched_at, expires_at, last_error, error_at) \
-             VALUES (encode(digest($1, 'sha256'), 'hex'), $1, $2, 'bookmark', $3, $4, $5, $6, $7, NOW(), $8, NULL, NULL) \
-             ON CONFLICT (url_hash) DO UPDATE SET provider = EXCLUDED.provider, title = EXCLUDED.title, \
+             VALUES (default_space_id(), encode(digest($1, 'sha256'), 'hex'), $1, $2, 'bookmark', $3, $4, $5, $6, $7, NOW(), $8, NULL, NULL) \
+             ON CONFLICT (space_id, url_hash) DO UPDATE SET provider = EXCLUDED.provider, title = EXCLUDED.title, \
              description = EXCLUDED.description, site_name = EXCLUDED.site_name, author_name = EXCLUDED.author_name, \
              thumbnail_url = EXCLUDED.thumbnail_url, fetched_at = NOW(), expires_at = EXCLUDED.expires_at, \
              last_error = NULL, error_at = NULL, updated_at = NOW()",
@@ -81,9 +83,9 @@ pub async fn upsert_external_embed_error(
     client(pool)
         .await?
         .execute(
-            "INSERT INTO external_embed_cache (url_hash, url, provider, kind, expires_at, last_error, error_at) \
-             VALUES (encode(digest($1, 'sha256'), 'hex'), $1, $2, 'bookmark', $3, $4, NOW()) \
-             ON CONFLICT (url_hash) DO UPDATE SET expires_at = EXCLUDED.expires_at, \
+            "INSERT INTO external_embed_cache (space_id, url_hash, url, provider, kind, expires_at, last_error, error_at) \
+             VALUES (default_space_id(), encode(digest($1, 'sha256'), 'hex'), $1, $2, 'bookmark', $3, $4, NOW()) \
+             ON CONFLICT (space_id, url_hash) DO UPDATE SET expires_at = EXCLUDED.expires_at, \
              last_error = EXCLUDED.last_error, error_at = NOW(), updated_at = NOW()",
             &[&url, &provider, &expires_at, &error],
         )

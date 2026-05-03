@@ -14,9 +14,9 @@ pub async fn list_all_favorite_resources(
         .query(
             "SELECT id, kind, alias, title, summary, body, media_family, file_key, content_type, \
              byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, \
-             favorite_position, is_private, view_count_total, last_viewed_at, created_at, updated_at, \
+             favorite_position, (visibility = 'private') AS is_private, view_count_total, last_viewed_at, created_at, updated_at, \
              summary AS preview, NULL::BIGINT AS popular_views \
-             FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE AND ($1 OR is_private = FALSE) \
+             FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE AND ($1 OR visibility = 'public') \
              ORDER BY favorite_position ASC NULLS LAST, id ASC",
             &[&include_private],
         )

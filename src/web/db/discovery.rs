@@ -11,7 +11,7 @@ pub async fn list_public_sitemap_resources(
         .map_err(|e| AppError::DatabaseError(e.to_string()))?
         .query(
             "SELECT id, alias, updated_at FROM resources \
-             WHERE deleted_at IS NULL AND is_private = FALSE \
+             WHERE deleted_at IS NULL AND visibility = 'public' \
              ORDER BY updated_at DESC, id ASC",
             &[],
         )

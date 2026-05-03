@@ -37,9 +37,10 @@ pub async fn create_media(
     let row = tx
         .query_one(
             &format!(
-                "INSERT INTO resources (id, kind, alias, title, summary, body, media_family, file_key, content_type, \
-                 byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, is_private) \
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NULL, $17, $18, $19) {RETURNING_RECORD}"
+                "INSERT INTO resources (id, space_id, kind, alias, title, summary, body, media_family, file_key, content_type, \
+                 byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, favorite_position, visibility) \
+                 VALUES ($1, default_space_id(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NULL, $17, $18, \
+                 CASE WHEN $19 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END) {RETURNING_RECORD}"
             ),
             &[
                 &id,

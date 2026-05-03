@@ -51,3 +51,11 @@ CREATE TABLE IF NOT EXISTS space_settings (
     site_icon_updated_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE OR REPLACE FUNCTION default_space_id()
+RETURNS UUID
+LANGUAGE SQL
+STABLE
+AS $$
+    SELECT id FROM spaces ORDER BY created_at, id LIMIT 1
+$$;

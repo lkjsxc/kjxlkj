@@ -45,8 +45,9 @@ pub async fn create_resource(
     let row = tx
         .query_one(
             &format!(
-                "INSERT INTO resources (id, kind, alias, title, summary, body, is_favorite, favorite_position, is_private) \
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) {RETURNING_RECORD}"
+                "INSERT INTO resources (id, space_id, kind, alias, title, summary, body, is_favorite, favorite_position, visibility) \
+                 VALUES ($1, default_space_id(), $2, $3, $4, $5, $6, $7, $8, \
+                 CASE WHEN $9 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END) {RETURNING_RECORD}"
             ),
             &[
                 &id,
@@ -96,7 +97,9 @@ pub async fn update_resource(
         .query_one(
             &format!(
                 "UPDATE resources SET alias = $2, title = $3, summary = $4, body = $5, \
-                 is_favorite = $6, favorite_position = $7, is_private = $8, updated_at = NOW() \
+                 is_favorite = $6, favorite_position = $7, \
+                 visibility = CASE WHEN $8 THEN 'private'::resource_visibility ELSE 'public'::resource_visibility END, \
+                 updated_at = NOW() \
                  WHERE id = $1 AND deleted_at IS NULL {RETURNING_RECORD}"
             ),
             &[
