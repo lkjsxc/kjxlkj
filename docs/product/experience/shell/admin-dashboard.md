@@ -8,7 +8,7 @@
 ## Layout
 
 - The persistent shell rail remains visible.
-- For admins, `New note` sits near the top of the rail.
+- For editors and above, `New note` sits near the top of the rail.
 - Admin dashboard rails place `Open GitHub` above `Logout`.
 - Main content starts with compact stats, then `Settings`, `Popular`, `Recently updated`, and `Favorites`.
 

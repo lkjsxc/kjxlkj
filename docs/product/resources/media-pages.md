@@ -3,7 +3,7 @@
 ## Create Flow
 
 - The canonical UI ingest path is `Upload media` from a live note editor.
-- Agent and automation callers may still create media directly through `POST /resources/media`.
+- Agent and automation callers may create media directly through `POST /api/users/{user}/resources/media`.
 - Every media create requires one uploaded image, video, or supported file-family binary.
 - Current supported file-family formats are `HEIC` and `HEIF`.
 - Uploads may include common browser and desktop media extensions such as `.png`, `.jpg`, `.webp`, `.gif`, `.svg`, `.heic`, `.heif`, `.mp4`, `.webm`, `.mov`, `.m4v`, `.mkv`, `.ogv`, `.avi`, `.wmv`, `.mpeg`, `.mpg`, and `.3gp`.

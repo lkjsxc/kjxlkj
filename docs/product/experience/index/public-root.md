@@ -4,7 +4,7 @@
 
 - `GET /` is the homepage after setup completes.
 - Guests land on a public-facing home surface rather than a raw browse grid.
-- Signed-in admins still get the homepage, but `/search` remains the full browse surface.
+- Signed-in users still get the homepage, but personal-space search remains the full browse surface.
 
 ## Layout Rules
 
@@ -39,7 +39,7 @@
 - Admin Popular cards may expose the active popularity total only.
 - When the active window is `All time`, the visible card metric label is `Views`.
 - Guest homepage data is public-only.
-- Signed-in admins may see private-capable popular, recent, and favorite blocks plus quick admin actions.
+- Signed-in members may see member-visible popular, recent, and favorite blocks plus permitted actions.
 - The visible section label is `Popular`, while deep links still use `sort=popular_desc&popular_window=...`.
 - Opaque IDs are not shown in normal homepage cards.
 - Favorites follow the persistent admin-defined favorite order.

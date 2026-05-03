@@ -20,7 +20,7 @@
 - Timeline and history affordances when applicable.
 - Mode-specific actions.
 - Rail action ordering follows [actions/section-order.md](actions/section-order.md).
-- Global navigation order is `Home`, `Search`, `Live`, then admin-only entries.
+- Personal-space navigation order is `Home`, `Search`, `Live`, then member-only entries.
 - Groups are separated visually, but visible section headings and heading underlines are omitted.
 
 ## Main Pane

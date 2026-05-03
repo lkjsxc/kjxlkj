@@ -4,7 +4,8 @@
 
 - Every live resource has `id`, optional `alias`, `body`, derived `title`, derived `summary`, visibility, favorite state, analytics, timestamps, and immutable saved snapshots.
 - `id` is one 26-character lowercase Base32 identifier shared across all resource kinds.
-- `alias` is globally unique across all live notes and media.
+- `alias` is unique across live notes and media inside one personal space.
+- The canonical public URL is `/{user}/{ref}`.
 - `/{ref}` resolves alias first and then live-resource `id`.
 - `/{ref}/history` opens the history index for that live resource.
 

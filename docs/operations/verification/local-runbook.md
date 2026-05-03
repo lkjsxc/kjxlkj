@@ -28,7 +28,7 @@ curl -sS -X POST http://127.0.0.1:8080/login \
 curl -sS -X POST http://127.0.0.1:8080/resources/notes \
   -H 'Content-Type: application/json' \
   -b cookies.txt \
-  -d '{"body":"# Launch Notes\n\n![](/demo-image/file)\n","is_private":false}'
+  -d '{"body":"# Launch Notes\n\n![](/demo-image/file)\n","visibility":"public"}'
 ```
 
 ## Create Media
@@ -38,7 +38,7 @@ curl -sS -X POST http://127.0.0.1:8080/resources/media \
   -b cookies.txt \
   -F 'file=@./tmp/demo-image.png' \
   -F 'alias=demo-image' \
-  -F 'is_private=false'
+  -F 'visibility=public'
 ```
 
 ## Verify Resource Pages

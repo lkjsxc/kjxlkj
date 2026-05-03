@@ -3,7 +3,7 @@
 ## Current Resource State
 
 - `id` is immutable once assigned.
-- `alias`, `is_favorite`, `favorite_position`, and `is_private` belong to current resource state.
+- `alias`, `is_favorite`, `favorite_position`, and `visibility` belong to current resource state.
 - `created_at` never changes.
 - `updated_at` changes on every successful write.
 - `title`, `summary`, and search document are derived from the current body and updated on every write.
@@ -23,12 +23,12 @@
 
 ## Settings State
 
-- Homepage hero content belongs to singleton app settings.
-- Homepage section visibility and order belong to singleton app settings.
-- Default new-resource visibility belongs to singleton app settings.
-- Search default page size belongs to singleton app settings.
-- Session timeout belongs to singleton app settings.
-- Site identity fields belong to singleton app settings.
-- Site icon state belongs to singleton app settings.
-- Media WebP quality belongs to singleton app settings.
-- Discovery public-origin state belongs to singleton app settings.
+- Homepage hero content belongs to personal-space settings.
+- Homepage section visibility and order belong to personal-space settings.
+- Default new-resource visibility belongs to personal-space settings.
+- Search default page size belongs to personal-space settings.
+- Session timeout belongs to platform configuration.
+- Site identity fields belong to personal-space settings.
+- Site icon state belongs to personal-space settings.
+- Media WebP quality belongs to personal-space settings.
+- Discovery public-origin state belongs to personal-space settings.

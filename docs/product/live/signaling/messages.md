@@ -47,6 +47,6 @@
 - Broadcaster disconnect ends the active stream.
 - Admin partial navigation or page unload closes the broadcaster connection.
 - Viewer disconnect removes only that viewer.
-- Viewer joins and disconnects update the admin-only viewer count.
+- Viewer joins and disconnects update the broadcaster-only viewer count.
 - Server restart clears all live state.
 - Browser refresh reconnects as a new viewer or broadcaster.

@@ -1,23 +1,25 @@
 # Runtime Route Map
 
 - `/setup`, `/login`, `/logout`, and `/reset-password` -> setup, session, and password recovery handlers.
-- `/` -> auth-aware homepage handler.
-- `/admin` and `/admin/` -> admin dashboard handler.
-- `/admin/settings`, `/admin/password`, `/admin/site-icon`, and `/admin/site-icon/reset` -> admin settings, password, and icon handlers.
-- `/search` -> auth-aware browse/search handler.
-- `/live` and `/live/ws` -> live broadcast page and WebRTC signaling handlers.
+- `/` -> global public feed handler.
+- `/{user}` -> personal-space public feed handler.
+- `/{user}/admin` and `/{user}/admin/` -> personal-space dashboard handler.
+- `/{user}/settings`, `/{user}/settings/site-icon`, and `/{user}/settings/site-icon/reset` -> personal-space settings and icon handlers.
+- `/account/password` -> signed-in account password handler.
+- `/{user}/search` -> personal-space browse/search handler.
+- `/{user}/live` and `/{user}/live/ws` -> personal-space live page and WebRTC signaling handlers.
 - `/favicon.ico`, `/assets/icon.svg`, and `/assets/site-icon` -> site asset handlers.
 - `/robots.txt`, `/sitemap.xml`, and `/.well-known/nostr.json` -> discovery handlers.
-- `/admin/markdown-preview` -> admin-only preview renderer.
-- `/{ref}` -> root resource handler for live resources and saved snapshots.
-- `/{ref}/history` -> history index handler.
-- `/{ref}/file` -> current media file handler.
-- `/{snapshot_id}/file` -> snapshot media file handler.
-- `/resources/notes` -> note create handler.
-- `/resources/media` -> media create handler.
-- `/resources/{id}/media-attachments` -> note attachment batch upload handler.
-- `/resources/favorites/order` -> favorite reorder handler.
-- `/resources/{id}` -> shared metadata update and delete handlers.
-- `/resources/{id}/history` -> saved-snapshot history handler.
-- `/resources/{id}/prev` and `/resources/{id}/next` -> adjacent resource handlers.
+- `/{user}/markdown-preview` -> authorized preview renderer.
+- `/{user}/{ref}` -> personal-space resource handler for live resources and saved snapshots.
+- `/{user}/{ref}/history` -> history index handler.
+- `/{user}/{ref}/file` -> current or snapshot media file handler.
+- `/{user}/resources/notes` -> note create handler.
+- `/{user}/resources/media` -> media create handler.
+- `/{user}/resources/{id}/media-attachments` -> note attachment upload handler.
+- `/{user}/favorites/order` -> favorite reorder handler.
+- `/{user}/resources/{id}` -> shared metadata update and delete handlers.
+- `/{user}/resources/{id}/history` -> saved-snapshot history handler.
+- `/{user}/resources/{id}/prev` and `/{user}/resources/{id}/next` -> adjacent resource handlers.
+- `/api/users/{user}/resources/*` -> service-token-capable machine API.
 - `/healthz` -> health handler.

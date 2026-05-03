@@ -16,7 +16,8 @@
 - IDs are generated from cryptographically secure random bytes.
 - IDs are opaque and carry no timestamp or title meaning.
 - The system retries on collision before failing creation.
-- Current-note IDs and saved-snapshot IDs share one global opaque-ID namespace.
+- Current-note IDs and saved-snapshot IDs share one opaque-ID namespace.
+- URLs still include the personal-space slug even when the `ref` is an ID.
 
 ## Validation
 

@@ -3,8 +3,8 @@
 ## Route
 
 - `GET /live` is public.
-- Guests and admins can watch the current broadcast.
-- Signed-in admins also see broadcast controls.
+- Guests and members can watch public broadcasts.
+- Members with broadcast permission see broadcast controls.
 - `/live` video elements expose browser-native controls.
 - Live video stays contained inside its frame and preserves aspect ratio.
 - The video frame must not expose colored browser or codec edge artifacts.
@@ -12,18 +12,18 @@
 ## Navigation
 
 - The side menu includes `Live` directly after `Home` and `Search`.
-- `Live` is visible to guests and admins.
+- `Live` is visible to guests and members.
 - The active state is `Live` when the current page is `/live`.
 
 ## Admin Controls
 
-- Admins choose screen or camera as the single active video source.
+- Broadcasters choose screen or camera as the active video source.
 - Admins can choose camera facing, exact camera device, target quality, target frame rate, and microphone state.
 - Admins never need a manual camera-refresh action.
 - Camera device options update automatically as devices appear, disappear, or receive labels after permission.
 - The default source is camera.
 - The default camera facing is rear.
-- Persisted defaults come from `/admin/settings`.
+- Persisted defaults come from `/{user}/settings`.
 - `/live` controls may override persisted defaults for the current page session.
 - Viewer count is visible only to the admin broadcaster.
 

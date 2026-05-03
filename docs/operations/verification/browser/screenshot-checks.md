@@ -57,4 +57,4 @@ docker compose -f docker-compose.yml -f docker-compose.verify.yml run --rm visua
 - Leaving `/live` as an active admin broadcaster ends the stream and returns viewers to waiting.
 - Resource-to-resource shell transitions preserve rail scroll state.
 - Private file URLs do not leak to guest verification flows.
-- History list pages are admin-only, while known public snapshot URLs remain guest-readable.
+- History list pages require resource write permission, while known public snapshot URLs remain guest-readable.

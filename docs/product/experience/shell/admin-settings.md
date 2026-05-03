@@ -3,7 +3,7 @@
 ## Page Intent
 
 - `GET /admin/settings` is the dedicated settings workspace.
-- The page owns the canonical global settings form.
+- The page owns the canonical personal-space settings form.
 - The page also owns the canonical favorite-order management surface.
 - The page is reachable from the dashboard and the admin rail.
 

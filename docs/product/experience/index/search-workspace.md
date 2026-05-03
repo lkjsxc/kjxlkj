@@ -5,7 +5,7 @@
 - `GET /search` is the only canonical browse and search page.
 - The route is auth-aware:
   - guests search public resources
-  - signed-in admins search public and private resources
+  - signed-in members search resources allowed by visibility and role
 
 ## Layout Rules
 

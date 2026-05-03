@@ -1,9 +1,10 @@
 # Settings API Schema
 
-## Settings Shape
+## Personal-Space Settings Shape
 
 ```json
 {
+  "space": "alice",
   "site_name": "kjxlkj",
   "site_description": "Markdown-first resource system for LLM-operated workflows.",
   "public_base_url": "https://notes.example.com",
@@ -14,9 +15,8 @@
   "live_default_height": 1080,
   "live_default_fps": 60,
   "live_default_microphone_enabled": false,
-  "google_maps_embed_api_key": "",
   "media_webp_quality": 82,
-  "default_new_resource_is_private": false
+  "default_new_resource_visibility": "public"
 }
 ```
 
@@ -36,9 +36,16 @@
 - `media_webp_quality` is an integer from `1` through `100`.
 - `nostr_names` accepts 64-character hex public keys or `npub...` input and stores lowercase hex.
 - `nostr_relays` accepts `wss://` relay URLs.
-- `google_maps_embed_api_key` is optional and enables generated Google Maps iframe embeds.
-- Blank `google_maps_embed_api_key` disables generated Google Maps embeds.
+- `default_new_resource_visibility` is `public`, `space`, or `private`.
+- Fresh installs default new resources to `public`.
 - Site icon upload requests use `multipart/form-data` rather than JSON.
+
+## Platform Settings
+
+- Session timeout is platform-owned, not personal-space-owned.
+- Cookie security mode is platform-owned.
+- Mailer and reset delivery settings are platform-owned.
+- Google Maps Embed API key is platform-owned.
 
 ## Upload Limits
 

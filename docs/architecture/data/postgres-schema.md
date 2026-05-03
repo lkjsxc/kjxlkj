@@ -1,113 +1,120 @@
 # Postgres Schema Contract
 
+## Fresh Schema Rule
+
+- The multi-user schema is fresh.
+- The implementation does not preserve `admin_user`, `sessions`, or singleton `app_settings`.
+- Operators who need old data must export and import manually.
+- All tenant-owned rows use `space_id`.
+
+## `users`
+
+- `id`: UUID primary key.
+- `email`: unique case-insensitive login email.
+- `username`: unique case-insensitive personal-space slug.
+- `display_name`: user-facing name.
+- `status`: `active`, `invited`, or `disabled`.
+- `created_at`, `updated_at`, and `last_login_at`: UTC timestamps.
+
+## `user_local_credentials`
+
+- `user_id`: primary key and user reference.
+- `password_hash`: Argon2 password hash.
+- `password_updated_at`: UTC timestamp.
+
+## `spaces`
+
+- `id`: UUID primary key.
+- `slug`: unique case-insensitive top-level URL slug.
+- `name`: user-facing space name.
+- `owner_user_id`: canonical owner user.
+- `created_at` and `updated_at`: UTC timestamps.
+
+## `space_memberships`
+
+- `space_id`: space reference.
+- `user_id`: user reference.
+- `role`: `owner`, `admin`, `editor`, or `viewer`.
+- Primary key: `(space_id, user_id)`.
+
+## `user_sessions`
+
+- `id`: UUID primary key.
+- `user_id`: signed-in user.
+- `token_hash`: hash of the opaque session token.
+- `csrf_secret_hash`: hash of the CSRF secret.
+- `expires_at`, `last_seen_at`, and `revoked_at`: UTC timestamps.
+
+## `service_accounts` and `api_tokens`
+
+- `service_accounts` belong to one space.
+- `api_tokens` belong to one service account and one space.
+- `api_tokens.token_hash` stores only the bearer-token hash.
+- `api_tokens.scopes` stores JSON scope strings such as `resource:read`.
+- `api_tokens.expires_at`, `last_used_at`, and `revoked_at` control token lifetime.
+
 ## `resources`
 
 - `id`: `CHAR(26)` primary key.
-- `kind`: `TEXT` constrained to `note` or `media`.
-- `alias`: nullable unique live-resource alias shared across all kinds.
-- `body`: current Markdown body.
-- `title`: current derived title.
-- `summary`: current derived summary.
-- `media_family`: nullable `image` or `video`.
-- `file_key`: nullable current object-storage key for media.
-- `content_type`: nullable current media MIME type.
-- `byte_size`: nullable current media byte length.
-- `sha256_hex`: nullable current media checksum.
-- `original_filename`: nullable current upload filename.
-- `width`: nullable current intrinsic width.
-- `height`: nullable current intrinsic height.
-- `duration_ms`: nullable current video duration.
-- `media_variants`: nullable current derivative metadata JSON.
-- `owner_note_id`: nullable immutable live-note reference for media created from note attachment.
-- `is_favorite`: favorite flag.
-- `favorite_position`: nullable persistent favorite ordering slot.
-- `is_private`: privacy flag.
-- `view_count_total`: lifetime successful page views.
-- `last_viewed_at`: last counted page-view timestamp.
-- `created_at`: immutable UTC timestamp.
-- `updated_at`: mutable UTC timestamp.
-- `deleted_at`: nullable soft-delete timestamp.
-- `search_document`: current full-text search column.
+- `space_id`: required space reference.
+- `kind`: `note` or `media`.
+- `alias`: nullable live-resource alias unique inside one space.
+- `body`, `title`, and `summary`: current Markdown and derived text.
+- `visibility`: `public`, `space`, or `private`.
+- `owner_user_id`: owner for private-resource checks.
+- `created_by_user_id` and `updated_by_user_id`: browser actors when present.
+- `created_by_service_account_id` and `updated_by_service_account_id`: service actors when present.
+- Media fields are populated only when `kind = media`.
+- Favorite, analytics, timestamps, soft delete, and search fields remain resource-local.
 
 ## `resource_snapshots`
 
 - `id`: `CHAR(26)` primary key.
+- `space_id`: required space reference.
 - `resource_id`: live-resource reference.
-- `kind`: copied resource kind.
-- `alias`: saved route alias.
-- `title`: saved derived title.
-- `summary`: saved derived summary.
-- `body`: saved Markdown body.
-- `media_family`: nullable saved media family.
-- `file_key`: nullable immutable object-storage key.
-- `content_type`: nullable saved media MIME type.
-- `byte_size`: nullable saved media byte length.
-- `sha256_hex`: nullable saved media checksum.
-- `original_filename`: nullable saved upload filename.
-- `width`: nullable saved intrinsic width.
-- `height`: nullable saved intrinsic height.
-- `duration_ms`: nullable saved video duration.
-- `media_variants`: nullable saved derivative metadata JSON.
-- `owner_note_id`: nullable copied owner-note reference for snapshot-stable image-link behavior.
-- `is_private`: saved visibility.
+- `kind`, `alias`, `title`, `summary`, `body`, and media fields are immutable copies.
+- `visibility`: saved visibility.
 - `snapshot_number`: immutable per-resource sequence.
+- Actor columns store the user or service account that created the snapshot.
 - `created_at`: snapshot UTC timestamp.
 
 ## `resource_daily_views`
 
+- `space_id`: required space reference.
 - `resource_id`: live-resource reference.
 - `view_date`: UTC date bucket.
 - `view_count`: counted resource-page views for that UTC day.
-- Primary key: `(resource_id, view_date)`.
+- Primary key: `(space_id, resource_id, view_date)`.
 
 ## `external_embed_cache`
 
-- `url_hash`: SHA-256 hex primary key for the normalized external URL.
-- `url`: normalized external URL.
-- `canonical_url`: nullable upstream canonical URL.
-- `provider`: normalized provider label.
-- `kind`: `bookmark`, `image`, `video`, `audio`, `frame`, or `social`.
-- `title`: nullable bookmark title.
-- `description`: nullable bookmark description.
-- `site_name`: nullable upstream site name.
-- `author_name`: nullable upstream author name.
-- `thumbnail_url`: nullable direct remote thumbnail URL.
-- `thumbnail_width`: nullable thumbnail width.
-- `thumbnail_height`: nullable thumbnail height.
-- `fetched_at`: nullable successful fetch timestamp.
-- `expires_at`: nullable refresh timestamp.
-- `last_error`: nullable latest failure summary.
-- `error_at`: nullable latest failure timestamp.
-- `created_at`: immutable UTC timestamp.
-- `updated_at`: mutable UTC timestamp.
+- `space_id`: required space reference.
+- `url_hash`: SHA-256 hex key for the normalized external URL.
+- `url`, `canonical_url`, `provider`, and `kind`: normalized source metadata.
+- Display fields are optional and never trusted as HTML.
+- `fetched_at`, `expires_at`, `last_error`, and `error_at` control refresh.
 
-## `app_settings`
+## `space_settings`
 
-- `id`: singleton key fixed to `1`.
-- `home_intro_markdown`: optional homepage hero Markdown.
-- `home_recent_limit`, `home_favorite_limit`, `home_popular_limit`: mixed-resource section counts.
-- `home_recent_visible`, `home_favorite_visible`, `home_popular_visible`: section visibility flags.
-- `home_recent_position`, `home_favorite_position`, `home_popular_position`: section order slots.
-- `search_results_per_page`: default HTML search page size.
-- `default_new_resource_is_private`: default visibility for newly created notes and media.
-- `session_timeout_minutes`: login session lifetime.
-- `site_name`, `site_description`, `public_base_url`: shared site identity and discovery fields.
-- `nostr_names`: JSON object of local Nostr names to lowercase hex public keys.
-- `nostr_relays`: JSON array of global Nostr relay URLs.
-- `live_default_source`: default live video source, `screen` or `camera`, default `camera`.
-- `live_default_camera_facing`: default live camera facing, `environment` or `user`, default `environment`.
-- `live_default_height`: default live video height preset.
-- `live_default_fps`: default live frame-rate preset.
-- `live_default_microphone_enabled`: default live microphone state.
-- `google_maps_embed_api_key`: optional Maps Embed API key used in generated Google Maps iframes.
-- `media_webp_quality`: quality value for future derivative WebP generation.
-- `site_icon_key`, `site_icon_content_type`, and `site_icon_updated_at`: optional uploaded site icon state.
-- `updated_at`: mutable UTC timestamp.
+- `space_id`: primary key and space reference.
+- Homepage, search, site identity, Nostr, live defaults, WebP quality, and site icon fields are space-scoped.
+- `default_new_resource_visibility` defaults to `public`.
+- Session timeout, mailer, cookie security, and shared API keys are platform-owned.
 
 ## `password_reset_tokens`
 
 - `id`: UUID primary key.
+- `user_id`: user reference.
 - `token_hash`: hash of the one-time reset token.
-- `expires_at`: token expiry timestamp.
-- `used_at`: nullable consumption timestamp.
-- `created_at`: token creation timestamp.
+- `expires_at`, `used_at`, and `created_at`: UTC timestamps.
+
+## `audit_events`
+
+- `id`: UUID primary key.
+- `space_id`: nullable space reference.
+- `actor_user_id`: nullable browser actor.
+- `actor_service_account_id`: nullable service actor.
+- `event_type`: stable event key.
+- `entity_type` and `entity_id`: affected object identity.
+- `payload`: JSON detail.
+- `created_at`: UTC timestamp.

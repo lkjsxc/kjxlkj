@@ -4,13 +4,15 @@
 
 ```json
 {
+  "space": "alice",
   "id": "01jvq6z3f4t2p8k7m9n0b1c2d3",
   "kind": "note",
   "alias": "release-notes",
   "body": "# Title\n\nMarkdown content...",
   "is_favorite": true,
   "favorite_position": 2,
-  "is_private": false,
+  "visibility": "public",
+  "owner_user_id": "d84ee7d8-9a4f-4bde-b50a-cf0cf11218cb",
   "created_at": "2026-03-26T08:34:00Z",
   "updated_at": "2026-03-26T08:35:00Z"
 }
@@ -20,11 +22,13 @@
 
 - `kind` is `note` or `media`.
 - `id` is an exact 26-character lowercase Base32 string.
-- `alias` is an optional lowercase route alias unique across all live resources.
+- `space` is the personal-space slug used in URLs.
+- `alias` is an optional lowercase route alias unique inside one personal space.
 - `body` is UTF-8 Markdown content and may be empty.
 - `is_favorite` defaults to `false`.
 - `favorite_position` is nullable and positive when present.
-- `is_private` defaults from `default_new_resource_is_private`.
+- `visibility` is `public`, `space`, or `private`.
+- `visibility` defaults to `public`.
 - `created_at` and `updated_at` are UTC RFC3339 timestamps.
 - Media-only fields are absent for `note`.
 
@@ -70,9 +74,9 @@
   "title": "Launch Video",
   "summary": "Primary product walkthrough.",
   "body": "# Launch Video\n\nPrimary product walkthrough.",
-  "is_private": false,
+  "visibility": "public",
   "owner_note_id": null,
-  "file_href": "/aj6m3m3jy6hm74m6rfj7dnu3ga/file",
+  "file_href": "/alice/aj6m3m3jy6hm74m6rfj7dnu3ga/file",
   "content_type": "video/mp4",
   "byte_size": 18342012,
   "created_at": "2026-03-26T08:35:00Z"

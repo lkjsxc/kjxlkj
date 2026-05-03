@@ -3,17 +3,17 @@
 ## Favorites
 
 - Favorite state is shared resource state across notes and media.
-- `PUT /resources/favorites/order` is admin-only.
+- `PUT /{user}/favorites/order` requires resource write permission.
 - Favorite ordering uses one persistent sequence across mixed resources.
-- The canonical reorder UI lives on `GET /admin/settings`.
+- The canonical reorder UI lives on `GET /{user}/settings`.
 - The dashboard Favorites block is read-only and reflects the persisted order.
-- Homepage, dashboard, and `/search?scope=favorites` all reflect the same persisted order.
+- Homepage, dashboard, and `/{user}/search?scope=favorites` all reflect the same persisted order.
 - Home and dashboard favorites may therefore contain both notes and media.
 
 ## History Pagination
 
-- HTML history pages and `GET /resources/{id}/history` share the same pager contract from [../navigation/paging/README.md](../navigation/paging/README.md).
-- HTML history pages and history JSON are admin-only.
+- HTML history pages and `GET /{user}/resources/{id}/history` share the same pager contract from [../navigation/paging/README.md](../navigation/paging/README.md).
+- HTML history pages and history JSON require resource write permission.
 - Page one keeps the live resource visible above the paginated saved snapshots.
 - Snapshot cards use `Latest saved snapshot` for the newest visible snapshot on the first page.
 - Snapshot cards prefer a changed excerpt over the current leading body summary.

@@ -16,13 +16,13 @@
 
 ## Routing
 
-- The canonical resource page route is `/{ref}`.
+- The canonical resource page route is `/{user}/{ref}`.
 - When `alias` is present, the canonical `ref` is the alias.
 - When `alias` is absent, the canonical `ref` is the `id`.
 - History routes append `/history` after the same canonical `ref`.
 
 ## Reservation Rules
 
-- Aliases must be unique among live resources.
-- Aliases may not match reserved application paths such as `admin`, `search`, `login`, `logout`, `setup`, `resources`, `assets`, `robots.txt`, `sitemap.xml`, and `healthz`.
+- Aliases must be unique among live resources inside one personal space.
+- Aliases and user slugs may not match reserved application paths such as `api`, `admin`, `search`, `login`, `logout`, `setup`, `resources`, `assets`, `robots.txt`, `sitemap.xml`, `live`, and `healthz`.
 - Aliases may not equal the ID format.

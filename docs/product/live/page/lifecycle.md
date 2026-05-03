@@ -2,8 +2,8 @@
 
 ## Ownership
 
-- The `/live` page owns the admin capture session.
-- The active admin WebSocket owns the server-side broadcaster role.
+- The `/{user}/live` page owns one personal-space capture session.
+- The active broadcaster WebSocket owns the server-side broadcaster role.
 - The app process owns the in-memory live relay.
 - The server stores no live media bytes.
 - Server restart clears all live state.

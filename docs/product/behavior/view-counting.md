@@ -10,7 +10,7 @@
 
 - Authenticated admin opens of live note pages do not count.
 - Authenticated admin opens of live media pages do not count.
-- Saved-snapshot root URLs do not count, whether they are opened by guests or admins.
+- Saved-snapshot URLs do not count, whether they are opened by guests or members.
 - File delivery routes such as `/{ref}/file` and `/{snapshot_id}/file` do not count.
 - `404`, unauthorized, and redirected requests do not count.
 

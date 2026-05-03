@@ -18,7 +18,7 @@ Use this subtree for the runtime behavior rules behind the UI and API.
 - [history-and-favorites.md](history-and-favorites.md): favorites ordering and history browsing
 - [search-and-pagination.md](search-and-pagination.md): query, sort, cursor, and result-shape rules
 - [upsert-and-delete.md](upsert-and-delete.md): create, update, visibility, and delete behavior
-- [settings-and-preferences.md](settings-and-preferences.md): global settings, local UI state, and defaults
+- [settings-and-preferences.md](settings-and-preferences.md): personal-space settings, local UI state, and defaults
 - [auth-and-passwords.md](auth-and-passwords.md): setup code, login return path, and password reset behavior
 - [errors.md](errors.md): error JSON shape, codes, determinism, and HTML error pages
 

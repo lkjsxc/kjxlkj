@@ -2,11 +2,21 @@
 
 ## Machine-Facing Routes
 
-- `GET /api/resources/search` is the canonical assistant-facing search route.
-- `GET /api/resources/{id}` returns the same resource payload used by browser create and update responses.
-- `GET /api/resources/{id}/history` returns the same JSON saved-snapshot history shape as `/resources/{id}/history`.
-- `POST /api/resources/notes` mirrors `POST /resources/notes`.
-- `POST /api/resources/media` mirrors `POST /resources/media`.
+- `GET /api/users/{user}/resources/search` is the canonical assistant-facing search route.
+- `GET /api/users/{user}/resources/{ref}` returns the resource payload.
+- `GET /api/users/{user}/resources/{ref}/history` returns saved-snapshot history JSON.
+- `POST /api/users/{user}/resources/notes` creates a note.
+- `POST /api/users/{user}/resources/media` creates a media resource.
+- `PUT /api/users/{user}/resources/{ref}` updates a resource.
+- `DELETE /api/users/{user}/resources/{ref}` soft-deletes a resource.
+
+## Machine Auth
+
+- Machine routes accept `Authorization: Bearer <token>`.
+- Tokens belong to one service account and one personal space.
+- Token scopes include `resource:read` and `resource:write`.
+- Service tokens never grant member-management or settings-management access.
+- Cookie sessions may use machine routes only when CSRF validation passes.
 
 ## Nostr Discovery Response
 
@@ -37,8 +47,8 @@
 }
 ```
 
-- `POST /admin/site-icon` is admin-only `multipart/form-data` with required part `icon`.
-- `POST /admin/site-icon/reset` is admin-only and clears the uploaded icon state.
+- `POST /{user}/settings/site-icon` requires `ManageSettings` and `multipart/form-data`.
+- `POST /{user}/settings/site-icon/reset` requires `ManageSettings`.
 - Both routes return the same icon-state JSON shape.
 - `configured=false` means the bundled fallback icon is active.
 
@@ -56,5 +66,5 @@
 }
 ```
 
-- `POST /admin/markdown-preview` is admin-only.
+- `POST /{user}/markdown-preview` requires `WriteResource`.
 - The endpoint uses the same sanitized Markdown renderer as guest display.

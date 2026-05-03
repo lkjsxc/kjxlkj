@@ -6,7 +6,7 @@
 - The homepage hero still uses only editable global `home_intro_markdown`.
 - Home sections list mixed resources rather than note-only rows.
 - Guests see public-only resources.
-- Signed-in admins see the same structure with private-capable data and admin actions.
+- Signed-in members see the same structure with member-visible data and permitted actions.
 - The homepage remains intentionally short and does not become the full browse surface.
 
 ## Admin Dashboard
@@ -59,7 +59,7 @@
 
 ## History Fetch
 
-- History index returns the live resource plus one saved-snapshot page for admins only.
+- History index returns the live resource plus one saved-snapshot page for authorized members only.
 - Saved snapshots are ordered by `snapshot_number DESC`.
 - Admins can fetch all saved snapshots.
 - The history rail never expands into per-snapshot links.

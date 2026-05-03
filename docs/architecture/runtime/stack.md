@@ -7,6 +7,6 @@
 - Automatic text response compression through Tower HTTP middleware.
 - In-process WebRTC relay for `/live` broadcast media.
 - Authored CSS remains readable on disk; runtime HTML may inline minified page-specific CSS.
-- First-party Markdown body editing for admins.
+- First-party Markdown body editing for authorized members.
 - One sanitized Markdown renderer shared across guest display and admin preview.
 - Client-side local-time formatting, drawer behavior, and chrome sync.

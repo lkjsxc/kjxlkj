@@ -1,6 +1,7 @@
 # Documentation Canon
 
-`docs/` is the only active canon for product behavior, runtime shape, operations, and repo rules.
+`docs/` is the only active canon for product behavior, runtime shape,
+operations, and repo rules.
 
 ## Global Rules
 
@@ -12,11 +13,13 @@
 6. Remove stale contracts instead of preserving conflicting versions.
 7. Document exact routes, labels, defaults, and file shapes when they matter.
 8. Optimize for LLM retrieval before human ornament.
+9. Treat the product as multi-user personal-space software.
+10. Remove old single-admin or global-resource contracts instead of aliasing them.
 
 ## Start Paths
 
 - First orientation: [getting-started/README.md](getting-started/README.md)
-- Product surface and shared resource model: [product/README.md](product/README.md)
+- Product surface, spaces, auth, and resource model: [product/README.md](product/README.md)
 - Media and embedding canon: [product/resources/README.md](product/resources/README.md)
 - API and settings contracts: [product/api/README.md](product/api/README.md)
 - Storage and schema canon: [architecture/README.md](architecture/README.md)
@@ -36,12 +39,12 @@
 
 1. [vision/purpose.md](vision/purpose.md)
 2. [repository/layout/root-layout.md](repository/layout/root-layout.md)
-3. [product/resources/resource-kinds.md](product/resources/resource-kinds.md)
-4. [product/surface/routes.md](product/surface/routes.md)
-5. [product/api/settings.md](product/api/settings.md)
-6. [product/resources/embed-rules.md](product/resources/embed-rules.md)
-7. [architecture/runtime/stack.md](architecture/runtime/stack.md)
-8. [architecture/data/postgres-schema.md](architecture/data/postgres-schema.md)
-9. [architecture/storage/object-storage.md](architecture/storage/object-storage.md)
-10. [operations/deployment/single-host-compose.md](operations/deployment/single-host-compose.md)
-11. [operations/verification/compose-pipeline.md](operations/verification/compose-pipeline.md)
+3. [product/surface/routes.md](product/surface/routes.md)
+4. [product/surface/write-auth.md](product/surface/write-auth.md)
+5. [product/resources/resource-kinds.md](product/resources/resource-kinds.md)
+6. [product/api/resources.md](product/api/resources.md)
+7. [product/api/settings.md](product/api/settings.md)
+8. [architecture/runtime/stack.md](architecture/runtime/stack.md)
+9. [architecture/data/postgres-schema.md](architecture/data/postgres-schema.md)
+10. [architecture/storage/object-storage.md](architecture/storage/object-storage.md)
+11. [operations/deployment/single-host-compose.md](operations/deployment/single-host-compose.md)

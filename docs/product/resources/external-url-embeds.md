@@ -52,7 +52,7 @@
 
 ## Privacy and Failure Rules
 
-- Local private resources may render as rich local cards only for signed-in admins.
+- Local private resources may render as rich local cards only for authorized members.
 - Local private resources render as ordinary links or generic cards for guests.
 - External embeds never mutate stored Markdown.
 - If an iframe or image fails to load, the surrounding Markdown output remains stable.

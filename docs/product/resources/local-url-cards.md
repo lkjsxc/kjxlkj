@@ -23,6 +23,6 @@
 - File-family cards use text metadata only and do not request thumbnail variants.
 - Cards show title, media kind, and concise metadata.
 - Inaccessible URLs render as ordinary Markdown links for guests.
-- Private local resources render as rich cards only for signed-in admins.
+- Private local resources render as rich cards only for authorized members.
 - Local image embeds are not URL cards and use the owner-note click rules from [embed-rules.md](embed-rules.md).
 - Local card rendering must not inline another rendered note body.
