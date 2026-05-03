@@ -73,6 +73,7 @@ pub async fn update_settings(pool: &DbPool, settings: &AppSettings) -> Result<()
 
 pub async fn get_resource_stats(
     pool: &DbPool,
+    space_slug: Option<&str>,
     include_private: bool,
 ) -> Result<ResourceStats, AppError> {
     client(pool)
@@ -94,8 +95,9 @@ pub async fn get_resource_stats(
              COALESCE(SUM(rollup.view_count_30d), 0)::BIGINT AS view_count_30d, \
              COALESCE(SUM(rollup.view_count_90d), 0)::BIGINT AS view_count_90d \
              FROM resources LEFT JOIN rollup ON rollup.resource_id = resources.id \
-             WHERE deleted_at IS NULL AND ($1 OR visibility = 'public')",
-            &[&include_private],
+             WHERE deleted_at IS NULL AND ($1 OR visibility = 'public') \
+             AND ($2::TEXT IS NULL OR space_id = (SELECT id FROM spaces WHERE slug = $2::CITEXT))",
+            &[&include_private, &space_slug],
         )
         .await
         .map(row_to_stats)

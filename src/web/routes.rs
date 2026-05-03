@@ -95,8 +95,8 @@ pub fn router(state: AppState) -> Router {
         .route("/sitemap.xml", get(discoverability::sitemap_xml))
         .route("/.well-known/nostr.json", get(discoverability::nostr_json))
         .route("/", get(home::home_page))
-        .route("/{user}/admin", get(admin::admin_page))
-        .route("/{user}/admin/", get(admin::admin_page))
+        .route("/{user}/admin", get(admin::admin_page_scoped))
+        .route("/{user}/admin/", get(admin::admin_page_scoped))
         .route(
             "/_/popular-resources/{surface}/{window}",
             get(popular_sections::popular_resources_section),

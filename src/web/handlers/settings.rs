@@ -33,7 +33,7 @@ pub async fn settings_page(
         return Ok(http::redirect(&session::login_url(&uri)));
     }
     let settings = db::get_settings(pool).await?;
-    let favorites = db::list_all_favorite_resources(pool, true).await?;
+    let favorites = db::list_all_favorite_resources(pool, None, true).await?;
     let site = SiteContext::from_settings(&settings);
     Ok(http::html(templates::settings_page(
         &settings,

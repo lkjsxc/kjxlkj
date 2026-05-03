@@ -7,6 +7,7 @@ use std::collections::HashSet;
 
 pub async fn list_all_favorite_resources(
     pool: &DbPool,
+    space_slug: Option<&str>,
     include_private: bool,
 ) -> Result<Vec<ListedResource>, AppError> {
     let rows = client(pool)
@@ -17,9 +18,11 @@ pub async fn list_all_favorite_resources(
              byte_size, sha256_hex, original_filename, width, height, duration_ms, media_variants, owner_note_id, is_favorite, \
              favorite_position, (visibility = 'private') AS is_private, view_count_total, last_viewed_at, created_at, updated_at, \
              summary AS preview, NULL::BIGINT AS popular_views \
-             FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE AND ($1 OR visibility = 'public') \
+             FROM resources WHERE deleted_at IS NULL AND is_favorite = TRUE \
+             AND ($1 OR visibility = 'public') \
+             AND ($2::TEXT IS NULL OR space_id = (SELECT id FROM spaces WHERE slug = $2::CITEXT)) \
              ORDER BY favorite_position ASC NULLS LAST, id ASC",
-            &[&include_private],
+            &[&include_private, &space_slug],
         )
         .await
         .map_err(|e| AppError::DatabaseError(e.to_string()))?;
