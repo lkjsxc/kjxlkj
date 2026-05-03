@@ -133,7 +133,7 @@ pub fn router(state: AppState) -> Router {
         .route("/{user}/{id}/history", get(history::history_page_scoped))
         .route(
             "/api/users/{user}/resources/media",
-            post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
+            post(media::create_scoped).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
         .route(
             "/api/users/{user}/resources/notes",
@@ -151,7 +151,7 @@ pub fn router(state: AppState) -> Router {
         )
         .route(
             "/{user}/resources/media",
-            post(media::create).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
+            post(media::create_scoped).layer(DefaultBodyLimit::max(state.media_upload_max_bytes)),
         )
         .route(
             "/{user}/resources/{id}/media-attachments",

@@ -1,13 +1,13 @@
 use super::media_input::parse_media_form;
-use super::media_support::{detect_media_family, initial_body, object_key};
+use super::media_support::{detect_media_family, initial_body, object_key, space_object_key};
 use super::resource_payload::ResourcePayload;
 use crate::core::normalize_alias;
 use crate::error::AppError;
 use crate::storage::Storage;
-use crate::web::db::{self, MediaBlob};
+use crate::web::db::{self, MediaBlob, ScopedMediaCreate};
 use crate::web::handlers::http;
 use crate::web::routes::AppState;
-use axum::extract::{Multipart, State};
+use axum::extract::{Multipart, Path, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::Response;
 
@@ -16,13 +16,35 @@ pub async fn create(
     headers: HeaderMap,
     payload: Multipart,
 ) -> Result<Response, AppError> {
+    create_inner(State(state), headers, payload, None).await
+}
+
+pub async fn create_scoped(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(user): Path<String>,
+    payload: Multipart,
+) -> Result<Response, AppError> {
+    db::require_space(&state.pool, &user).await?;
+    create_inner(State(state), headers, payload, Some(user)).await
+}
+
+async fn create_inner(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    payload: Multipart,
+    space_slug: Option<String>,
+) -> Result<Response, AppError> {
     let pool = &state.pool;
     let storage = &state.storage;
     super::session::require_session(&headers, pool).await?;
     let form = parse_media_form(payload, state.media_upload_max_bytes).await?;
     let settings = db::get_settings(pool).await?;
     let id = db::generate_resource_id(pool).await?;
-    let file_key = object_key(&id, &form.file.original_filename);
+    let file_key = match space_slug.as_deref() {
+        Some(slug) => space_object_key(slug, &id, &form.file.original_filename),
+        None => object_key(&id, &form.file.original_filename),
+    };
     let body = initial_body(&form.file.original_filename);
     let media_family = detect_media_family(&form.file.content_type, &form.file.original_filename)?;
     let generated_variants = super::media_derivatives::build_variants(
@@ -50,17 +72,39 @@ pub async fn create(
         media_variants,
     };
     let stored_keys = stored_keys(file_key.clone(), stored_variant_keys);
-    let result = db::create_media(
-        pool,
-        &id,
-        normalize_alias(form.alias.as_deref())?.as_deref(),
-        &body,
-        &blob,
-        form.is_favorite.unwrap_or(false),
-        form.is_private
-            .unwrap_or(settings.default_new_resource_is_private),
-    )
-    .await;
+    let alias = normalize_alias(form.alias.as_deref())?;
+    let is_private = form
+        .is_private
+        .unwrap_or(settings.default_new_resource_is_private);
+    let result = match space_slug.as_deref() {
+        Some(slug) => {
+            db::create_media_in_space(
+                pool,
+                ScopedMediaCreate {
+                    space_slug: slug,
+                    id: &id,
+                    alias: alias.as_deref(),
+                    body: &body,
+                    blob: &blob,
+                    is_favorite: form.is_favorite.unwrap_or(false),
+                    is_private,
+                },
+            )
+            .await
+        }
+        None => {
+            db::create_media(
+                pool,
+                &id,
+                alias.as_deref(),
+                &body,
+                &blob,
+                form.is_favorite.unwrap_or(false),
+                is_private,
+            )
+            .await
+        }
+    };
     match result {
         Ok(resource) => Ok(http::json_status(
             StatusCode::CREATED,

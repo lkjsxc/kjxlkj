@@ -41,6 +41,14 @@ pub fn object_key(id: &str, filename: &str) -> String {
     format!("media/{id}/{}-{}", generate_id(), safe_name(filename))
 }
 
+pub fn space_object_key(space_slug: &str, id: &str, filename: &str) -> String {
+    format!(
+        "spaces/{space_slug}/media/{id}/{}-{}",
+        generate_id(),
+        safe_name(filename)
+    )
+}
+
 fn safe_name(filename: &str) -> String {
     filename
         .chars()

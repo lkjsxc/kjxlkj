@@ -50,7 +50,7 @@ pub use listing::{
     list_favorite_resources, list_favorite_resources_in_space, list_recent_resources,
     list_recent_resources_in_space, list_resources, ListDirection, ListRequest, ListSort,
 };
-pub use media::{create_media, MediaBlob};
+pub use media::{create_media, create_media_in_space, MediaBlob, ScopedMediaCreate};
 pub use media_attachments::{attach_media_to_note, AttachmentCreate, NoteAttachmentUpdate};
 pub use models::{
     ExternalEmbed, ListedResource, MediaFamily, Resource, ResourceKind, ResourceSnapshot,
