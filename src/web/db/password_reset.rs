@@ -6,7 +6,7 @@ use uuid::Uuid;
 pub async fn issue_password_reset_token(pool: &DbPool) -> Result<Option<String>, AppError> {
     let client = client(pool).await?;
     let Some(row) = client
-        .query_opt("SELECT id FROM admin_user ORDER BY created_at LIMIT 1", &[])
+        .query_opt("SELECT id FROM users ORDER BY created_at LIMIT 1", &[])
         .await
         .map_err(db_error)?
     else {
@@ -77,7 +77,7 @@ pub async fn verify_admin_password(
     let Some(row) = client(pool)
         .await?
         .query_opt(
-            "SELECT password_hash FROM admin_user WHERE id = $1",
+            "SELECT password_hash FROM user_local_credentials WHERE user_id = $1",
             &[&user_id],
         )
         .await
@@ -96,15 +96,19 @@ async fn update_password_in_tx(
 ) -> Result<(), AppError> {
     let password_hash = password::hash_secret(password)?;
     tx.execute(
-        "UPDATE admin_user SET password_hash = $2 WHERE id = $1",
+        "UPDATE user_local_credentials SET password_hash = $2, password_updated_at = NOW() \
+         WHERE user_id = $1",
         &[&user_id, &password_hash],
     )
     .await
     .map_err(db_error)?;
-    tx.execute("DELETE FROM sessions WHERE user_id = $1", &[&user_id])
-        .await
-        .map(|_| ())
-        .map_err(db_error)
+    tx.execute(
+        "UPDATE user_sessions SET revoked_at = NOW() WHERE user_id = $1",
+        &[&user_id],
+    )
+    .await
+    .map(|_| ())
+    .map_err(db_error)
 }
 
 fn new_token() -> String {

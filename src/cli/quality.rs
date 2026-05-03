@@ -77,7 +77,7 @@ fn check_dir_lines(
             let ext = path.extension().and_then(|e| e.to_str());
             let should_check = matches!(
                 ext,
-                Some("md") | Some("rs") | Some("js") | Some("mjs") | Some("css")
+                Some("md") | Some("rs") | Some("js") | Some("mjs") | Some("css") | Some("sql")
             );
             if should_check {
                 let content = fs::read_to_string(&path)?;
